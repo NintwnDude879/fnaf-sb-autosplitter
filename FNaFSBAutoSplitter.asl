@@ -17,9 +17,7 @@
 //~225u collection range
 //~1.5s collection
 //present range ~= 1275u (minimum 1250u)
-
 //item range <-> item pickup, d=1825u
-
 state("fnaf9-Win64-Shipping", "v1.04"){
 	// Used to pause the timer (pause = 3, menu = 0).
  	int pause: 0x0441C584;
