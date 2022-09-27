@@ -17,7 +17,7 @@
 //~225u collection range
 //~1.5s collection
 //present range ~= 1275u (minimum 1250u)
-
+//asdas
 //item range <-> item pickup, d=1825u
 //balls
 state("fnaf9-Win64-Shipping", "v1.04"){
