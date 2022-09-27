@@ -19,7 +19,7 @@
 //present range ~= 1275u (minimum 1250u)
 
 //item range <-> item pickup, d=1825u
-//balls
+
 state("fnaf9-Win64-Shipping", "v1.04"){
 	// Used to pause the timer (pause = 3, menu = 0).
  	int pause: 0x0441C584;
@@ -43,7 +43,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	// Keeps track of items.
 	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
-	int splashScreen: 0x04002230, 0xA8, 0x128, 0x328, 0x3DC;
+	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
 
 	// Keeps track of when the game has ended (end = 1, else = 0).
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
@@ -715,18 +715,13 @@ split {
 			}
 		}
 		if (settings["Item Splits"]){
-			print("Item splits");
 			if (current.splashScreen == 4 && old.splashScreen == 0){
-				print("splash");
 				if (settings["Item List"]){
-					print("item list");
 					if (settings["Collectables"]){
 						
 					}
 					if (settings["Equipment"]){
-						print("equipment");
 						if (settings["E_Rockstar Row"]){
-							print("rockstar");
 							if (settings["Fazwatch"] && vars.checkItem(2010, 51390, 1640)){
 								print("Fazwatch");
 								return true;
