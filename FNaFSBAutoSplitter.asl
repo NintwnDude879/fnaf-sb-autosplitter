@@ -8,7 +8,6 @@
 // xr = -759.5329559
 // yr = 52935.373045
 // zt = 2654.88693
-//asdasd
 // x2 = 2(xr) - x1
 // y2 = 2(yr) - y1
 // z2 = zt + z1
@@ -22,6 +21,8 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	// Used to pause the timer (pause = 3, menu = 0).
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
+
+
 	
 
 		// Elevator pointers (elevator not in motion = 1, elevator in motion = 0).
