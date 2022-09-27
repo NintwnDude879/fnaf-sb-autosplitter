@@ -13,11 +13,8 @@
 // y2 = 2(yr) - y1
 // z2 = zt + z1
 
-//~700u/s max character speed
-//~225u collection range
-//~1.5s collection
-//present range ~= 1275u (minimum 1250u)
-//item range <-> item pickup, d=1825u
+//~225u present collection range (400 just to be safe)
+
 state("fnaf9-Win64-Shipping", "v1.04"){
 	// Used to pause the timer (pause = 3, menu = 0).
  	int pause: 0x0441C584;
@@ -88,21 +85,21 @@ startup {
 	settings.Add("Monty Bucket Count", false);
 
 	settings.CurrentDefaultParent = "Daycare Generators";
-        settings.Add("Generator 1", false);
-        settings.Add("Generator 2", false);
-        settings.Add("Generator 3", false);
-        settings.Add("Generator 4", false);
-        settings.Add("Generator 5", false);
+    settings.Add("Generator 1", false);
+    settings.Add("Generator 2", false);
+    settings.Add("Generator 3", false);
+    settings.Add("Generator 4", false);
+    settings.Add("Generator 5", false);
 
 	settings.CurrentDefaultParent = "Fazerblast Flags";
-        settings.Add("Flag 1", false);
-        settings.Add("Flag 2", false);
-        settings.Add("Flag 3", false);
+    settings.Add("Flag 1", false);
+    settings.Add("Flag 2", false);
+    settings.Add("Flag 3", false);
 
 	settings.CurrentDefaultParent = "Monty Bucket Count";
-        settings.Add("10 Balls", false);
-        settings.Add("20 Balls", false);
-        settings.Add("25 Balls", false);
+    settings.Add("10 Balls", false);
+    settings.Add("20 Balls", false);
+    settings.Add("25 Balls", false);
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("Balloon Deload", false);
@@ -159,50 +156,120 @@ startup {
 	settings.Add("C_Parts & Service", false, "Parts & Service");
 	settings.Add("C_Prize Counter", false, "Prize Counter");
 	settings.Add("C_Rockstar Row", false, "Rockstar Row");
+	settings.Add("C_Roxy Raceway", false, "Roxy Raceway");
+	settings.Add("C_Roxy Salon", false, "Roxy Salon");
 	settings.Add("C_Sewers", false, "Sewers");
 	settings.Add("C_Utility Tunnels", false, "Utility Tunnels");
 	settings.Add("C_West Atrium", false, "West Atrium");
+	settings.Add("C_West Arcade", false, "West Arcade");
 
-	settings.CurrentDefaultParent = "Equipment";
-	settings.Add("E_Backstage", false, "Backstage");
-	settings.Add("E_Bonnie Bowl", false, "Bonnie Bowl");
-	settings.Add("E_Chica Shop", false, "Chica Shop");
-	settings.Add("E_Daycare", false, "Daycare");
-	settings.Add("E_East Atrium", false, "East Atrium");
-	settings.Add("E_El Chips", false, "El Chips");
-	settings.Add("E_Fazerblast", false, "Fazerblast");
-	settings.Add("E_Kitchen", false, "Kitchen");
-	settings.Add("E_Lobby", false, "Lobby");
-	settings.Add("E_Main Atrium", false, "Main Atrium");
-	settings.Add("E_Monty Golf", false, "Monty Golf");
-	settings.Add("E_Parts & Service", false, "Parts & Service");
-	settings.Add("E_Prize Counter", false, "Prize Counter");
-	settings.Add("E_Rockstar Row", false, "Rockstar Row");
-	settings.Add("E_Sewers", false, "Sewers");
-	settings.Add("E_Utility Tunnels", false, "Utility Tunnels");
-	settings.Add("E_West Atrium", false, "West Atrium");
+	settings.CurrentDefaultParent = "C_Backstage";
+	settings.Add("El Chip Piñata", false);
+	settings.Add("Freddy Icon Shirt", false);
+	settings.Add("Glam Chica Figure", false);
 
-	settings.CurrentDefaultParent = "E_Rockstar Row";
-	settings.Add("Fazwatch", false);
+	settings.CurrentDefaultParent = "C_Bonnie Bowl";
+	settings.Add("Bonnie Plush", false);
+	settings.Add("Golden Monty", false);
+	settings.Add("Monty Mystery Mix", false);
 
-	settings.CurrentDefaultParent = "Upgrades";
-	settings.Add("U_Backstage", false, "Backstage");
-	settings.Add("U_Bonnie Bowl", false, "Bonnie Bowl");
-	settings.Add("U_Chica Shop", false, "Chica Shop");
-	settings.Add("U_Daycare", false, "Daycare");
-	settings.Add("U_East Atrium", false, "East Atrium");
-	settings.Add("U_El Chips", false, "El Chips");
-	settings.Add("U_Fazerblast", false, "Fazerblast");
-	settings.Add("U_Kitchen", false, "Kitchen");
-	settings.Add("U_Lobby", false, "Lobby");
-	settings.Add("U_Main Atrium", false, "Main Atrium");
-	settings.Add("U_Monty Golf", false, "Monty Golf");
-	settings.Add("U_Parts & Service", false, "Parts & Service");
-	settings.Add("U_Prize Counter", false, "Prize Counter");
-	settings.Add("U_Rockstar Row", false, "Rockstar Row");
-	settings.Add("U_Sewers", false, "Sewers");
-	settings.Add("U_Utility Tunnels", false, "Utility Tunnels");
-	settings.Add("U_West Atrium", false, "West Atrium");
+	settings.CurrentDefaultParent = "C_Chica Shop";
+	settings.Add("Chica Magnet 1", false, "Chica Magnet");
+	settings.Add("Monty Magnet", false);
+
+	settings.CurrentDefaultParent = "C_Daycare";
+	settings.Add("Freddy Mask", false);
+	settings.Add("Frozen Chica Treat", false);
+	settings.Add("Glamrock Freddy Figure", false);
+	settings.Add("Golden Moon", false);
+	settings.Add("Old Poster Fredbear", false, "Old Poster");
+	settings.Add("Plush Baby", false);
+
+	settings.CurrentDefaultParent = "C_East Atrium";
+	settings.Add("Frozen Monty Treat", false);
+	settings.Add("Glamrock Monty Figure", false);
+	settings.Add("Golden Sun", false);
+	settings.Add("Moon Plush", false);
+
+	settings.CurrentDefaultParent = "C_El Chips";
+	settings.Add("Chica Balloon", false);
+
+	settings.CurrentDefaultParent = "C_Fazerblast";
+	settings.Add("Bowling Ticket", false);
+	settings.Add("Freddy Balloon", false);
+	settings.Add("Old Poster Sing", false, "Old Poster");
+	settings.Add("Space Chica Keychain", false);
+	settings.Add("Space Roxy Keychain", false);
+
+	settings.CurrentDefaultParent = "C_Kitchen";
+	settings.Add("Freddy Magnet", false);
+	settings.Add("Freddy Name Shirt", false);
+	settings.Add("Glamrock Roxy Plush", false);
+	settings.Add("Golden Chica", false);
+	settings.Add("Old Poster Bonnie", false, "Old Poster");
+	settings.Add("Piñata", false);
+	settings.Add("Star Shirt", false);
+
+	settings.CurrentDefaultParent = "C_Lobby";
+	settings.Add("Chica Name Shirt", false);
+	settings.Add("Cupcake Piñata", false);
+	settings.Add("Glamrock Chica Plush", false);
+	settings.Add("Sun Plush", false);
+
+	settings.CurrentDefaultParent = "C_Main Atrium";
+	settings.Add("Freddy Face Shirt", false);
+	settings.Add("Monty Piñata", false);
+	settings.Add("Roxy Name Shirt", false);
+
+	settings.CurrentDefaultParent = "C_Monty Golf";
+	settings.Add("Go Kart", false);
+	settings.Add("Tragedy Mask", false);
+
+	settings.CurrentDefaultParent = "C_Parts & Service";
+	settings.Add("Glamrock Roxy Figure", false);
+
+	settings.CurrentDefaultParent = "C_Prize Counter";
+	settings.Add("Frozen Freddy Treat", false);
+	settings.Add("Monty Mask", false);
+
+	settings.CurrentDefaultParent = "C_Rockstar Row";
+	settings.Add("Chica Mask", false);
+	settings.Add("Four Block Shirt", false);
+	settings.Add("Golden Freddy", false);
+	settings.Add("Monty Shirt", false);
+	settings.Add("Pizza Plex Logo Shirt", false);
+
+	settings.CurrentDefaultParent = "C_Roxy Raceway";
+	settings.Add("Monty Balloon", false);
+	settings.Add("Space Monty Keychain", false);
+
+	settings.CurrentDefaultParent = "C_Roxy Salon";
+	settings.Add("Roxy Magnet", false);
+	settings.Add("Roxy Piñata", false);
+
+	settings.CurrentDefaultParent = "C_Sewers";
+	settings.Add("Old Poster Hungry", false, "Old Poster");
+
+	settings.CurrentDefaultParent = "C_Utility Tunnels";
+	settings.Add("Chica Piñata", false);
+	settings.Add("Comedy Mask", false);
+	settings.Add("Foxy Plush", false);
+	settings.Add("Glamrock Freddy Plush", false);
+	settings.Add("Golden Roxy", false);
+	settings.Add("Moon Figure", false);
+	settings.Add("Nightmare Plush", false);
+	settings.Add("Sun Figure", false);
+
+	settings.CurrentDefaultParent = "C_West Arcade";
+	settings.Add("Chica Magnet 2", false, "Chica Magnet");
+	settings.Add("Glamrock Monty Plush", false);
+
+	settings.CurrentDefaultParent = "C_West Atrium";
+	settings.Add("Freddy Piñata", false);
+	settings.Add("Space Freddy Keychain", false);
+	settings.Add("Roxy Balloon", false);
+	settings.Add("Roxy Mask", false);
+	settings.Add("Roxy Treat", false);
 	
 	settings.CurrentDefaultParent = "Security Badges";
 	settings.Add("Security Badge 1", false);
@@ -396,7 +463,6 @@ init {
 
 	// Functions.
 	vars.checkItem = (Func<double, double, double, bool>)((x, y, z) => {
-		print("CheckItem");
 		if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(400, 2)){
 			return true;
 		}
@@ -716,7 +782,12 @@ split {
 			if (current.splashScreen == 4 && old.splashScreen == 0){
 				if (settings["Item List"]){
 					if (settings["Collectables"]){
-						
+						if (settings["C_Lobby"]){
+							if (settings["Freddy Name Shirt"] && vars.checkItem(-5915, 25580, 2205)){
+								print("Freddy Name Shirt");
+								return true;
+							}
+						}
 					}
 					if (settings["Equipment"]){
 						if (settings["E_Rockstar Row"]){
