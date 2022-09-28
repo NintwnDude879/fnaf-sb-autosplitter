@@ -1,25 +1,58 @@
 //Five Nights at Freddy's: Security Breach | v1.0.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
-// Cheat engine pointer to variable:
-// https://js.do/code/674461
-
-// Roxy P&S elevator warp
-// xr = -759.5329559
-// yr = 52935.373045
-// zt = 2654.88693
-// x2 = 2(xr) - x1
-// y2 = 2(yr) - y1
-// z2 = zt + z1
+//Roxy P&S elevator warp
+//xr = -759.5329559
+//yr = 52935.373045
+//zt = 2654.88693
+//x2 = 2(xr) - x1
+//y2 = 2(yr) - y1
+//z2 = zt + z1
 
 //~225u present collection range (400 just to be safe)
 
+//REMEMBER TO ADD CHICA GENERATORS (and get pointer)
+
 state("fnaf9-Win64-Shipping", "v1.04"){
-	// Used to pause the timer (pause = 3, menu = 0).
+	//Keeps track of Freddy's power
+	int freddyPowerCurrent: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
+	int freddyPowerMax: 0x0441B738, 0x8, 0x10, 0x38, 0xBC;
+
+	//Counter pointers
+	int FBFlags: 0x03FF7308, 0x230, 0x8, 0x2C8, 0x3A0, 0x28, 0x30, 0x290;
+	int DCGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
+	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
+
+	//Player information
+	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
+	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
+	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
+
+	//Keeps track of when the game has ended (end = 1)
+	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
+	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
+	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
+	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
+	int escEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
+	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
+
+	//Afton's health (starts at 750, -100 per button)
+	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
+
+	//Keeps track of items (splashSreen = 4)
+	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
+	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
+	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
+
+	//Keeps count of the time
+	int hourTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
+	int minuteTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
+
+	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
 
-		// Elevator pointers (elevator not in motion = 1, elevator in motion = 0).
+		//Elevator pointers (elevator in motion = 1)
 		int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
 		int monGElev: 0x0441FCB0, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2D8, 0x4;
 		int foy2Elev: 0x0441FCB0, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2D8, 0x4;
@@ -29,55 +62,9 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 		int WAElev: 0x0441FCB0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
 		int roxyElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
 		int aftonElev: 0x0441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
-
-	// Keeps track of Freddy's power.
-	int freddyPowerCurrent: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
-	int freddyPowerMax: 0x0441B738, 0x8, 0x10, 0x38, 0xBC;
-
-	// Keeps track of items.
-	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
-	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
-	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
-
-	// Keeps track of when the game has ended (end = 1, else = 0).
-	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
-	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
-	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
-	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
-	int escEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
-	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
-
-	// Keeps count of the time.
-	int hourTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
-	int minuteTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
-
-	// Player information.
-	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
-	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
-	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-
-	// Afton's Health (starts at 750, -100 per button)
-	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
-
-	// Counter Pointers.
-	int FBFlags: 0x03FF7308, 0x230, 0x8, 0x2C8, 0x3A0, 0x28, 0x30, 0x290;
-	int DCGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
-	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
 }
 
 startup {
-	settings.CurrentDefaultParent = null;
-	settings.Add("Settings", true);
-
-	settings.CurrentDefaultParent = "Settings";
-	settings.Add("Refresh Rate", true);
-
-	settings.CurrentDefaultParent = "Refresh Rate";
-	settings.Add("120Hz", false);
-	settings.Add("60Hz", true);
-	settings.Add("30Hz", false);
-	settings.Add("15Hz", false);
-
 	settings.CurrentDefaultParent = null;
 	settings.Add("Splits", false);
 	settings.Add("Timer Settings", true);
@@ -508,10 +495,19 @@ startup {
 	settings.Add("WAEn3", false, "#3");
 	settings.Add("WAEn4", false, "#4");
 	settings.Add("WAEn5", false, "#5");
+
+	settings.CurrentDefaultParent = null;
+	settings.Add("Refresh Rate", true);
+
+	settings.CurrentDefaultParent = "Refresh Rate";
+	settings.Add("120Hz", false);
+	settings.Add("60Hz", true);
+	settings.Add("30Hz", false);
+	settings.Add("15Hz", false);
 }
 
 init {
-	// Sets the version of the game upon startup.
+	//Sets the version of the game upon startup
 	vars.versionSize = modules.First().ModuleMemorySize;
 
 	//1.04: 76210176
@@ -530,9 +526,9 @@ init {
 
 	print("Version = " + version);
 
-	// Used to keep certain splits from repeating.
+	//Used to keep certain splits from repeating
 	
-	// Deload splits.
+	//Deload splits
 	vars.dBalloon = true;
 	vars.dCurtain = true;
 	vars.dDaycareArcade = true;
@@ -540,11 +536,11 @@ init {
 	vars.dRoxyEyes = true;
 	vars.dPlant = true;
 	
-	// Ending splits.
+	//Ending splits
 	vars.ePQ1 = true;
 	vars.ePQ2 = true;
 
-	// Positional splits.
+	//Positional splits
 	vars.pChicaBath = true;
 	vars.pEnBonnieBowl = true;
 	vars.pEnElChips = true;
@@ -559,12 +555,12 @@ init {
 	vars.pSTRATRW = true;
 	vars.pSTRLB = true;
 
-	// Timer splits.
+	//Timer splits
 	vars.tHead = true;
 	vars.tVents = true;
 	vars.tRepair = true;
 
-	// Pausing.
+	//Pausing
 	vars.nAElev = 0;
 	vars.nBBElev = 0;
 	vars.nFBElev = 0;
@@ -574,7 +570,7 @@ init {
 	vars.nRGElev = 0;
 	vars.nWAElev = 0;
 
-	// Functions.
+	//Functions
 	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
 		if (settings[name]){
 			if (checkCurrent == 1){
@@ -662,38 +658,42 @@ init {
 
 start {
 	//Updates refreshRate
-	if (settings["Settings"]){
-		if (settings["Refresh Rate"]){
-			if (settings["120Hz"]){
-				if (refreshRate != 120){
-					print("Refresh Rate = 120Hz");
-					refreshRate = 120;
-				}
+	if (settings["Refresh Rate"]){
+		if (settings["120Hz"]){
+			if (refreshRate != 120){
+				print("Refresh Rate = 120Hz");
+				refreshRate = 120;
 			}
-			else if (settings["60Hz"]){
-				if (refreshRate != 60){
-					print("Refresh Rate = 60Hz");
-					refreshRate = 60;
-				}
+		}
+		else if (settings["60Hz"]){
+			if (refreshRate != 60){
+				print("Refresh Rate = 60Hz");
+				refreshRate = 60;
 			}
-			else if (settings["30Hz"]){
-				if (refreshRate != 30){
-					print("Refresh Rate = 30Hz");
-					refreshRate = 30;
-				}
+		}
+		else if (settings["30Hz"]){
+			if (refreshRate != 30){
+				print("Refresh Rate = 30Hz");
+				refreshRate = 30;
 			}
-			else if (settings["15Hz"]){
-				if (refreshRate != 15){
-					print("Refresh Rate = 15Hz");
-					refreshRate = 15;
-				}
+		}
+		else if (settings["15Hz"]){
+			if (refreshRate != 15){
+				print("Refresh Rate = 15Hz");
+				refreshRate = 15;
 			}
-			else {
-				if (refreshRate != 60){
-					print("Default Refresh Rate = 60Hz");
-					refreshRate = 60;
-				}
+		}
+		else {
+			if (refreshRate != 60){
+				print("Default Refresh Rate = 60Hz");
+				refreshRate = 60;
 			}
+		}
+	}
+	else {
+		if (refreshRate != 60){
+			print("Default Refresh Rate = 60Hz");
+			refreshRate = 60;
 		}
 	}
 
@@ -795,9 +795,9 @@ isLoading {
 
 split {
 	if (current.hourTimer == -1 && current.minuteTimer == 30 && old.minuteTimer == 0){
-		// Used to keep certain splits from repeating (reset).
+		//Used to keep certain splits from repeating (reset)
 	
-		// Deload splits.
+		//Deload splits
 		vars.dBalloon = true;
 		vars.dCurtain = true;
 		vars.dDaycareArcade = true;
@@ -805,11 +805,11 @@ split {
 		vars.dRoxyEyes = true;
 		vars.dPlant = true;
 	
-		// Ending splits.
+		//Ending splits
 		vars.ePQ1 = true;
 		vars.ePQ2 = true;
 
-		// Positional splits.
+		//Positional splits
 		vars.pChicaBath = true;
 		vars.pEnBonnieBowl = true;
 		vars.pEnElChips = true;
@@ -824,12 +824,12 @@ split {
 		vars.pSTRATRW = true;
 		vars.pSTRLB = true;
 
-		// Timer splits.
+		//Timer splits
 		vars.tHead = true;
 		vars.tVents = true;
 		vars.tRepair = true;
 
-		// Pausing.
+		//Pausing
 		vars.nAElev = 0;
 		vars.nBBElev = 0;
 		vars.nFBElev = 0;
