@@ -937,59 +937,73 @@ split {
 					if (settings["Collectables"]){
 						if (settings["C_Backstage"]){
 							if (vars.checkItem("El Chip Piñata", 1970, 53880, 1520)){
+								print("El Chip Piñata");
 								return true;
 							}
 							if (vars.checkItem("Freddy Icon Shirt", 6560, 47150, 1520)){
+								print("Freddy Icon Shirt");
 								return true;
 							}
 							if (vars.checkItem("Glamrock Chica Figure", -5300, 53100, 1520)){
+								print("Glamrock Chica Figure");
 								return true;
 							}
 						}
 						if (settings["C_Bonnie Bowl"]){
 							if (vars.checkItem("Bonnie Plush", 14290, 35760, 3180)){
+								print("Bonnie Plush");
 								return true;
 							}
 							if (vars.checkItem("Golden Monty", 18370, 29210, 2560)){
+								print("Golden Monty");
 								return true;
 							}
 						}
 						if (settings["C_Chica's Bakery"]){
 							if (vars.checkItem("CB_Chica Magnet", -7270, 44050, 2160)){
+								print("CB_Chica Magnet");
 								return true;
 							}
 							if (vars.checkItem("Monty Magnet", -10165, 47085, 2160)){
+								print("Monty Magnet");
 								return true;
 							}
 						}
 						if (settings["C_Daycare"]){
 							if (vars.checkItem("Freddy Mask", -20010, 34315, 2180)){
+								print("Freddy Mask");
 								return true;
 							}
 							if (vars.checkItem("Frozen Chica Treat", -20915, 29485, 1300)){
+								print("Frozen Chica Treat");
 								return true;
 							}
 							if (vars.checkItem("Glamrock Freddy Figure", -12155, 34960, 2130)){
+								print("Glamrock Freddy Figure");
 								return true;
 							}
 							if (vars.checkItem("Golden Moon", -16900, 27220, 2130)){
+								print("Golden Moon");
 								return true;
 							}
 							if (vars.checkItem("D_Old Poster", -20085, 33180, 1520)){
+								print("D_Old Poster");
 								return true;
 							}
 							if (vars.checkItem("Plush Baby", -16465, 36485, 2130)){
+								print("Plush Baby");
 								return true;
 							}
 						}
 						if (settings["C_East Atrium"]){
 							if (vars.checkItem("Moon Plush", -10155, 31475, 1600)){
+								print("Moon Plush");
 								return true;
 							}
 						}
 						/*
 						if (settings["C_"]){
-							if (settings[""] && vars.checkItem()){
+							if (vars.checkItem("", , , )){
 								print("");
 								return true;
 							}
@@ -999,7 +1013,7 @@ split {
 					if (settings["Equipment"]){
 						/*
 						if (settings["E_"]){
-							if (settings[""] && vars.checkItem()){
+							if (vars.checkItem("", , , )){
 								print("");
 								return true;
 							}
