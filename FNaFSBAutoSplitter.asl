@@ -19,9 +19,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
 
-
-	
-
 		// Elevator pointers (elevator not in motion = 1, elevator in motion = 0).
 		int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
 		int monGElev: 0x0441FCB0, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2D8, 0x4;
@@ -69,6 +66,18 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 }
 
 startup {
+	settings.CurrentDefaultParent = null;
+	settings.Add("Settings", true);
+
+	settings.CurrentDefaultParent = "Settings";
+	settings.Add("Refresh Rate", true);
+
+	settings.CurrentDefaultParent = "Refresh Rate";
+	settings.Add("120Hz", false);
+	settings.Add("60Hz", true);
+	settings.Add("30Hz", false);
+	settings.Add("15Hz", false);
+
 	settings.CurrentDefaultParent = null;
 	settings.Add("Splits", false);
 	settings.Add("Timer Settings", true);
@@ -141,12 +150,11 @@ startup {
 	settings.CurrentDefaultParent = "Item List";
 	settings.Add("Collectables", false);
 	settings.Add("Equipment", false);
-	settings.Add("Upgrades", false);
 
 	settings.CurrentDefaultParent = "Collectables";
 	settings.Add("C_Backstage", false, "Backstage");
 	settings.Add("C_Bonnie Bowl", false, "Bonnie Bowl");
-	settings.Add("C_Chica Shop", false, "Chica Shop");
+	settings.Add("C_Chica's Bakery", false, "Chica's Bakery");
 	settings.Add("C_Daycare", false, "Daycare");
 	settings.Add("C_East Atrium", false, "East Atrium");
 	settings.Add("C_El Chips", false, "El Chips");
@@ -162,21 +170,21 @@ startup {
 	settings.Add("C_Roxy Salon", false, "Roxy Salon");
 	settings.Add("C_Sewers", false, "Sewers");
 	settings.Add("C_Utility Tunnels", false, "Utility Tunnels");
+	settings.Add("C_Warehouse", false, "Warehouse");
 	settings.Add("C_West Atrium", false, "West Atrium");
 	settings.Add("C_West Arcade", false, "West Arcade");
 
 	settings.CurrentDefaultParent = "C_Backstage";
 	settings.Add("El Chip Piñata", false);
 	settings.Add("Freddy Icon Shirt", false);
-	settings.Add("Glam Chica Figure", false);
+	settings.Add("Glamrock Chica Figure", false);
 
 	settings.CurrentDefaultParent = "C_Bonnie Bowl";
 	settings.Add("Bonnie Plush", false);
 	settings.Add("Golden Monty", false);
-	settings.Add("Monty Mystery Mix", false);
 
-	settings.CurrentDefaultParent = "C_Chica Shop";
-	settings.Add("Chica Magnet 1", false, "Chica Magnet");
+	settings.CurrentDefaultParent = "C_Chica's Bakery";
+	settings.Add("CB_Chica Magnet", false, "Chica Magnet");
 	settings.Add("Monty Magnet", false);
 
 	settings.CurrentDefaultParent = "C_Daycare";
@@ -184,7 +192,7 @@ startup {
 	settings.Add("Frozen Chica Treat", false);
 	settings.Add("Glamrock Freddy Figure", false);
 	settings.Add("Golden Moon", false);
-	settings.Add("Old Poster Fredbear", false, "Old Poster");
+	settings.Add("D_Old Poster", false, "Old Poster");
 	settings.Add("Plush Baby", false);
 
 	settings.CurrentDefaultParent = "C_East Atrium";
@@ -199,7 +207,7 @@ startup {
 	settings.CurrentDefaultParent = "C_Fazerblast";
 	settings.Add("Bowling Ticket", false);
 	settings.Add("Freddy Balloon", false);
-	settings.Add("Old Poster Sing", false, "Old Poster");
+	settings.Add("F_Old Poster", false, "Old Poster");
 	settings.Add("Space Chica Keychain", false);
 	settings.Add("Space Roxy Keychain", false);
 
@@ -208,7 +216,7 @@ startup {
 	settings.Add("Freddy Name Shirt", false);
 	settings.Add("Glamrock Roxy Plush", false);
 	settings.Add("Golden Chica", false);
-	settings.Add("Old Poster Bonnie", false, "Old Poster");
+	settings.Add("K_Old Poster", false, "Old Poster");
 	settings.Add("Piñata", false);
 	settings.Add("Star Shirt", false);
 
@@ -250,7 +258,7 @@ startup {
 	settings.Add("Roxy Piñata", false);
 
 	settings.CurrentDefaultParent = "C_Sewers";
-	settings.Add("Old Poster Hungry", false, "Old Poster");
+	settings.Add("S_Old Poster", false, "Old Poster");
 
 	settings.CurrentDefaultParent = "C_Utility Tunnels";
 	settings.Add("Chica Piñata", false);
@@ -259,11 +267,13 @@ startup {
 	settings.Add("Glamrock Freddy Plush", false);
 	settings.Add("Golden Roxy", false);
 	settings.Add("Moon Figure", false);
-	settings.Add("Nightmare Plush", false);
 	settings.Add("Sun Figure", false);
 
+	settings.CurrentDefaultParent = "C_Warehouse";
+	settings.Add("Nightmare Plush", false);
+
 	settings.CurrentDefaultParent = "C_West Arcade";
-	settings.Add("Chica Magnet 2", false, "Chica Magnet");
+	settings.Add("WA_Chica Magnet", false, "Chica Magnet");
 	settings.Add("Glamrock Monty Plush", false);
 
 	settings.CurrentDefaultParent = "C_West Atrium";
@@ -272,6 +282,100 @@ startup {
 	settings.Add("Roxy Balloon", false);
 	settings.Add("Roxy Mask", false);
 	settings.Add("Roxy Treat", false);
+
+	settings.CurrentDefaultParent = "Equipment";
+	settings.Add("E_Backstage", false, "Backstage");
+	settings.Add("E_Bonnie Bowl", false, "Bonnie Bowl");
+	settings.Add("E_Chica's Bakery", false, "Chica's Bakery");
+	settings.Add("E_Daycare", false, "Daycare");
+	settings.Add("E_El Chips", false, "El Chips");
+	settings.Add("E_Fazerblast", false, "Fazerblast");
+	settings.Add("E_Kitchen", false, "Kitchen");
+	settings.Add("E_Lobby", false, "Lobby");
+	settings.Add("E_Main Atrium", false, "Main Atrium");
+	settings.Add("E_Monty Golf", false, "Monty Golf");
+	settings.Add("E_Parts & Service", false, "Parts & Service");
+	settings.Add("E_Prize Counter", false, "Prize Counter");
+	settings.Add("E_Rockstar Row", false, "Rockstar Row");
+	settings.Add("E_Roxy Raceway", false, "Roxy Raceway");
+	settings.Add("E_Roxy Salon", false, "Roxy Salon");
+	settings.Add("E_Sewers", false, "Sewers");
+	settings.Add("E_Utility Tunnels", false, "Utility Tunnels");
+	settings.Add("E_Warehouse", false, "Warehouse");
+	settings.Add("E_West Atrium", false, "West Atrium");
+	settings.Add("E_West Arcade", false, "West Arcade");
+	settings.Add("E_Other", false, "Other");
+
+	settings.CurrentDefaultParent = "E_Backstage";
+	settings.Add("Backstage Pass", false);
+	settings.Add("B_Flashlight Upgrade", false, "Flashlight Upgrade");
+
+	settings.CurrentDefaultParent = "E_Bonnie Bowl";
+	settings.Add("Monty Mystery Mix", false);
+
+	settings.CurrentDefaultParent = "E_Chica's Bakery";
+	settings.Add("Hoodie", false);
+
+	settings.CurrentDefaultParent = "E_Daycare";
+	settings.Add("Flashlight", false);
+	settings.Add("D_Flashlight Upgrade", false, "Flashlight Upgrade");
+	settings.Add("Mazercise Control Key", false);
+
+	settings.CurrentDefaultParent = "E_El Chips";
+	settings.Add("Monty Fizzy Faz", false);
+
+	settings.CurrentDefaultParent = "E_Fazerblast";
+	settings.Add("Bowling Pass", false);
+	settings.Add("Golden Fazerblaster", false);
+	settings.Add("Grey Fazerblaster", false);
+
+	settings.CurrentDefaultParent = "E_Kitchen";
+	settings.Add("Freddy Fizzy Faz", false);
+
+	settings.CurrentDefaultParent = "E_Lobby";
+	settings.Add("Chica Fizzy Faz", false);
+	settings.Add("Entrance Pass", false);
+	settings.Add("Mr. Hippo Magnet", false);
+	settings.Add("Screwdriver", false);
+
+	settings.CurrentDefaultParent = "E_Main Atrium";
+	settings.Add("MA_Freddy Upgrade", false, "Freddy Upgrade");
+
+	settings.CurrentDefaultParent = "E_Monty Golf";
+	settings.Add("Fazcam", false);
+	settings.Add("MG_Flashlight Upgrade", false, "Flashlight Upgrade");
+	settings.Add("Mazercise Pass", false);
+	settings.Add("Monty Claws", false);
+
+	settings.CurrentDefaultParent = "E_Prize Counter";
+	settings.Add("Prize Counter Cameras", false);
+
+	settings.CurrentDefaultParent = "E_Rockstar Row";
+	settings.Add("Fazwatch", false);
+	settings.Add("Photo Pass", false);
+
+	settings.CurrentDefaultParent = "E_Roxy Raceway";
+	settings.Add("Damaged Head", false);
+	settings.Add("Dance Pass", false);
+	settings.Add("RR_Freddy Upgrade", false, "Freddy Upgrade");
+	settings.Add("Roxy's Eyes", false);
+	settings.Add("Roxy Fizzy Faz", false);
+
+	settings.CurrentDefaultParent = "E_Roxy Salon";
+	settings.Add("Shoes", false);
+
+	settings.CurrentDefaultParent = "E_Sewers";
+	settings.Add("Chica's Voicebox", false);
+
+	settings.CurrentDefaultParent = "E_Utility Tunnels";
+	settings.Add("Pizzaplex Cameras", false);
+
+	settings.CurrentDefaultParent = "E_West Arcade";
+	settings.Add("Office 6 Cameras", false);
+	settings.Add("Repaired Head", false);
+
+	settings.CurrentDefaultParent = "E_Other";
+	settings.Add("6am Party Pass", false);
 	
 	settings.CurrentDefaultParent = "Security Badges";
 	settings.Add("Security Badge 1", false);
@@ -299,7 +403,6 @@ startup {
 	settings.Add("STR-LB Stairs", false);
 
 	settings.CurrentDefaultParent = "Time Splits";
-	settings.Add("Damaged Head", false);
 	settings.Add("Exit Vents", false);
 	settings.Add("Freddy Eye Repair", false);
 
@@ -312,8 +415,8 @@ startup {
 	settings.Add("Afton Elevator", true);
 	settings.Add("Bonnie Bowl Elevator", true);
 	settings.Add("Fazerblast Elevator", true);
-	settings.Add("Foyer Elevators", true);
 	settings.Add("Kitchen Elevator", true);
+	settings.Add("Lobby Elevators", true);
 	settings.Add("Monty Golf Elevator", true);
 	settings.Add("Roxy's Greenroom Elevator", true);
 	settings.Add("West Arcade Elevator", true);
@@ -351,27 +454,27 @@ startup {
 	settings.Add("FBEn4", false, "#4");
 	settings.Add("FBEn5", false, "#5");
 
-	settings.CurrentDefaultParent = "Foyer Elevators";
-	settings.Add("FE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("FE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "FE_POOU";
-	settings.Add("FEn1", false, "#1");
-	settings.Add("FEn2", false, "#2");
-	settings.Add("FEn3", false, "#3");
-	settings.Add("FEn4", false, "#4");
-	settings.Add("FEn5", false, "#5");
-
 	settings.CurrentDefaultParent = "Kitchen Elevator";
 	settings.Add("KE_EUOE", true, "Every Use Of Elevator");
 	settings.Add("KE_POOU", false, "Pause Only On Use:");
 
 	settings.CurrentDefaultParent = "KE_POOU";
-	settings.Add("Kn1", false, "#1");
-	settings.Add("Kn2", false, "#2");
-	settings.Add("Kn3", false, "#3");
-	settings.Add("Kn4", false, "#4");
-	settings.Add("Kn5", false, "#5");
+	settings.Add("KEn1", false, "#1");
+	settings.Add("KEn2", false, "#2");
+	settings.Add("KEn3", false, "#3");
+	settings.Add("KEn4", false, "#4");
+	settings.Add("KEn5", false, "#5");
+
+	settings.CurrentDefaultParent = "Lobby Elevators";
+	settings.Add("LE_EUOE", true, "Every Use Of Elevator");
+	settings.Add("LE_POOU", false, "Pause Only On Use:");
+
+	settings.CurrentDefaultParent = "LE_POOU";
+	settings.Add("LEn1", false, "#1");
+	settings.Add("LEn2", false, "#2");
+	settings.Add("LEn3", false, "#3");
+	settings.Add("LEn4", false, "#4");
+	settings.Add("LEn5", false, "#5");
 
 	settings.CurrentDefaultParent = "Monty Golf Elevator";
 	settings.Add("MGE_EUOE", true, "Every Use Of Elevator");
@@ -418,6 +521,14 @@ init {
 	if (vars.versionSize == 76210176){
 		version = "v1.04";
 	}
+	if (vars.versionSize == 0){
+		version = "v1.05";
+	}
+	if (vars.versionSize == 0){
+		version = "v1.11";
+	}
+
+	print("Version = " + version);
 
 	// Used to keep certain splits from repeating.
 	
@@ -457,169 +568,225 @@ init {
 	vars.nAElev = 0;
 	vars.nBBElev = 0;
 	vars.nFBElev = 0;
-	vars.nFElev = 0;
 	vars.nKElev = 0;
+	vars.nLElev = 0;
 	vars.nMGElev = 0;
 	vars.nRGElev = 0;
 	vars.nWAElev = 0;
 
 	// Functions.
-	vars.checkItem = (Func<double, double, double, bool>)((x, y, z) => {
-		if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(400, 2)){
-			return true;
-		}
-		return false;
-	});
-	vars.checkPosition = (Func<double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
-			return true;
-		}
-		return false;
-	});
-	vars.checkPositionSlant = (Func<double, double, double, double, double, double, double, double, bool>)((x1, y1, x2, y2, xB, yB, zLB, zUB) => {
-		double slope = (y1 - y2) / (x1 - x2);
-		if (zLB <= current.posZ && current.posZ <= zUB){
-			if (yB - y1 < slope * (xB - x1) && current.posX <= xB && current.posY >= yB){
-				if (current.posY - y1 < slope * (current.posX - x1)){
-					return true;
-				}
-			}
-			if (yB - y1 >= slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
-				if (current.posY - y1 >= slope * (current.posX - x1)){
-					return true;
-				}
+	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
+		if (settings[name]){
+			if (checkCurrent == 1){
+				return true;
 			}
 		}
 		return false;
 	});
-	vars.checkTime = (Func<int, int, bool>)((hour, minute) => {
-		if (hour == current.hourTimer && minute == current.minuteTimer){
+	
+	vars.checkElevator2 = (Func<string, int, int, bool>)((nameShort, checkOld, checkCount) => {
+		if (settings[nameShort + "_EUOE"]){
+			if (checkOld == 0){
+				print(nameShort + " :  Every Use");
+			}
 			return true;
+		}
+		if (settings[nameShort + "_POOU"]){
+			if (settings[nameShort + "n" + checkCount]){
+				if (checkOld == 0){
+					print(nameShort + " : Use #" + checkCount);
+				}
+				return true;
+			}
+		}
+		return false;
+	});
+
+	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
+		if (settings[name]){
+			if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(400, 2)){
+				print(name);
+				return true;
+			}
+		}
+		return false;
+	});
+
+	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
+		if (settings[name]){
+			if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+				print(name);
+				return true;
+			}
+		}
+		return false;
+	});
+
+	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
+		if (settings[name]){
+			if (zLB <= current.posZ && current.posZ <= zUB){
+				
+			double slope = (y1 - y2) / (x1 - x2);
+
+				if (yB - y1 <= slope * (xB - x1) && current.posX <= xB && current.posY >= yB){
+					if (current.posY - y1 <= slope * (current.posX - x1)){
+						print(name);
+						return true;
+					}
+					return (current.posY - y1 < slope * (current.posX - x1));
+				}
+				if (yB - y1 > slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
+					if (current.posY - y1 > slope * (current.posX - x1)){
+						print(name);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	});
+
+	vars.checkTime = (Func<string, bool, int, int, bool>)((name, check, hour, minute) => {
+		if (settings[name]){
+			if (check){
+				if (current.hourTimer == hour && current.minuteTimer == minute){
+					print(name);
+					check = false;
+					return true;
+				}
+			}
 		}
 		return false;
 	});
 }
 
 start {
-	// Start condition (Freddy power).
+	//Updates refreshRate
+	if (settings["Settings"]){
+		if (settings["Refresh Rate"]){
+			if (settings["120Hz"]){
+				if (refreshRate != 120){
+					print("Refresh Rate = 120Hz");
+					refreshRate = 120;
+				}
+			}
+			else if (settings["60Hz"]){
+				if (refreshRate != 60){
+					print("Refresh Rate = 60Hz");
+					refreshRate = 60;
+				}
+			}
+			else if (settings["30Hz"]){
+				if (refreshRate != 30){
+					print("Refresh Rate = 30Hz");
+					refreshRate = 30;
+				}
+			}
+			else if (settings["15Hz"]){
+				if (refreshRate != 15){
+					print("Refresh Rate = 15Hz");
+					refreshRate = 15;
+				}
+			}
+			else {
+				if (refreshRate != 60){
+					print("Default Refresh Rate = 60Hz");
+					refreshRate = 60;
+				}
+			}
+		}
+	}
+
+	//Start condition (Freddy power)
 	return (current.freddyPowerCurrent == 30 && old.freddyPowerCurrent == 100);
 }
 
 isLoading {
-	if (current.aftonElev == 1 && old.aftonElev == 0){
-		vars.nAElev++;
-	}
-	if (current.bonBElev == 1 && old.bonBElev == 0){
-		vars.nBBElev++;
-	}
-	if (current.fazerElev == 1 && old.fazerElev == 0){
-		vars.nFBElev++;
-	}
-	if ((current.foy1Elev == 1 && old.foy1Elev == 0) || (current.foy2Elev == 1 && old.foy2Elev == 0)){
-		vars.nFElev++;
-	}
-	if (current.kitElev == 1 && old.kitElev == 0){
-		vars.nKElev++;
-	}
-	if (current.monGElev == 1 && old.monGElev == 0){
-		vars.nMGElev++;
-	}
-	if (current.roxyElev == 1 && old.roxyElev == 0){
-		vars.nRGElev++;
-	}
-	if (current.WAElev == 1 && old.WAElev == 0){
-		vars.nWAElev++;
-	}
-
 	if (settings["Timer Settings"]){
 		if (settings["Elevator Pauses"]){
-			if (settings["Afton Elevator"] && current.aftonElev == 1){
-				if (settings["AE_EUOE"]){
-					print("AElev Every Use");
-					return true;
+			if (vars.checkElevator1("Afton Elevator", current.aftonElev)){
+				if (old.aftonElev == 0){
+					vars.nAElev++;
 				}
-				if (settings["AE_POOU"] && settings["AEn" + vars.nAElev]){
-					print("AElev Use #" + vars.nAElev);
-					return true;
-				}
-			}
-			if (settings["Bonnie Bowl Elevator"] && current.bonBElev == 1){
-				if (settings["BBE_EUOE"]){
-					print("BBElev Every Use");
-					return true;
-				}
-				if (settings["BBE_POOU"] && settings["BBEn" + vars.nBBElev]){
-					print("BBElev Use #" + vars.nBBElev);
+				if (vars.checkElevator2("AE", old.aftonElev, vars.nAElev)){
 					return true;
 				}
 			}
-			if (settings["Fazerblast Elevator"] && current.fazerElev == 1){
-				if (settings["FBE_EUOE"]){
-					print("FBElev Every Use");
-					return true;
+			if (vars.checkElevator1("Bonnie Bowl Elevator", current.bonBElev)){
+				if (old.bonBElev == 0){
+					vars.nBBElev++;
 				}
-				if (settings["FBE_POOU"] && settings["FBEn" + vars.nFBElev]){
-					print("FBElev Use #" + vars.nFBElev);
-					return true;
-				}
-			}
-			if (settings["Foyer Elevators"] && (current.foy1Elev == 1 || current.foy2Elev == 1)){
-				if (settings["FE_EUOE"]){
-					print("FElev Every Use");
-					return true;
-				}
-				if (settings["FE_POOU"] && settings["FEn" + vars.nFElev]){
-					print("FElev Use #" + vars.nFElev);
+				if (vars.checkElevator2("BBE", old.bonBElev, vars.nBBElev)){
 					return true;
 				}
 			}
-			if (settings["Kitchen Elevator"] && current.kitElev == 1){
-				if (settings["KE_EUOE"]){
-					print("KElev Every Use");
-					return true;
+			if (vars.checkElevator1("Fazerblast Elevator", current.fazerElev)){
+				if (old.fazerElev == 0){
+					vars.nFBElev++;
 				}
-				if (settings["KE_POOU"] && settings["KEn" + vars.nKElev]){
-					print("KElev Use #" + vars.nKElev);
-					return true;
-				}
-			}
-			if (settings["Monty Golf Elevator"] && current.monGElev == 1){
-				if (settings["MGE_EUOE"]){
-					print("MGElev Every Use");
-					return true;
-				}
-				if (settings["MGE_POOU"] && settings["MGEn" + vars.nMGElev]){
-					print("MGElev Use #" + vars.nMGElev);
+				if (vars.checkElevator2("FBE", old.fazerElev, vars.nFBElev)){
 					return true;
 				}
 			}
-			if (settings["Roxy's Greenroom Elevator"] && current.roxyElev == 1){
-				if (settings["RGE_EUOE"]){
-					print("RGElev Every Use");
-					return true;
+			if (vars.checkElevator1("Kitchen Elevator", current.kitElev)){
+				if (old.kitElev == 0){
+					vars.nKElev++;
 				}
-				if (settings["RGE_POOU"] && settings["RGEn" + vars.nRGElev]){
-					print("RGElev Use #" + vars.nRGElev);
+				if (vars.checkElevator2("KE", old.kitElev, vars.nKElev)){
 					return true;
 				}
 			}
-			if (settings["West Arcade Elevator"] && current.WAElev == 1){
-				if (settings["WAE_EUOE"]){
-					print("WAElev Every Use");
+			if (vars.checkElevator1("Lobby Elevators", current.foy1Elev)){
+				if (old.foy1Elev == 0){
+					vars.nLElev++;
+				}
+				if (vars.checkElevator2("LE", old.foy1Elev, vars.nLElev)){
 					return true;
 				}
-				if (settings["WAE_POOU"] && settings["WAEn" + vars.nWestArcadeElev]){
-					print("WAElev Use #" + vars.nWestArcadeElev);
+			}
+			if (vars.checkElevator1("Lobby Elevators", current.foy2Elev)){
+				if (old.foy2Elev == 0){
+					vars.nLElev++;
+				}
+				if (vars.checkElevator2("LE", old.foy2Elev, vars.nLElev)){
+					return true;
+				}
+			}
+			if (vars.checkElevator1("Monty Golf Elevator", current.monGElev)){
+				if (old.monGElev == 0){
+					vars.nMGElev++;
+				}
+				if (vars.checkElevator2("MGE", old.monGElev, vars.nMGElev)){
+					return true;
+				}
+			}
+			if (vars.checkElevator1("Roxy's Greenroom Elevator", current.roxyElev)){
+				if (old.roxyElev == 0){
+					vars.nRGElev++;
+				}
+				if (vars.checkElevator2("RGE", old.roxyElev, vars.nRGElev)){
+					return true;
+				}
+			}
+			if (vars.checkElevator1("West Arcade Elevator", current.WAElev)){
+				if (old.WAElev == 0){
+					vars.nWAElev++;
+				}
+				if (vars.checkElevator2("WAE", old.WAElev, vars.nWAElev)){
 					return true;
 				}
 			}
 		}
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
-			print("Menu");
+			if (old.menu != 0){
+				print("Stop Timer When On Menu");
+			}
 			return true;
 		}
 		if (settings["Stop Timer When Paused"] && current.pause == 3){
-			print("Paused");
+			if (old.pause != 3){
+				print("Stop Timer When Paused");
+			}
 			return true;
 		}
 	}
@@ -666,8 +833,8 @@ split {
 		vars.nAElev = 0;
 		vars.nBBElev = 0;
 		vars.nFBElev = 0;
-		vars.nFElev = 0;
 		vars.nKElev = 0;
+		vars.nLElev = 0;
 		vars.nMGElev = 0;
 		vars.nRGElev = 0;
 		vars.nWAElev = 0;
@@ -703,34 +870,22 @@ split {
 			}
 		}
 		if (settings["Deload Splits"]){
-			if (settings["Balloon Deload"] && vars.dBalloon && vars.checkPosition(8300, 9000, 38000, 39000, 2707, 3000)){
-				print("Balloon");
-				vars.dBalloon = false;
+			if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2707, 3000)){
 				return true;
 			}
-			if (settings["Curtain Deload"] && vars.dCurtain && vars.checkPosition(5150, 5350, 44450, 44650, 1960, 2100)){
-				print("Curtain");
-				vars.dCurtain = false;
+			if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
 				return true;
 			}
-			if (settings["Daycare Arcade Deload"] && vars.dDaycareArcade && vars.checkPosition(-13400, -13200, 30000, 31800, 1821.75, 20000)){
-				print("Daycare Arcade");
-				vars.dDaycareArcade = false;
+			if (vars.checkPosition("Daycare Arcade Deload", vars.dDaycareArcade, -13400, -13200, 30000, 31800, 1821.75, 20000)){
 				return true;
 			}
-			if (settings["Daycare Theatre Deload"] && vars.dDaycareTheatre && vars.checkPosition(-20000, -19500, 32377.5, 34800, 2516, 2600)){
-				print("Daycare Theatre");
-				vars.dDaycareTheatre = false;
+			if (vars.checkPosition("Daycare Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
 				return true;
 			}
-			if (settings["Roxy's Eye Deload"] && vars.dRoxyEyes && vars.checkPosition(18500, 21500, 51800, 52400, 0, 450)){
-				print("Eye Deload");
-				vars.dRoxyEyes = false;
+			if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 18500, 21500, 51800, 52400, 0, 450)){
 				return true;
 			}
-			if (settings["Roxy Salon Deload"] && vars.dPlant && vars.checkPosition(10345, 10500, 41000, 42500, 2100, 2800)){
-				print("Salon Deload");
-				vars.dPlant = false;
+			if (vars.checkPosition("Roxy Salon Deload", vars.dPlant, 10345, 10500, 41000, 42500, 2100, 2800)){
 				return true;
 			}
 		}
@@ -760,14 +915,10 @@ split {
 				return true;
 			}
 			if (settings["Princess Quest Ending"]){
-				if (settings["PQ 1"] && vars.ePQ1 && vars.checkPosition(7000, 8500, 46500, 48000, -10000, 10000) && old.posY == 0){
-					print("PQ1");
-					vars.ePQ1 = false;
+				if (vars.checkPosition("PQ 1", vars.ePQ1, 7000, 8500, 46500, 48000, -10000, 10000) && old.posY == 0){
 					return true;
 				}
-				if (settings["PQ 2"] && vars.ePQ2 && vars.checkPosition(7500, 9000, 20500, 21000, -10000, 10000) && old.posY == 0){
-					print("PQ2");
-					vars.ePQ2 = false;
+				if (vars.checkPosition("PQ 2", vars.ePQ2, 7500, 9000, 20500, 21000, -10000, 10000) && old.posY == 0){
 					return true;
 				}
 				if (settings["PQ 3 / End"] && current.pqEnd == 1 && old.pqEnd == 0){
@@ -784,23 +935,76 @@ split {
 			if (current.splashScreen == 4 && old.splashScreen == 0){
 				if (settings["Item List"]){
 					if (settings["Collectables"]){
-						if (settings["C_Lobby"]){
-							if (settings["Freddy Name Shirt"] && vars.checkItem(-5915, 25580, 2205)){
-								print("Freddy Name Shirt");
+						if (settings["C_Backstage"]){
+							if (vars.checkItem("El Chip Piñata", 1970, 53880, 1520)){
+								return true;
+							}
+							if (vars.checkItem("Freddy Icon Shirt", 6560, 47150, 1520)){
+								return true;
+							}
+							if (vars.checkItem("Glamrock Chica Figure", -5300, 53100, 1520)){
 								return true;
 							}
 						}
+						if (settings["C_Bonnie Bowl"]){
+							if (vars.checkItem("Bonnie Plush", 14290, 35760, 3180)){
+								return true;
+							}
+							if (vars.checkItem("Golden Monty", 18370, 29210, 2560)){
+								return true;
+							}
+						}
+						if (settings["C_Chica's Bakery"]){
+							if (vars.checkItem("CB_Chica Magnet", -7270, 44050, 2160)){
+								return true;
+							}
+							if (vars.checkItem("Monty Magnet", -10165, 47085, 2160)){
+								return true;
+							}
+						}
+						if (settings["C_Daycare"]){
+							if (vars.checkItem("Freddy Mask", -20010, 34315, 2180)){
+								return true;
+							}
+							if (vars.checkItem("Frozen Chica Treat", -20915, 29485, 1300)){
+								return true;
+							}
+							if (vars.checkItem("Glamrock Freddy Figure", -12155, 34960, 2130)){
+								return true;
+							}
+							if (vars.checkItem("Golden Moon", -16900, 27220, 2130)){
+								return true;
+							}
+							if (vars.checkItem("D_Old Poster", -20085, 33180, 1520)){
+								return true;
+							}
+							if (vars.checkItem("Plush Baby", -16465, 36485, 2130)){
+								return true;
+							}
+						}
+						if (settings["C_East Atrium"]){
+							if (vars.checkItem("Moon Plush", -10155, 31475, 1600)){
+								return true;
+							}
+						}
+						/*
+						if (settings["C_"]){
+							if (settings[""] && vars.checkItem()){
+								print("");
+								return true;
+							}
+						}
+						*/
 					}
 					if (settings["Equipment"]){
-						if (settings["E_Rockstar Row"]){
-							if (settings["Fazwatch"] && vars.checkItem(2010, 51390, 1640)){
-								print("Fazwatch");
+						/*
+						if (settings["E_"]){
+							if (settings[""] && vars.checkItem()){
+								print("");
 								return true;
 							}
 						}
-					}
-					if (settings["Upgrades"]){
-						
+						*/
 					}
 				}
 			}
@@ -814,88 +1018,56 @@ split {
 			}
 		}
 		if (settings["Positional Splits"]){
-			if (settings["Chica's Bathroom"] && vars.pChicaBath && vars.checkPosition(5100, 5250, 33500, 34200, 0, 300)){
-				print("Chica Bathroom");
-				vars.pChicaBath = false;
+			if (vars.checkPosition("Chica's Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
 				return true;
 			}
-			if (settings["Enter Bonnie Bowl"] && vars.pEnBonnieBowl && vars.checkPosition(5900, 6260, 32000, 42000, 32000, 3700)){
-				print("Bonnie Bowl");
-				vars.pEnBonnieBowl = false;
+			if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5900, 6260, 32000, 42000, 32000, 3700)){
 				return true;
 			}
-			if (settings["Enter El Chips"] && vars.pEnElChips && vars.checkPosition(-8700, -8445, 34600, 35700, 3200, 3700)){
-				print("El Chips");
-				vars.pEnElChips = false;
+			if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
 				return true;
 			}
-			if (settings["Enter West Arcade"] && vars.pEnWestArcade && vars.checkPositionSlant(5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
-				print("EnA");
-				vars.pEnWestArcade = false;
+			if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
 				vars.pExWestArcade = true;
 				return true;
 			}
-			if (settings["Exit Afton Elevator"] && vars.pAftonElev && vars.checkPositionSlant(24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-				print("Afton Elevator");
-				vars.pAftonElev = false;
+			if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
 				return true;
 			}
-			if (settings["Exit West Arcade"] && vars.pExWestArcade && vars.checkPositionSlant(4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
-				print("ExA");
-				vars.pExWestArcade = false;
+			if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
 				return true;
 			}
-			if (settings["Fazerblast Spiral Stairs"] && vars.pFazerStairs && vars.checkPosition(13100, 14600, 31830, 33330, 350, 750)){
-				print("Spiral");
-				vars.pFazerStairs = false;
+			if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
 				return true;
 			}
-			if (settings["First Aid Vanessa Cutscene"] && vars.pFirstAid && vars.checkPosition(4368, 4370, 45006, 45008, -1307, -1305)){
-				print("FA Vanessa");
-				vars.pFirstAid = false;
+			if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45006, 45008, -1307, -1305)){
 				return true;
 			}
-			if (settings["Freddy Stairs Rail"] && vars.pFredRail && vars.checkPosition(2250, 2850, 46900, 47500, 400, 900)){
-				print("FredRail");
-				vars.pFredRail = false;
+			if (vars.checkPosition("Freddy Stairs Rail", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
 				return true;
 			}
-			if (settings["Monty Chase"] && vars.pMontyChase && vars.checkPosition(2900, 3400, 29500, 29898.825, 0, 300)){
-				print("Monty Chase");
-				vars.pMontyChase = false;
+			if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
 				return true;
 			}
-			if (settings["Rail Outside Fazerblast"] && vars.pFazerRail && vars.checkPosition(6800, 7550, 35586, 35637.4, 1500, 2150)){
-				print("Rail");
-				vars.pFazerRail = false;
+			if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
 				return true;
 			}
-			if (settings["STR-ATR-W Stairs"] && vars.pSTRATRW && vars.checkPosition(5400, 6000, 37500, 38000, -1230, -1150)){
-				print("STRATRW Stairs");
-				vars.pSTRATRW = false;
+			if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
 				return true;
 			}
-			if (settings["STR-LB Stairs"] && vars.pSTRLB && vars.checkPosition(5000, 6000, 24500, 25000, 150, 400)){
-				print("STRLB");
-				vars.pSTRLB = false;
+			if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
 				return true;
 			}
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
-				if (settings["Damaged Head"] && vars.tHead && vars.checkTime(5, 15)){
-					print("Head");
-					vars.tHead = false;
+				if (vars.checkTime("Damaged Head", vars.tHead, 5, 15)){
 					return true;
 				}
-				if (settings["Exit Vents"] && vars.tVents && vars.checkTime(-1, 30)){
-					print("Vents");
-					vars.tVents = false;
+				if (vars.checkTime("Exit Vents", vars.tVents, -1, 30)){
 					return true;
 				}
-				if (settings["Freddy Eye Repair"]  && vars.tRepair && vars.checkTime(5, 50)){
-					print("Repair");
-					vars.tRepair = false;
+				if (vars.checkTime("Freddy Eye Repair", vars.tRepair, 5, 50)){
 					return true;
 				}
 			}
