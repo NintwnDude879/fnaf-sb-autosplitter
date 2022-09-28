@@ -19,4 +19,4 @@ Splits Include:
 - Shattered Chica generators
 - Afton boss fight buttons
 
-If there is a feature or split not currently included in the splitter, please fill out this Google Form: https://forms.gle/jxidK6RFToEXzUDe7
+If there is a feature or split not currently included in the splitter, please fill out [this Google Form](https://forms.gle/jxidK6RFToEXzUDe7).
