@@ -1,6 +1,6 @@
 # DISCLAIMER: THIS PROJECT IS EARLY BETA. NOT EVERY FEATURE IS FULLY IMPLEMENTED YET.
 
-# FNAF: Security Breach Speedrun Auto-splitter
+## FNAF: Security Breach Speedrun Auto-splitter
 
 This is a project aimed at creating a customizable automatic splitting tool for all versions of FNAF: Security Breach.
 
