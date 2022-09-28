@@ -5,7 +5,7 @@
 This is a project aimed at creating a customizable automatic splitting tool for all versions of FNAF: Security Breach.
 
 Features Include:
-- Pausing the game in menus, elevators, and loading
+- Pausing the timer in menus, elevators, and loading
 - Changing refresh rate of the splitter to help performance
 - Toggleable Splits
 - Auto Start/Stop
