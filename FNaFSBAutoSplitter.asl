@@ -12,17 +12,16 @@
 //~225u present collection range (400 just to be safe)
 
 //REMEMBER TO ADD CHICA GENERATORS (and get pointer)
-//split east/west atriums into different sections
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
 	int freddyPowerCurrent: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
-	int freddyPowerMax: 0x0441B738, 0x8, 0x10, 0x38, 0xBC;
 
 	//Counter pointers
 	int FBFlags: 0x03FF7308, 0x230, 0x8, 0x2C8, 0x3A0, 0x28, 0x30, 0x290;
-	int DCGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
+	int DGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
 	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
+	int CSGens: 0x0441FCB0, 0x128, 0x360, 0x78, 0x8, 0x40;
 
 	//Player information
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
@@ -82,13 +81,14 @@ startup {
 	settings.Add("Daycare Generators", false);
 	settings.Add("Fazerblast Flags", false);
 	settings.Add("Monty Bucket Count", false);
+	settings.Add("Sewer Generators", false);
 
 	settings.CurrentDefaultParent = "Daycare Generators";
-    settings.Add("Generator 1", false);
-    settings.Add("Generator 2", false);
-    settings.Add("Generator 3", false);
-    settings.Add("Generator 4", false);
-    settings.Add("Generator 5", false);
+    settings.Add("D_Generator 1", false, "Generator 1");
+    settings.Add("D_Generator 2", false, "Generator 2");
+    settings.Add("D_Generator 3", false, "Generator 3");
+    settings.Add("D_Generator 4", false, "Generator 4");
+    settings.Add("D_Generator 5", false, "Generator 5");
 
 	settings.CurrentDefaultParent = "Fazerblast Flags";
     settings.Add("Flag 1", false);
@@ -99,6 +99,13 @@ startup {
     settings.Add("10 Balls", false);
     settings.Add("20 Balls", false);
     settings.Add("25 Balls", false);
+
+	settings.CurrentDefaultParent = "Sewer Generators";
+    settings.Add("S_Generator 1", false, "Generator 1");
+    settings.Add("S_Generator 2", false, "Generator 2");
+    settings.Add("S_Generator 3", false, "Generator 3");
+    settings.Add("S_Generator 4", false, "Generator 4");
+    settings.Add("S_Generator 5", false, "Generator 5");
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("Balloon Deload", false);
@@ -859,10 +866,10 @@ split {
 
 	if (settings["Splits"]){
 		if (settings["Counting Splits"]){
-			if (current.DCGens > old.DCGens){
+			if (current.DGens > old.DGens){
 				if (settings["Daycare Generators"]){
-					if (settings["Generator " + current.DCGens]){
-						print("DCGen " + current.DCGens);
+					if (settings["D_Generator " + current.DCGens]){
+						print("DGen " + current.DGens);
 						return true;
 					}
 				}
@@ -879,6 +886,14 @@ split {
 				if (settings["Monty Bucket Count"]){
 					if (settings[current.MGBucket + " Balls"]){
 						print(current.MGBucket + " Balls");
+						return true;
+					}
+				}
+			}
+			if (current.SGens > old.SGens){
+				if (settings["Sewer Generators"]){
+					if (settings["S_Generator " + current.SCGens]){
+						print("SGen " + current.SGens);
 						return true;
 					}
 				}
