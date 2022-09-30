@@ -21,7 +21,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int FBFlags: 0x03FF7308, 0x230, 0x8, 0x2C8, 0x3A0, 0x28, 0x30, 0x290;
 	int DGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
 	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
-	int CSGens: 0x0441FCB0, 0x128, 0x360, 0x78, 0x8, 0x40;
+	int SGens: 0x0441FCB0, 0x128, 0x360, 0x78, 0x8, 0x40;
 
 	//Player information
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
@@ -52,16 +52,16 @@ state("fnaf9-Win64-Shipping", "v1.04"){
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
 
-		//Elevator pointers (elevator in motion = 1)
-		int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
-		int monGElev: 0x0441FCB0, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2D8, 0x4;
-		int foy2Elev: 0x0441FCB0, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2D8, 0x4;
-		int foy1Elev: 0x0441FCB0, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
-		int bonBElev: 0x0441FCB0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2D8, 0x4;
-		int fazerElev: 0x0441FCB0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
-		int WAElev: 0x0441FCB0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
-		int roxyElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
-		int aftonElev: 0x0441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
+	//Elevator pointers (elevator in motion = 1)
+	int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
+	int monGElev: 0x0441FCB0, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2D8, 0x4;
+	int foy2Elev: 0x0441FCB0, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2D8, 0x4;
+	int foy1Elev: 0x0441FCB0, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
+	int bonBElev: 0x0441FCB0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2D8, 0x4;
+	int fazerElev: 0x0441FCB0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
+	int WAElev: 0x0441FCB0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
+	int roxyElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
+	int aftonElev: 0x0441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
 }
 
 startup {
@@ -176,7 +176,7 @@ startup {
 	settings.CurrentDefaultParent = "C_Backstage";
 	settings.Add("El Chip Piñata", false);
 	settings.Add("Freddy Icon Shirt", false);
-	settings.Add("Glamrock Chica Figure", false);
+	settings.Add("Glam Chica Figure", false);
 
 	settings.CurrentDefaultParent = "C_Basement Kitchen";
 	settings.Add("Freddy Magnet", false);
@@ -193,7 +193,7 @@ startup {
 	settings.CurrentDefaultParent = "C_Daycare";
 	settings.Add("Freddy Mask", false);
 	settings.Add("Frozen Chica Treat", false);
-	settings.Add("Glamrock Freddy Figure", false);
+	settings.Add("Glam Freddy Figure", false);
 	settings.Add("Golden Moon", false);
 	settings.Add("D_Old Poster", false, "Old Poster");
 	settings.Add("Plush Baby", false);
@@ -216,7 +216,7 @@ startup {
 	settings.Add("Moon Plush", false);
 
 	settings.CurrentDefaultParent = "C_Laundry";
-	settings.Add("Glamrock Roxy Plush", false);
+	settings.Add("Glam Roxy Plush", false);
 	settings.Add("K_Old Poster", false, "Old Poster");
 	settings.Add("Star Shirt", false);
 
@@ -224,7 +224,7 @@ startup {
 	settings.Add("Chica Name Shirt", false);
 	settings.Add("Cupcake Piñata", false);
 	settings.Add("Freddy Name Shirt", false);
-	settings.Add("Glamrock Chica Plush", false);
+	settings.Add("Glam Chica Plush", false);
 	settings.Add("Sun Plush", false);
 
 	settings.CurrentDefaultParent = "C_Main Atrium";
@@ -237,10 +237,10 @@ startup {
 
 	settings.CurrentDefaultParent = "C_Monty Golf Sublobby";
 	settings.Add("Frozen Monty Treat", false);
-	settings.Add("Glamrock Monty Figure", false);
+	settings.Add("Glam Monty Figure", false);
 
 	settings.CurrentDefaultParent = "C_Parts & Service";
-	settings.Add("Glamrock Roxy Figure", false);
+	settings.Add("Glam Roxy Figure", false);
 
 	settings.CurrentDefaultParent = "C_Prize Counter";
 	settings.Add("Frozen Freddy Treat", false);
@@ -277,7 +277,7 @@ startup {
 	settings.Add("Chica Piñata", false);
 	settings.Add("Comedy Mask", false);
 	settings.Add("Foxy Plush", false);
-	settings.Add("Glamrock Freddy Plush", false);
+	settings.Add("Glam Freddy Plush", false);
 	settings.Add("Golden Roxy", false);
 	settings.Add("Moon Figure", false);
 	settings.Add("Sun Figure", false);
@@ -287,7 +287,7 @@ startup {
 
 	settings.CurrentDefaultParent = "C_West Arcade";
 	settings.Add("WA_Chica Magnet", false, "Chica Magnet");
-	settings.Add("Glamrock Monty Plush", false);
+	settings.Add("Glam Monty Plush", false);
 
 	settings.CurrentDefaultParent = "Equipment";
 	settings.Add("E_Backstage", false, "Backstage");
@@ -868,7 +868,7 @@ split {
 		if (settings["Counting Splits"]){
 			if (current.DGens > old.DGens){
 				if (settings["Daycare Generators"]){
-					if (settings["D_Generator " + current.DCGens]){
+					if (settings["D_Generator " + current.DGens]){
 						print("DGen " + current.DGens);
 						return true;
 					}
@@ -892,7 +892,7 @@ split {
 			}
 			if (current.SGens > old.SGens){
 				if (settings["Sewer Generators"]){
-					if (settings["S_Generator " + current.SCGens]){
+					if (settings["S_Generator " + current.SGens]){
 						print("SGen " + current.SGens);
 						return true;
 					}
@@ -945,11 +945,17 @@ split {
 				return true;
 			}
 			if (settings["Princess Quest Ending"]){
-				if (vars.checkPosition("PQ 1", vars.ePQ1, 7000, 8500, 46500, 48000, -10000, 10000) && old.posY == 0){
-					return true;
+				if (settings["PQ 1"] && vars.ePQ1){
+					if (7000 <= current.posX && current.posX <= 8500 && 46500 <= current.posY && current.posY <= 48000 && -10000 <= current.posZ && current.posZ <= 10000 && old.posY == 0){
+						print("PQ 1");
+						return true;
+					}
 				}
-				if (vars.checkPosition("PQ 2", vars.ePQ2, 7500, 9000, 20500, 21000, -10000, 10000) && old.posY == 0){
-					return true;
+				if (settings["PQ 2"] && vars.ePQ2){
+					if (7500 <= current.posX && current.posX <= 9000 && 20500 <= current.posY && current.posY <= 21000 && -10000 <= current.posZ && current.posZ <= 10000 && old.posY == 0){
+						print("PQ 2");
+						return true;
+					}
 				}
 				if (settings["PQ 3 / End"] && current.pqEnd == 1 && old.pqEnd == 0){
 					print("PQ3 End");
@@ -972,7 +978,18 @@ split {
 							if (vars.checkItem("Freddy Icon Shirt", 6560, 47150, 1520)){
 								return true;
 							}
-							if (vars.checkItem("Glamrock Chica Figure", -5300, 53100, 1520)){
+							if (vars.checkItem("Glam Chica Figure", -5300, 53100, 1520)){
+								return true;
+							}
+						}
+						if (settings["C_Basement Kitchen"]){
+							if (vars.checkItem("Freddy Magnet", 315, 23370, 480)){
+								return true;
+							}
+							if (vars.checkItem("Golden Chica", -4755, 29740, 65)){
+								return true;
+							}
+							if (vars.checkItem("K_Old Poster", -6420, 23930, 70)){
 								return true;
 							}
 						}
@@ -999,7 +1016,7 @@ split {
 							if (vars.checkItem("Frozen Chica Treat", -20915, 29485, 1300)){
 								return true;
 							}
-							if (vars.checkItem("Glamrock Freddy Figure", -12155, 34960, 2130)){
+							if (vars.checkItem("Glam Freddy Figure", -12155, 34960, 2130)){
 								return true;
 							}
 							if (vars.checkItem("Golden Moon", -16900, 27220, 2130)){
@@ -1012,13 +1029,7 @@ split {
 								return true;
 							}
 						}
-						if (settings["C_East Atrium"]){
-							if (vars.checkItem("Frozen Monty Treat", -10320, 41805, 1520)){
-								return true;
-							}
-							if (vars.checkItem("Glamrock Monty Figure", -10945, 39580, 1520)){
-								return true;
-							}
+						if (settings["C_Kids Cove Sublobby"]){
 							if (vars.checkItem("Golden Sun", -10875, 35230, 1520)){
 								return true;
 							}
@@ -1035,7 +1046,7 @@ split {
 							if (vars.checkItem("Freddy Balloon", 10255, 32630, 1560)){
 								return true;
 							}
-							if (vars.checkItem("Old Poster", 18080, 34820, 1050)){
+							if (vars.checkItem("F_Old Poster", 18080, 34820, 1050)){
 								return true;
 							}
 							if (vars.checkItem("Space Chica Keychain", 9825, 36605, 1525)){
@@ -1045,23 +1056,11 @@ split {
 								return true;
 							}
 						}
-						if (settings["C_Basement Kitchen"]){
-							if (vars.checkItem("Freddy Magnet", 315, 23370, 480)){
-								return true;
-							}
-							if (vars.checkItem("Freddy Face Shirt", 1770, 28190, 1525)){
-								return true;
-							}
-							if (vars.checkItem("Glamrock Roxy Plush", -7465, 24245, 65)){
-								return true;
-							}
-							if (vars.checkItem("Golden Chica", -4755, 29740, 65)){
+						if (settings["C_Laundry"]){
+							if (vars.checkItem("Glam Roxy Plush", -7465, 24245, 65)){
 								return true;
 							}
 							if (vars.checkItem("K_Old Poster", -6420, 23930, 70)){
-								return true;
-							}
-							if (vars.checkItem("Piñata", -1185, 30315, 1525)){
 								return true;
 							}
 							if (vars.checkItem("Star Shirt", -6620, 20805, 75)){
@@ -1078,7 +1077,7 @@ split {
 							if (vars.checkItem("Freddy Name Shirt", -5920, 25580, 2135)){
 								return true;
 							}
-							if (vars.checkItem("Glamrock Chica Plush", 1030, 24720, 2150)){
+							if (vars.checkItem("Glam Chica Plush", 1030, 24720, 2150)){
 								return true;
 							}
 							if (vars.checkItem("Sun Plush", -7055, 28310, 2200)){
@@ -1101,8 +1100,16 @@ split {
 								return true;
 							}
 						}
+						if (settings["C_Monty Golf Sublobby"]){
+							if (vars.checkItem("Frozen Monty Treat", -10320, 41805, 1520)){
+								return true;
+							}
+							if (vars.checkItem("Glam Monty Figure", -10945, 39580, 1520)){
+								return true;
+							}
+						}
 						if (settings["C_Parts & Service"]){
-							if (vars.checkItem("Glamrock Roxy Figure", -3335, 48850, -1290)){
+							if (vars.checkItem("Glam Roxy Figure", -3335, 48850, -1290)){
 								return true;
 							}
 						}
@@ -1147,6 +1154,14 @@ split {
 								return true;
 							}
 						}
+						if (settings["C_Salads & Sides"]){
+							if (vars.checkItem("Freddy Face Shirt", 1770, 28190, 1525)){
+								return true;
+							}
+							if (vars.checkItem("Piñata", -1185, 30315, 1525)){
+								return true;
+							}
+						}
 						if (settings["C_Sewers"]){
 							if (vars.checkItem("S_Old Poster", -6170, 22020, -1930)){
 								return true;
@@ -1162,7 +1177,7 @@ split {
 							if (vars.checkItem("Foxy Plush", 2370, 39785, -1305)){
 								return true;
 							}
-							if (vars.checkItem("Glamrock Freddy Figure", 2410, 29650, 65)){
+							if (vars.checkItem("Glam Freddy Figure", 2410, 29650, 65)){
 								return true;
 							}
 							if (vars.checkItem("Golden Roxy", 3464, 44775, 50)){
@@ -1180,14 +1195,8 @@ split {
 								return true;
 							}
 						}
-						if (settings["C_West Atrium"]){
-							if (vars.checkItem("Freddy Piñata", 7935, 36845, 1560)){
-								return true;
-							}
+						if (settings["C_Roxy Raceway Sublobby"]){
 							if (vars.checkItem("Frozen Roxy Treat", 5290, 41755, 1570)){
-								return true;
-							}
-							if (vars.checkItem("Space Freddy Keychain", 7310, 32985, 1845)){
 								return true;
 							}
 							if (vars.checkItem("Roxy Balloon", 6065, 37595, 2145)){
@@ -1197,11 +1206,19 @@ split {
 								return true;
 							}
 						}
+						if (settings["C_Fazerblast Sublobby"]){
+							if (vars.checkItem("Freddy Piñata", 7935, 36845, 1560)){
+								return true;
+							}
+							if (vars.checkItem("Space Freddy Keychain", 7310, 32985, 1845)){
+								return true;
+							}
+						}
 						if (settings["C_West Arcade"]){
 							if (vars.checkItem("WA_Chica Magnet", 10425, 30600, 3355)){
 								return true;
 							}
-							if (vars.checkItem("Glamrock Monty Plush", 3390, 23860, 2130)){
+							if (vars.checkItem("Glam Monty Plush", 3390, 23860, 2130)){
 								return true;
 							}
 						}
