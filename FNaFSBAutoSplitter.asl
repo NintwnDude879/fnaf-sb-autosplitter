@@ -9,14 +9,17 @@
 //y2 = 2(yr) - y1
 //z2 = zt + z1
 
-//~225u present collection range (400 just to be safe)
+//~225u present collection range (e00 just to be safe)
 
 //To Do List:
+//ADD RETRO CDS?
+//ADD DAYCARE PASS SPLIT (lobby)
 //REMEMBER TO ADD CHICA GENERATORS (and get pointer)
+//ADD BOTH FAZER BLASTER ITEMS
 //PRINCESS QUEST SPLITS?
 //MORE POSITIONAL SPLITS?
-//CONDENSE ENDING POINTERS INTO 1?
-//ADD BOTH FAZER BLASTER ITEMS
+//AOB SCANNING?
+//UPDATE VERSION DETECTION?
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -294,30 +297,29 @@ startup {
 
 	settings.CurrentDefaultParent = "Equipment";
 	settings.Add("E_Backstage", false, "Backstage");
+	settings.Add("E_Basement Kitchen", false, "Basement Kitchen");
 	settings.Add("E_Bonnie Bowl", false, "Bonnie Bowl");
 	settings.Add("E_Chica's Bakery", false, "Chica's Bakery");
 	settings.Add("E_Daycare", false, "Daycare");
 	settings.Add("E_El Chips", false, "El Chips");
 	settings.Add("E_Fazerblast", false, "Fazerblast");
-	settings.Add("E_Basement Kitchen", false, "Basement Kitchen");
 	settings.Add("E_Lobby", false, "Lobby");
 	settings.Add("E_Main Atrium", false, "Main Atrium");
 	settings.Add("E_Monty Golf", false, "Monty Golf");
-	settings.Add("E_Parts & Service", false, "Parts & Service");
-	settings.Add("E_Prize Counter", false, "Prize Counter");
 	settings.Add("E_Rockstar Row", false, "Rockstar Row");
 	settings.Add("E_Roxy Raceway", false, "Roxy Raceway");
 	settings.Add("E_Roxy Salon", false, "Roxy Salon");
 	settings.Add("E_Sewers", false, "Sewers");
 	settings.Add("E_Utility Tunnels", false, "Utility Tunnels");
-	settings.Add("E_Warehouse", false, "Warehouse");
-	settings.Add("E_West Atrium", false, "West Atrium");
 	settings.Add("E_West Arcade", false, "West Arcade");
 	settings.Add("E_Other", false, "Other");
 
 	settings.CurrentDefaultParent = "E_Backstage";
 	settings.Add("Backstage Pass", false);
 	settings.Add("B_Flashlight Upgrade", false, "Flashlight Upgrade");
+
+	settings.CurrentDefaultParent = "E_Basement Kitchen";
+	settings.Add("Freddy Fizzy Faz", false);
 
 	settings.CurrentDefaultParent = "E_Bonnie Bowl";
 	settings.Add("Monty Mystery Mix", false);
@@ -327,22 +329,20 @@ startup {
 
 	settings.CurrentDefaultParent = "E_Daycare";
 	settings.Add("Flashlight", false);
-	settings.Add("D_Flashlight Upgrade", false, "Flashlight Upgrade");
+	settings.Add("D_Flashlight Upgrade", false, "Flashlight Ugrade");
 	settings.Add("Mazercise Control Key", false);
 
 	settings.CurrentDefaultParent = "E_El Chips";
 	settings.Add("Monty Fizzy Faz", false);
 
 	settings.CurrentDefaultParent = "E_Fazerblast";
-	settings.Add("Bowling Ticket", false);
+	settings.Add("Bowling Pass", false);
 	settings.Add("Golden Fazerblaster", false);
 	settings.Add("Grey Fazerblaster", false);
 
-	settings.CurrentDefaultParent = "E_Basement Kitchen";
-	settings.Add("Freddy Fizzy Faz", false);
-
 	settings.CurrentDefaultParent = "E_Lobby";
 	settings.Add("Chica Fizzy Faz", false);
+	settings.Add("Daycare Pass", false);
 	settings.Add("Entrance Pass", false);
 	settings.Add("Mr. Hippo Magnet", false);
 	settings.Add("Screwdriver", false);
@@ -354,13 +354,11 @@ startup {
 	settings.Add("Fazcam", false);
 	settings.Add("MG_Flashlight Upgrade", false, "Flashlight Upgrade");
 	settings.Add("Mazercise Pass", false);
-	settings.Add("Monty Claws", false);
-
-	settings.CurrentDefaultParent = "E_Prize Counter";
-	settings.Add("Prize Counter Cameras", false);
+	settings.Add("Monty's Claws", false);
 
 	settings.CurrentDefaultParent = "E_Rockstar Row";
 	settings.Add("Fazwatch", false);
+	settings.Add("Party Pass", false);
 	settings.Add("Photo Pass", false);
 
 	settings.CurrentDefaultParent = "E_Roxy Raceway";
@@ -380,7 +378,6 @@ startup {
 	settings.Add("Pizzaplex Cameras", false);
 
 	settings.CurrentDefaultParent = "E_West Arcade";
-	settings.Add("Office 6 Cameras", false);
 	settings.Add("Repaired Head", false);
 
 	settings.CurrentDefaultParent = "E_Other";
@@ -622,7 +619,7 @@ init {
 
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
 		if (settings[name]){
-			if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(400, 2)){
+			if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(300, 2)){
 				print(name);
 				return true;
 			}
@@ -832,7 +829,8 @@ split {
 		vars.ePQ2 = true;
 
 		//Item Splits
-		vars.partyPass6am = true;
+		vars.iRepairedhead = true;
+		vars.iPartyPass6am = true;
 
 		//Positional splits
 		vars.pChicaBath = true;
@@ -1225,22 +1223,146 @@ split {
 								return true;
 							}
 						}
-						/*
-						if (settings["C_"]){
-							if (vars.checkItem("")){
-								return true;
-							}
-						}
-						*/
 					}
 					if (settings["Equipment"]){
-						/*
-						if (settings["E_"]){
-							if (vars.checkItem("")){
+						if (settings["E_Backstage"]){
+							if (vars.checkItem("Backstage Pass", -8925, 49895, 1600)){
+								return true;
+							}
+							if (vars.checkItem("B_Flashlight Upgrade", -8470, 53390, 1520)){
 								return true;
 							}
 						}
-						*/
+						if (settings["E_Basement Kitchen"]){
+							if (vars.checkItem("Freddy Fizzy Faz", 3925, 24245, 480)){
+								return true;
+							}
+						}
+						if (settings["E_Bonnie Bowl"]){
+							if (vars.checkItem("Monty Mystery Mix", 15060, 30205, 3425)){
+								return true;
+							}
+						}
+						if (settings["E_Chica's Bakery"]){
+							if (vars.checkItem("Hoodie", -11300, 48050, 2155)){
+								return true;
+							}
+						}
+						if (settings["E_Daycare"]){
+							if (vars.checkItem("Flashlight", -16415, 33500, 1515)){
+								return true;
+							}
+							if (vars.checkItem("D_Flashlight Upgrade", -17345, 28290, 1810)){
+								return true;
+							}
+							if (vars.checkItem("Mazercise Control Key", -17450, 31605, 70)){
+								return true;
+							}
+						}
+						if (settings["E_El Chips"]){
+							if (vars.checkItem("Monty Fizzy Faz", -10055, 34950, 3310)){
+								return true;
+							}
+						}
+						if (settings["E_Fazerblast"]){
+							if (vars.checkItem("Bowling Pass", 8845, 32755, 1495)){
+								return true;
+							}
+							//ADD FAZERBLASTERS HERE
+						}
+						if (settings["E_Lobby"]){
+							if (vars.checkItem("Chica Fizzy Faz", -3185, 22880, 1515)){
+								return true;
+							}
+							/*
+							if (vars.checkItem("Daycare Pass", )){
+								return true;
+							}
+							*/
+							if (vars.checkItem("Entrance Pass", -6235, 22115, 1510)){
+								return true;
+							}
+							if (vars.checkItem("Mr. Hippo Magnet", -3605, 25430, 1515)){
+								return true;
+							}
+							if (vars.checkItem("Screwdriver", 5, 22750, 1515)){
+								return true;
+							}
+						}
+						if (settings["E_Main Atrium"]){
+							if (vars.checkItem("MA_Freddy Upgrade", 4650, 31285, 1520)){
+								return true;
+							}
+						}
+						if (settings["E_Monty Golf"]){
+							if (vars.checkItem("Fazcam", -17120, 37515, 1005)){
+								return true;
+							}
+							if (vars.checkItem("MG_Flashlight Upgrade", -15195, 38620, 1005)){
+								return true;
+							}
+							if (vars.checkItem("Mazercise Pass", -17370, 37910, 1005)){
+								return true;
+							}
+							if (vars.checkItem("Monty's Claws", -22020, 44050, 1225)){
+								return true;
+							}
+						}
+						if (settings["E_Rockstar Row"]){
+							if (vars.checkItem("Fazwatch", 2010, 51390, 1525)){
+								return true;
+							}
+							if (vars.checkItem("Party Pass", -4205, 51730, 1525)){
+								return true;
+							}
+							if (vars.checkItem("Photo Pass", 4885, 48830, 1525)){
+								return true;
+							}
+						}
+						if (settings["E_Roxy Raceway"]){
+							if (vars.checkItem("Damaged Head", 24180, 44485, 1540)){
+								return true;
+							}
+							if (vars.checkItem("Dance Pass", 17750, 38295, 1545)){
+								return true;
+							}
+							if (vars.checkItem("RR_Freddy Upgrade", 24945, 37950, 1545)){
+								return true;
+							}
+							if (vars.checkItem("Roxy's Eyes", 21010, 50540, 515)){
+								return true;
+							}
+							if (vars.checkItem("Roxy Fizzy Faz", 10840, 43425, 1930)){
+								return true;
+							}
+						}
+						if (settings["E_Roxy Salon"]){
+							if (vars.checkItem("Shoes", 6380, 47470, 2130)){
+								return true;
+							}
+						}
+						if (settings["E_Sewers"]){
+							if (vars.checkItem("Chica's Voicebox", 3655, 22970, -3670)){
+								return true;
+							}
+						}
+						if (settings["E_Utility Tunnels"]){
+							if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
+								return true;
+							}
+						}
+						if (settings["E_West Arcade"]){
+							if (vars.checkTime("Repaired Head", vars.iRepairedHead, 5, 30)){
+								vars.iRepairedHead = false;
+								return true;
+							}
+						}
+						if (settings["E_Other"]){
+							if (vars.checkTime("6am Party Pass", vars.iPartyPass6am, 6, 0)){
+								vars.iPartyPass6am = false;
+								return true;
+							}
+						}
 					}
 				}
 			}
@@ -1297,9 +1419,6 @@ split {
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
-				if (vars.checkTime("Damaged Head", vars.tHead, 5, 15)){
-					return true;
-				}
 				if (vars.checkTime("Exit Vents", vars.tVents, -1, 30)){
 					return true;
 				}
