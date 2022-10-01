@@ -9,10 +9,11 @@
 //y2 = 2(yr) - y1
 //z2 = zt + z1
 
-//~225u present collection range (e00 just to be safe)
+//~225u present collection range (300 just to be safe)
 
 //To Do List:
 //ADD RETRO CDS?
+//ADD CHICA GEN VARIABLES
 //ADD DAYCARE PASS SPLIT (lobby)
 //REMEMBER TO ADD CHICA GENERATORS (and get pointer)
 //ADD BOTH FAZER BLASTER ITEMS
@@ -151,6 +152,7 @@ startup {
 	settings.CurrentDefaultParent = "Item List";
 	settings.Add("Collectables", false);
 	settings.Add("Equipment", false);
+	settings.Add("Retro CDs", false);
 
 	settings.CurrentDefaultParent = "Collectables";
 	settings.Add("C_Backstage", false, "Backstage");
@@ -382,6 +384,24 @@ startup {
 
 	settings.CurrentDefaultParent = "E_Other";
 	settings.Add("6am Party Pass", false);
+
+	settings.CurrentDefaultParent = "Retro CDs";
+	settings.Add("CD_Backstage", false, "Backstage");
+	settings.Add("CD_Bonnie Bowl", false, "Bonnie Bowl");
+	settings.Add("CD_Chica's Bakery", false, "Chica's Bakery");
+	settings.Add("CD_Fazerblast", false, "Fazerblast");
+	settings.Add("CD_Kids Cove", false, "Kids Cove");
+	settings.Add("CD_Main Atrium", false, "Main Atrium");
+	settings.Add("CD_Mazercise", false, "Mazercise");
+	settings.Add("CD_Monty Golf", false, "Monty Golf");
+	settings.Add("CD_Rockstar Row Foxy", false, "Roxkstar Row Foxy");
+	settings.Add("CD_Rockstar Row Helpy", false, "Roxkstar Row Helpy");
+	settings.Add("CD_Roxy Raceway", false, "Roxy Raceway");
+	settings.Add("CD_Roxy Salon", false, "Roxy Salon");
+	settings.Add("CD_Utility Tunnels Couch", false, "Utility Tunnels Couch");
+	settings.Add("CD_Utility Tunnels Foxy Plush", false, "Utility Tunnels Foxy Plush");
+	settings.Add("CD_West Atrium Stage", false, "West Atrium");
+	settings.Add("CD_West Arcade", false, "West Arcade");
 	
 	settings.CurrentDefaultParent = "Security Badges";
 	settings.Add("Security Badge 1", false);
@@ -559,6 +579,10 @@ init {
 	vars.ePQ1 = true;
 	vars.ePQ2 = true;
 
+	//Item Splits
+	vars.iRepairedhead = true;
+	vars.iPartyPass6am = true;
+
 	//Positional splits
 	vars.pChicaBath = true;
 	vars.pEnBonnieBowl = true;
@@ -618,6 +642,7 @@ init {
 	});
 
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
+		//checks in a sphere (radius 300u)
 		if (settings[name]){
 			if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(300, 2)){
 				print(name);
@@ -652,6 +677,21 @@ init {
 				}
 				if (yB - y1 > slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
 					if (current.posY - y1 > slope * (current.posX - x1)){
+						print(name);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	});
+
+	vars.checkSewerGen = (Func<string, double, double, bool>)((name, x, y) => {
+		//checks in a circle (z <= -2500, radius 300)
+		if (settings[name]){
+			if (current.posZ <= -2500){
+				if (Math.Pow(old.posX - x, 2) + Math.Pow(old.posY - y, 2) < Math.Pow(300, 2)){
+					if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) >= Math.Pow(300, 2)){
 						print(name);
 						return true;
 					}
@@ -1362,6 +1402,56 @@ split {
 								vars.iPartyPass6am = false;
 								return true;
 							}
+						}
+					}
+					if (settings["Retro CDs"]){
+						if (vars.checkitem("CD_Backstage", -7595, 51270, 1545)){
+							return true;
+						}
+						if (vars.checkitem("CD_Bonnie Bowl", 16910, 31180, 3320)){
+							return true;
+						}
+						if (vars.checkitem("CD_Chica's Bakery", -11245, 46150, 2155)){
+							return true;
+						}
+						if (vars.checkitem("CD_Fazerblast", 8150, 35555, 1500)){
+							return true;
+						}
+						if (vars.checkitem("CD_Kids Cove", -9060, 35820, 1530)){
+							return true;
+						}
+						if (vars.checkitem("CD_Main Atrium", -1690, 36955, 1435)){
+							return true;
+						}
+						if (vars.checkitem("CD_Mazercise", -8710, 41090, 3320)){
+							return true;
+						}
+						if (vars.checkitem("CD_Monty Golf", -20155, 44645, 1575)){
+							return true;
+						}
+						if (vars.checkitem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+							return true;
+						}
+						if (vars.checkitem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+							return true;
+						}
+						if (vars.checkitem("CD_Roxy Raceway", 12765, 48005, 1545)){
+							return true;
+						}
+						if (vars.checkitem("CD_Roxy Salon", 8025, 44675, 2205)){
+							return true;
+						}
+						if (vars.checkitem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
+							return true;
+						}
+						if (vars.checkitem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
+							return true;
+						}
+						if (vars.checkitem("CD_West Atrium Stage", -8325, 41485, 1520)){
+							return true;
+						}
+						if (vars.checkitem("CD_West Arcade", 10910, 24441, 3360)){
+							return true;
 						}
 					}
 				}
