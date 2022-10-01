@@ -13,10 +13,7 @@
 //200u as generator range
 
 //To Do List:
-//ADD CHICA GEN VARIABLES/FIX FUNCTION
-//TEST POSITIONAL/DELOAD/TIME SPLITS FOR REDOS
 //ADD DAYCARE PASS SPLIT (lobby)
-//REMEMBER TO ADD CHICA GENERATORS
 //ADD BOTH FAZER BLASTER ITEMS
 //PRINCESS QUEST SPLITS?
 //MORE POSITIONAL SPLITS?
@@ -566,59 +563,6 @@ init {
 
 	print("Version = " + version);
 
-	//Used to keep certain splits from repeating
-
-	//Counter splits
-	vars.cSewerGen1 = true;
-	vars.cSewerGen2 = true;
-	vars.cSewerGen3 = true;
-	
-	//Deload splits
-	vars.dBalloon = true;
-	vars.dCurtain = true;
-	vars.dDaycareArcade = true;
-	vars.dDaycareTheatre = true;
-	vars.dRoxyEyes = true;
-	vars.dPlant = true;
-	
-	//Ending splits
-	vars.ePQ1 = true;
-	vars.ePQ2 = true;
-
-	//Item Splits
-	vars.iRepairedhead = true;
-	vars.iPartyPass6am = true;
-
-	//Positional splits
-	vars.pChicaBath = true;
-	vars.pEnBonnieBowl = true;
-	vars.pEnElChips = true;
-	vars.pEnWestArcade = true;
-	vars.pAftonElev = true;
-	vars.pExWestArcade = false;
-	vars.pFazerStairs = true;
-	vars.pFirstAid = true;
-	vars.pFredRail = true;
-	vars.pMontyChase = true;
-	vars.pFazerRail = true;
-	vars.pSTRATRW = true;
-	vars.pSTRLB = true;
-
-	//Timer splits
-	vars.tHead = true;
-	vars.tVents = true;
-	vars.tRepair = true;
-
-	//Pausing
-	vars.nAElev = 0;
-	vars.nBBElev = 0;
-	vars.nFBElev = 0;
-	vars.nKElev = 0;
-	vars.nLElev = 0;
-	vars.nMGElev = 0;
-	vars.nRGElev = 0;
-	vars.nWAElev = 0;
-
 	//Functions
 	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
 		if (settings[name]){
@@ -746,7 +690,7 @@ init {
 		vars.ePQ2 = true;
 
 		//Item Splits
-		vars.iRepairedhead = true;
+		vars.iRepairedHead = true;
 		vars.iPartyPass6am = true;
 
 		//Positional splits
@@ -1436,52 +1380,52 @@ split {
 						}
 					}
 					if (settings["Retro CDs"]){
-						if (vars.checkitem("CD_Backstage", -7595, 51270, 1545)){
+						if (vars.checkItem("CD_Backstage", -7595, 51270, 1545)){
 							return true;
 						}
-						if (vars.checkitem("CD_Bonnie Bowl", 16910, 31180, 3320)){
+						if (vars.checkItem("CD_Bonnie Bowl", 16910, 31180, 3320)){
 							return true;
 						}
-						if (vars.checkitem("CD_Chica's Bakery", -11245, 46150, 2155)){
+						if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
 							return true;
 						}
-						if (vars.checkitem("CD_Fazerblast", 8150, 35555, 1500)){
+						if (vars.checkItem("CD_Fazerblast", 8150, 35555, 1500)){
 							return true;
 						}
-						if (vars.checkitem("CD_Kids Cove", -9060, 35820, 1530)){
+						if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
 							return true;
 						}
-						if (vars.checkitem("CD_Main Atrium", -1690, 36955, 1435)){
+						if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
 							return true;
 						}
-						if (vars.checkitem("CD_Mazercise", -8710, 41090, 3320)){
+						if (vars.checkItem("CD_Mazercise", -8710, 41090, 3320)){
 							return true;
 						}
-						if (vars.checkitem("CD_Monty Golf", -20155, 44645, 1575)){
+						if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
 							return true;
 						}
-						if (vars.checkitem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+						if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
 							return true;
 						}
-						if (vars.checkitem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+						if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
 							return true;
 						}
-						if (vars.checkitem("CD_Roxy Raceway", 12765, 48005, 1545)){
+						if (vars.checkItem("CD_Roxy Raceway", 12765, 48005, 1545)){
 							return true;
 						}
-						if (vars.checkitem("CD_Roxy Salon", 8025, 44675, 2205)){
+						if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
 							return true;
 						}
-						if (vars.checkitem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
+						if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
 							return true;
 						}
-						if (vars.checkitem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
+						if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
 							return true;
 						}
-						if (vars.checkitem("CD_West Atrium Stage", -8325, 41485, 1520)){
+						if (vars.checkItem("CD_West Atrium Stage", -8325, 41485, 1520)){
 							return true;
 						}
-						if (vars.checkitem("CD_West Arcade", 10910, 24441, 3360)){
+						if (vars.checkItem("CD_West Arcade", 10910, 24441, 3360)){
 							return true;
 						}
 					}
