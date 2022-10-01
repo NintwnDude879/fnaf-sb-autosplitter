@@ -660,9 +660,11 @@ init {
 
 	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
 		if (settings[name]){
-			if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
-				print(name);
-				return true;
+			if (check){
+				if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+					print(name);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -670,37 +672,37 @@ init {
 
 	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
 		if (settings[name]){
-			if (zLB <= current.posZ && current.posZ <= zUB){
+			if (check){
+				if (zLB <= current.posZ && current.posZ <= zUB){
 				
-			double slope = (y1 - y2) / (x1 - x2);
+				double slope = (y1 - y2) / (x1 - x2);
 
-				if (yB - y1 <= slope * (xB - x1) && current.posX <= xB && current.posY >= yB){
-					if (current.posY - y1 <= slope * (current.posX - x1)){
-						print(name);
-						return true;
+					if (yB - y1 <= slope * (xB - x1) && current.posX <= xB && current.posY >= yB){
+						if (current.posY - y1 <= slope * (current.posX - x1)){
+							print(name);
+							return true;
+						}
+						return (current.posY - y1 < slope * (current.posX - x1));
 					}
-					return (current.posY - y1 < slope * (current.posX - x1));
+					if (yB - y1 > slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
+						if (current.posY - y1 > slope * (current.posX - x1)){
+							print(name);
+							return true;
+					}
 				}
-				if (yB - y1 > slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
-					if (current.posY - y1 > slope * (current.posX - x1)){
-						print(name);
-						return true;
-					}
 				}
 			}
 		}
 		return false;
 	});
 
-	vars.checkSewerGen = (Func<string, bool, double, double, bool>)((name, check, x, y) => {
+	vars.checkSewerGen = (Func<string, bool, double, double, double, double, bool>)((name, check, x, y, oldPositionX, oldPositionY) => {
 		//checks in a circle (z <= -2500, radius 200)
 		if (settings[name]){
 			if (check){
 				if (current.posZ <= -2500){
-					if (Math.Pow(old.posX - x, 2) + Math.Pow(old.posY - y, 2) < Math.Pow(200, 2)){
-						print(Math.Sqrt(Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2)).ToString());
+					if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) <= Math.Pow(200, 2)){
 						if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) > Math.Pow(200, 2)){
-							print("check2");
 							print(name);
 							return true;
 						}
@@ -716,12 +718,66 @@ init {
 			if (check){
 				if (current.hourTimer == hour && current.minuteTimer == minute){
 					print(name);
-					check = false;
 					return true;
 				}
 			}
 		}
 		return false;
+	});
+
+	vars.resetVariables = (Action)(() => {
+		//Used to keep certain splits from repeating (reset)
+
+		//Counter splits
+		vars.cSewerGen1 = true;
+		vars.cSewerGen2 = true;
+		vars.cSewerGen3 = true;
+
+		//Deload splits
+		vars.dBalloon = true;
+		vars.dCurtain = true;
+		vars.dDaycareArcade = true;
+		vars.dDaycareTheatre = true;
+		vars.dRoxyEyes = true;
+		vars.dPlant = true;
+	
+		//Ending splits
+		vars.ePQ1 = true;
+		vars.ePQ2 = true;
+
+		//Item Splits
+		vars.iRepairedhead = true;
+		vars.iPartyPass6am = true;
+
+		//Positional splits
+		vars.pChicaBath = true;
+		vars.pEnBonnieBowl = true;
+		vars.pEnElChips = true;
+		vars.pEnWestArcade = true;
+		vars.pAftonElev = true;
+		vars.pExWestArcade = false;
+		vars.pFazerStairs = true;
+		vars.pFirstAid = true;
+		vars.pFredRail = true;
+		vars.pMontyChase = true;
+		vars.pFazerRail = true;
+		vars.pSTRATRW = true;
+		vars.pSTRLB = true;
+
+		//Timer splits
+		vars.tHead = true;
+		vars.tVents = true;
+		vars.tRepair = true;
+
+		//Pausing
+		vars.nAElev = 0;
+		vars.nBBElev = 0;
+		vars.nFBElev = 0;
+		vars.nKElev = 0;
+		vars.nLElev = 0;
+		vars.nMGElev = 0;
+		vars.nRGElev = 0;
+		vars.nWAElev = 0;
 	});
 }
 
@@ -765,6 +821,9 @@ start {
 			refreshRate = 60;
 		}
 	}
+
+	//Resets variables upon stopping timer
+	vars.resetVariables();
 
 	//Start condition (Freddy power)
 	return (current.freddyPowerCurrent == 30 && old.freddyPowerCurrent == 100);
@@ -864,60 +923,7 @@ isLoading {
 
 split {
 	if (current.hourTimer == -1 && current.minuteTimer == 30 && old.minuteTimer == 0){
-		//Used to keep certain splits from repeating (reset)
-
-		//Counter splits
-		vars.cSewerGen1 = true;
-		vars.cSewerGen2 = true;
-		vars.cSewerGen3 = true;
-
-		//Deload splits
-		vars.dBalloon = true;
-		vars.dCurtain = true;
-		vars.dDaycareArcade = true;
-		vars.dDaycareTheatre = true;
-		vars.dRoxyEyes = true;
-		vars.dPlant = true;
-	
-		//Ending splits
-		vars.ePQ1 = true;
-		vars.ePQ2 = true;
-
-		//Item Splits
-		vars.iRepairedhead = true;
-		vars.iPartyPass6am = true;
-
-		//Positional splits
-		vars.pChicaBath = true;
-		vars.pEnBonnieBowl = true;
-		vars.pEnElChips = true;
-		vars.pEnWestArcade = true;
-		vars.pAftonElev = true;
-		vars.pExWestArcade = false;
-		vars.pFazerStairs = true;
-		vars.pFirstAid = true;
-		vars.pFredRail = true;
-		vars.pMontyChase = true;
-		vars.pFazerRail = true;
-		vars.pSTRATRW = true;
-		vars.pSTRLB = true;
-
-		//Timer splits
-		vars.tHead = true;
-		vars.tVents = true;
-		vars.tRepair = true;
-
-		//Pausing
-		vars.nAElev = 0;
-		vars.nBBElev = 0;
-		vars.nFBElev = 0;
-		vars.nKElev = 0;
-		vars.nLElev = 0;
-		vars.nMGElev = 0;
-		vars.nRGElev = 0;
-		vars.nWAElev = 0;
-
-		print("Reset variables");
+		vars.resetVariables();
 	}
 
 	if (settings["Splits"]){
@@ -946,42 +952,48 @@ split {
 					}
 				}
 			}
-			if (vars.checkSewerGen("S_Generator 1", vars.cSewerGen1, -1515, 16575)){
+			if (vars.checkSewerGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, old.posX, old.posY)){
 				vars.cSewerGen1 = false;
 				return true;
 			}
-			if (vars.checkSewerGen("S_Generator 2", vars.cSewerGen2, -10525, 21155)){
+			if (vars.checkSewerGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, old.posX, old.posY)){
 				vars.cSewerGen2 = false;
 				return true;
 			}
-			if (vars.checkSewerGen("S_Generator 3", vars.cSewerGen3, -3785, 16480)){
+			if (vars.checkSewerGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, old.posX, old.posY)){
 				vars.cSewerGen3 = false;
 				return true;
 			}
 		}
 		if (settings["Deload Splits"]){
 			if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2707, 3000)){
+				vars.dBalloon = false;
 				return true;
 			}
 			if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
+				vars.dCurtain = false;
 				return true;
 			}
 			if (vars.checkPosition("Daycare Arcade Deload", vars.dDaycareArcade, -13400, -13200, 30000, 31800, 1821.75, 20000)){
+				vars.dDaycare = false;
 				return true;
 			}
 			if (vars.checkPosition("Daycare Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
+				vars.dDaycareTheatre = false;
 				return true;
 			}
 			if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 18500, 21500, 51800, 52400, 0, 450)){
+				vars.dRoxyEyes = false;
 				return true;
 			}
 			if (vars.checkPosition("Roxy Salon Deload", vars.dPlant, 10345, 10500, 41000, 42500, 2100, 2800)){
+				vars.dPlant = false;
 				return true;
 			}
 		}
 		if (settings["Ending Splits"]){
-			if (current.aftonHealth < old.aftonHealth){
-				if (settings["Afton Ending"]){
+			if (settings["Afton Ending"]){
+				if (current.aftonHealth < old.aftonHealth){
 					if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
 						print("Button " + ((750 - current.aftonHealth) / 100));
 						return true;
@@ -1486,52 +1498,67 @@ split {
 		}
 		if (settings["Positional Splits"]){
 			if (vars.checkPosition("Chica's Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
+				vars.pChicaBath = false;
 				return true;
 			}
 			if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5900, 6260, 32000, 42000, 32000, 3700)){
+				vars.pEnBonnieBowl = false;
 				return true;
 			}
 			if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+				vars.pEnElChips = false;
 				return true;
 			}
 			if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
+				vars.pEnWestArcade = false;
 				vars.pExWestArcade = true;
 				return true;
 			}
 			if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
+				vars.pAftonElev = false;
 				return true;
 			}
 			if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
+				vars.pExWestArcade = false;
 				return true;
 			}
 			if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
+				vars.pFazerStairs = false;
 				return true;
 			}
 			if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45006, 45008, -1307, -1305)){
+				vars.pFirstAid = false;
 				return true;
 			}
 			if (vars.checkPosition("Freddy Stairs Rail", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
+				vars.pFredRail = false;
 				return true;
 			}
 			if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
+				vars.pMontyChase = false;
 				return true;
 			}
 			if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
+				vars.pFazerRail = false;
 				return true;
 			}
 			if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
+				vars.pSTRATRW = false;
 				return true;
 			}
 			if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
+				vars.pSTRLB = false;
 				return true;
 			}
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
 				if (vars.checkTime("Exit Vents", vars.tVents, -1, 30)){
+					vars.tVents = false;
 					return true;
 				}
 				if (vars.checkTime("Freddy Eye Repair", vars.tRepair, 5, 50)){
+					vars.tRepair = false;
 					return true;
 				}
 			}
