@@ -10,12 +10,13 @@
 //z2 = zt + z1
 
 //~225u present collection range (300 just to be safe)
+//200u as generator range
 
 //To Do List:
-//ADD RETRO CDS?
-//ADD CHICA GEN VARIABLES
+//ADD CHICA GEN VARIABLES/FIX FUNCTION
+//TEST POSITIONAL/DELOAD/TIME SPLITS FOR REDOS
 //ADD DAYCARE PASS SPLIT (lobby)
-//REMEMBER TO ADD CHICA GENERATORS (and get pointer)
+//REMEMBER TO ADD CHICA GENERATORS
 //ADD BOTH FAZER BLASTER ITEMS
 //PRINCESS QUEST SPLITS?
 //MORE POSITIONAL SPLITS?
@@ -566,6 +567,11 @@ init {
 	print("Version = " + version);
 
 	//Used to keep certain splits from repeating
+
+	//Counter splits
+	vars.cSewerGen1 = true;
+	vars.cSewerGen2 = true;
+	vars.cSewerGen3 = true;
 	
 	//Deload splits
 	vars.dBalloon = true;
@@ -686,14 +692,18 @@ init {
 		return false;
 	});
 
-	vars.checkSewerGen = (Func<string, double, double, bool>)((name, x, y) => {
-		//checks in a circle (z <= -2500, radius 300)
+	vars.checkSewerGen = (Func<string, bool, double, double, bool>)((name, check, x, y) => {
+		//checks in a circle (z <= -2500, radius 200)
 		if (settings[name]){
-			if (current.posZ <= -2500){
-				if (Math.Pow(old.posX - x, 2) + Math.Pow(old.posY - y, 2) < Math.Pow(300, 2)){
-					if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) >= Math.Pow(300, 2)){
-						print(name);
-						return true;
+			if (check){
+				if (current.posZ <= -2500){
+					if (Math.Pow(old.posX - x, 2) + Math.Pow(old.posY - y, 2) < Math.Pow(200, 2)){
+						print(Math.Sqrt(Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2)).ToString());
+						if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) > Math.Pow(200, 2)){
+							print("check2");
+							print(name);
+							return true;
+						}
 					}
 				}
 			}
@@ -855,7 +865,12 @@ isLoading {
 split {
 	if (current.hourTimer == -1 && current.minuteTimer == 30 && old.minuteTimer == 0){
 		//Used to keep certain splits from repeating (reset)
-	
+
+		//Counter splits
+		vars.cSewerGen1 = true;
+		vars.cSewerGen2 = true;
+		vars.cSewerGen3 = true;
+
 		//Deload splits
 		vars.dBalloon = true;
 		vars.dCurtain = true;
@@ -887,7 +902,7 @@ split {
 		vars.pSTRATRW = true;
 		vars.pSTRLB = true;
 
-		//Time splits
+		//Timer splits
 		vars.tHead = true;
 		vars.tVents = true;
 		vars.tRepair = true;
@@ -931,13 +946,17 @@ split {
 					}
 				}
 			}
-			if (current.SGens > old.SGens){
-				if (settings["Sewer Generators"]){
-					if (settings["S_Generator " + current.SGens]){
-						print("SGen " + current.SGens);
-						return true;
-					}
-				}
+			if (vars.checkSewerGen("S_Generator 1", vars.cSewerGen1, -1515, 16575)){
+				vars.cSewerGen1 = false;
+				return true;
+			}
+			if (vars.checkSewerGen("S_Generator 2", vars.cSewerGen2, -10525, 21155)){
+				vars.cSewerGen2 = false;
+				return true;
+			}
+			if (vars.checkSewerGen("S_Generator 3", vars.cSewerGen3, -3785, 16480)){
+				vars.cSewerGen3 = false;
+				return true;
 			}
 		}
 		if (settings["Deload Splits"]){
