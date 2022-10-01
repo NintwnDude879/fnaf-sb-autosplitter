@@ -16,6 +16,7 @@
 //PRINCESS QUEST SPLITS?
 //MORE POSITIONAL SPLITS?
 //CONDENSE ENDING POINTERS INTO 1?
+//ADD BOTH FAZER BLASTER ITEMS
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
