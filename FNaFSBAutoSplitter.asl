@@ -11,7 +11,11 @@
 
 //~225u present collection range (400 just to be safe)
 
+//To Do List:
 //REMEMBER TO ADD CHICA GENERATORS (and get pointer)
+//PRINCESS QUEST SPLITS?
+//MORE POSITIONAL SPLITS?
+//CONDENSE ENDING POINTERS INTO 1?
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -104,8 +108,6 @@ startup {
     settings.Add("S_Generator 1", false, "Generator 1");
     settings.Add("S_Generator 2", false, "Generator 2");
     settings.Add("S_Generator 3", false, "Generator 3");
-    settings.Add("S_Generator 4", false, "Generator 4");
-    settings.Add("S_Generator 5", false, "Generator 5");
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("Balloon Deload", false);
