@@ -34,6 +34,8 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
+	float pqX: 0x04409698, 0x0, 0xA0, 0x298, 0xA0, 0x138, 0x1D4;
+	float pqY: 0x04409698, 0x0, 0xA0, 0x298, 0xA0, 0x138, 0x1D0;
 
 	//Keeps track of when the game has ended (end = 1)
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
@@ -83,6 +85,7 @@ startup {
 	settings.Add("Item Splits", false);
 	settings.Add("Positional Splits", false);
 	settings.Add("Time Splits", false);
+	settings.Add("Princess Quest Splits", false);
 
 	settings.CurrentDefaultParent = "Counting Splits";
 	settings.Add("Daycare Generators", false);
@@ -541,6 +544,10 @@ startup {
 	settings.Add("60Hz", true);
 	settings.Add("30Hz", false);
 	settings.Add("15Hz", false);
+
+	settings.CurrentDefaultParent = "Princess Quest Splits";
+	settings.Add("Exit Starting Room", false);
+
 }
 
 init {
@@ -605,13 +612,24 @@ init {
 	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
 		if (settings[name]){
 			if (check){
-				if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+				if (xLB <= current.posX <= xUB && yLB <= current.posY <= yUB && zLB <= current.posZ <= zUB){
 					print(name);
 					return true;
 				}
 			}
 		}
 		return false;
+	});
+
+	vars.checkPQPosition = (Func<string, bool, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB) => {
+		if (settings[name]){
+			if (check){
+				if (xLB <= current.pqX <= xUB && yLB <= current.pqY <= yUB){
+					print(name);
+					return true;
+				}
+			}
+		}
 	});
 
 	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
