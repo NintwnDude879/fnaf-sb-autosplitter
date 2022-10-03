@@ -814,10 +814,7 @@ init {
 		vars.nRGElev = 0;
 		vars.nWAElev = 0;
 	});
-	print(vars.PQ1);
-	print(vars.PQ2);
-	print(vars.checkPQ1Position);
-	print(vars.checkPQ2Position);
+
 }
 
 start {
@@ -882,6 +879,7 @@ reset {
 			}
 		}
 	}
+	print(vars.PQ1);
 }
 
 isLoading {
