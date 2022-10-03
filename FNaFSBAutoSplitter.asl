@@ -144,11 +144,6 @@ startup {
 	settings.Add("Button 7", false);
 	settings.Add("Button 8 / End", false);
 
-	settings.CurrentDefaultParent = "Princess Quest Ending";
-	settings.Add("PQ 1", false);
-	settings.Add("PQ 2", false);
-	settings.Add("PQ 3 / End", false);
-
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
 	settings.Add("Security Badges", false);
@@ -819,6 +814,10 @@ init {
 		vars.nRGElev = 0;
 		vars.nWAElev = 0;
 	});
+	print(vars.PQ1);
+	print(vars.PQ2);
+	print(vars.checkPQ1Position);
+	print(vars.checkPQ2Position);
 }
 
 start {
@@ -1067,24 +1066,6 @@ split {
 			if (settings["Fire Escape Ending"] && current.fireEnd == 1 && old.fireEnd == 0){
 				print("Fire Escape Ending");
 				return true;
-			}
-			if (settings["Princess Quest Ending"]){
-				if (settings["PQ 1"] && vars.ePQ1){
-					if (7000 <= current.posX && current.posX <= 8500 && 46500 <= current.posY && current.posY <= 48000 && -10000 <= current.posZ && current.posZ <= 10000 && old.posY == 0){
-						print("PQ 1");
-						return true;
-					}
-				}
-				if (settings["PQ 2"] && vars.ePQ2){
-					if (7500 <= current.posX && current.posX <= 9000 && 20500 <= current.posY && current.posY <= 21000 && -10000 <= current.posZ && current.posZ <= 10000 && old.posY == 0){
-						print("PQ 2");
-						return true;
-					}
-				}
-				if (settings["PQ 3 / End"] && current.pqEnd == 1 && old.pqEnd == 0){
-					print("PQ3 End");
-					return true;
-				}
 			}
 			if (settings["Vanny Ending"] && current.vannyEnd == 1 && old.vannyEnd == 0){
 				print("Vanny End");
@@ -1692,7 +1673,7 @@ split {
 				if (vars.checkPQ2Position("PQ2_7", vars.pPQ2_D7, 75, 175, 155, 190)){
 					vars.pPQ2_D7 = false;
 					return true;
-				}
+					}
 				if (vars.checkPQ2Position("PQ2_8", vars.pPQ2_D8, 2725, 2760, -35, 50)){
 					vars.pPQ2_D8 = false;
 					return true;
@@ -1701,7 +1682,7 @@ split {
 					vars.pPQ2_D9 = false;
 					return true;
 				}
-				if (vars.checkPQ2Position("PQ2_10", vars.pPQ2_D10, 4905, 4975, 790, 860)){
+					if (vars.checkPQ2Position("PQ2_10", vars.pPQ2_D10, 4905, 4975, 790, 860)){
 					vars.pPQ2_D10 = false;
 					return true;
 				}
@@ -1717,6 +1698,7 @@ split {
 					return true;
 				}
 */
+		}
 		}
 	}
 }
