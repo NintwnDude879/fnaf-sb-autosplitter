@@ -45,10 +45,12 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
 
 	//PQ Player Positions
-	float pq1X: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D4;
-	float pq1Y: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D0;
-	float pq2X: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D4;
-	float pq2Y: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D0;
+	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
 
 	//Keeps track of items (splashSreen = 4)
 	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
@@ -773,6 +775,8 @@ init {
 		vars.pq2_6 = true;
 		vars.pq2_7 = true;
 		vars.pq2_8 = true;
+		vars.pq2_9 = true;
+		vars.pq2_10 = true;
 		vars.pq2_end = true;
 		//pq3
 		vars.pq3_start = true;
@@ -784,10 +788,6 @@ init {
 		vars.pq3_6 = true;
 		vars.pq3_7 = true;
 		vars.pq3_end = true;
-		vars.pq2_9 = true;
-		vars.pq2_10 = true;
-		vars.pq2_end = true;
-		//pq3
 
 		//Item Splits
 		vars.iRepairedHead = true;
@@ -1135,7 +1135,7 @@ split {
 						}
 					}
 					if (settings["pq1_end"] && vars.pq1_end){
-						if (old.pq1Y >= 5000 && current.pqY1 == 0){
+						if (old.pq1Y >= 4920 && current.pqY1 == 0){
 							vars.pq1_end = false;
 							print("pq1_end");
 							return true;
@@ -1219,7 +1219,7 @@ split {
 				}
 				if (settings["Princess Quest 3"]){
 					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
-						if (vars.checkPosition("pq1_start", vars.pq1_start, -1000, -1000, -1000, 1000, 1000, 1000)){
+						if (vars.checkPosition("pq3_start", vars.pq3_start, -10, 10, -10, 10, -10, 10)){
 							vars.pq3_start = false;
 							return true;
 						}
