@@ -1059,7 +1059,7 @@ split {
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
 					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq1_start", vars.pq1_start, 0, 0, 0, 0, 0, 0)){
+						if (vars.checkPosition("pq1_start", vars.pq1_start, -10, 10, -10, 10, -10, 10)){
 							vars.pq1_start = false;
 							return true;
 						}
@@ -1128,7 +1128,7 @@ split {
 				}
 				if (settings["Princess Quest 2"]){
 					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq2_start", vars.pq2_start, 0, 0, 0, 0, 0, 0)){
+						if (vars.checkPosition("pq2_start", vars.pq2_start, -10, 10, -10, 10, -10, 10)){
 							vars.pq2_start = false;
 							return true;
 						}
@@ -1139,7 +1139,7 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4520, 4620, -2420, -245)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4520, 4620, -2455, -2420)){
 						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
 							vars.pq2_2 = false;
 							return true;
