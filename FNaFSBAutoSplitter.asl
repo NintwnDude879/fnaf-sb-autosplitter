@@ -13,9 +13,6 @@
 //200u as generator range
 
 //To Do List:
-//ADD DAYCARE PASS SPLIT (lobby)
-//ADD BOTH FAZER BLASTER ITEMS
-//PRINCESS QUEST SPLITS?
 //MORE POSITIONAL SPLITS?
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -1473,9 +1470,22 @@ split {
 					}
 					if (settings["Equipment"]){
 						//Fazerblasters and Daycare Pass don't use splashscreen
-						if (settings["Daycare Pass"]){
-							if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
-								return true;
+						if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
+							if (settings["E_Lobby"]){
+								if (settings["Daycare Pass"]){
+									print("Daycare Pass");
+									return true;
+								}
+							}
+						}
+						if (current.itemCount > old.itemCount){
+							if (settings["E_Fazerblast"]){
+								if (vars.checkItem("Golden Fazerblaster", 13890, 31285, 1530)){
+									return true;
+								}
+								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
+									return true;
+								}
 							}
 						}
 						if (current.splashScreen == 4 && old.splashScreen == 0){
@@ -1522,7 +1532,7 @@ split {
 								if (vars.checkItem("Bowling Pass", 8845, 32755, 1495)){
 									return true;
 								}
-								//ADD FAZERBLASTERS HERE
+								//Fazerblasters at the start of equipment splits
 							}
 							if (settings["E_Lobby"]){
 								if (vars.checkItem("Chica Fizzy Faz", -3185, 22880, 1515)){
