@@ -178,7 +178,14 @@ startup {
 	settings.Add("pq2_end", false, "Finish Arcade");
 
 	settings.CurrentDefaultParent = "Princess Quest 3";
-	settings.Add("pq3_end", false, "Finish Arcade");
+	settings.Add("pq3_1", false, "Hallway");
+	settings.Add("pq3_2", false, "Hub Room");
+	settings.Add("pq3_3", false, "Conveyory Room");
+	settings.Add("pq3_4", false, "Split Puzzle Room (Glitchtrap Plush)");
+	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
+	settings.Add("pq3_6", false, "Prize Counter");
+	settings.Add("pq3_7", false, "Enter Final Area");
+	settings.Add("pq3_end", false, "Princess Quest Ending");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -771,6 +778,15 @@ init {
 		vars.pq2_8 = true;
 		vars.pq2_end = true;
 		//pq3
+		vars.pq3_start = true;
+		vars.pq3_1 = true;
+		vars.pq3_2 = true;
+		vars.pq3_3 = true;
+		vars.pq3_4 = true;
+		vars.pq3_5 = true;
+		vars.pq3_6 = true;
+		vars.pq3_7 = true;
+		vars.pq3_end = true;
 
 		//Item Splits
 		vars.iRepairedHead = true;
@@ -1128,13 +1144,62 @@ split {
 					}
 				}
 				if (settings["Princess Quest 3"]){
-					if (settings["pq3_end"]){
-						if (current.pqEnd == 1 && old.pqEnd == 0){
-							print("pq3_end");
+					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
+						if (vars.checkPosition("pq1_start", vars.pq1_start, -1000, -1000, -1000, 1000, 1000, 1000)){
+							vars.pq3_start = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2195, 2230, -3250, -3190)){
+						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
+							vars.pq3_1 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2050, 2135, -1340, -1305)){
+						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
+							vars.pq3_2 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2445, 2480, -1225, -1140)){
+						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
+							vars.pq3_3 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 5125, 5225, -205, -170)){
+						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
+							vars.pq3_4 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1290, 1325, 630, 713)){
+						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
+							vars.pq3_5 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 1975, -1475, -1420)){
+						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
+							vars.pq3_6 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 2000, -255, -220)){
+						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
+							vars.pq3_7 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1636, 1700)){
+						if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
+							vars.pq3_end = false;
 							return true;
 						}
 					}
 				}
+				
 			}
 			if (settings["Vanny Ending"] && current.vannyEnd == 1 && old.vannyEnd == 0){
 				print("Vanny End");
