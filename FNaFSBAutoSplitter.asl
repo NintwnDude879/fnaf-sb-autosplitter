@@ -13,9 +13,7 @@
 //200u as generator range
 
 //To Do List:
-//ADD DAYCARE PASS SPLIT (lobby)
-//ADD BOTH FAZER BLASTER ITEMS
-//PRINCESS QUEST SPLITS?
+//ADD PQ3
 //MORE POSITIONAL SPLITS?
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -764,7 +762,6 @@ init {
 		vars.pq1_7 = true;
 		vars.pq1_8 = true;
 		vars.pq1_9 = true;
-		vars.pq1_10 = true;
 		vars.pq1_end = true;
 		//pq2
 		vars.pq2_start = true;
@@ -787,6 +784,10 @@ init {
 		vars.pq3_6 = true;
 		vars.pq3_7 = true;
 		vars.pq3_end = true;
+		vars.pq2_9 = true;
+		vars.pq2_10 = true;
+		vars.pq2_end = true;
+		//pq3
 
 		//Item Splits
 		vars.iRepairedHead = true;
@@ -1074,7 +1075,7 @@ split {
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
 					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq1_start", vars.pq1_start, 0, 0, 0, 0, 0, 0)){
+						if (vars.checkPosition("pq1_start", vars.pq1_start, -10, 10, -10, 10, -10, 10)){
 							vars.pq1_start = false;
 							return true;
 						}
@@ -1103,41 +1104,114 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2860, 2895, 1975, 2060)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2175, 1865, 1900)){
 						if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
 							vars.pq1_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 5220, 5255, 2450, 2535)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2860, 2895, 1975, 2060)){
 						if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
 							vars.pq1_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 990, 1070, 2150, 2185)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 5220, 5255, 2450, 2535)){
 						if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
 							vars.pq1_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2170, 3420, 3455)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 990, 1070, 2150, 2185)){
 						if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
 							vars.pq1_8 = false;
 							return true;
 						}
 					}
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2170, 3420, 3455)){
+						if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
+							vars.pq1_9 = false;
+							return true;
+						}
+					}
 					if (settings["pq1_end"] && vars.pq1_end){
-						if (7000 <= current.posX && current.posX <= 8500 && 46500 <= current.posY && current.posY <= 48000 && -10000 <= current.posZ && current.posZ <= 10000 && old.posY == 0){
+						if (old.pq1Y >= 5000 && current.pqY1 == 0){
 							vars.pq1_end = false;
 							print("pq1_end");
 							return true;
 						}
 					}
 				}
-				if (settings["Princess Quest 2"] && vars.pq2_end){
-					if (settings["pq2_end"] && vars.pq1_end){
-						if (7500 <= current.posX && current.posX <= 9000 && 20500 <= current.posY && current.posY <= 21000 && -10000 <= current.posZ && current.posZ <= 10000 && old.posY == 0){
+				if (settings["Princess Quest 2"]){
+					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && -10000 <= old.posZ && old.posZ <= 10000){
+						if (vars.checkPosition("pq2_start", vars.pq2_start, -10, 10, -10, 10, -10, 10)){
+							vars.pq2_start = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2975, 3075, -770, -735)){
+						if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
+							vars.pq2_1 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4520, 4620, -2455, -2420)){
+						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
+							vars.pq2_2 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3130, 3165, -1265, -1180)){
+						if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
+							vars.pq2_3 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2815, 2915, -2780, -2745)){
+						if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
+							vars.pq2_4 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3200, 3300, 745, 780)){
+						if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
+							vars.pq2_5 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2100, 2205, 1120, 1205)){
+						if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
+							vars.pq2_6 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 75, 175, 155, 190)){
+						if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
+							vars.pq2_7 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2725, 2760, -35, 50)){
+						if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
+							vars.pq2_8 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3920, 3955, 455, 545)){
+						if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
+							vars.pq2_9 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4905, 4975, 790, 860)){
+						if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
+							vars.pq2_10 = false;
+							return true;
+						}
+					}
+					if (settings["pq2_end"] && vars.pq2_end){
+						if (old.pq2X >= 4900 && current.pq2Y == 0){
+							vars.pq2_end = false;
 							print("pq2_end");
 							return true;
 						}
@@ -1199,7 +1273,6 @@ split {
 						}
 					}
 				}
-				
 			}
 			if (settings["Vanny Ending"] && current.vannyEnd == 1 && old.vannyEnd == 0){
 				print("Vanny End");
@@ -1464,9 +1537,22 @@ split {
 					}
 					if (settings["Equipment"]){
 						//Fazerblasters and Daycare Pass don't use splashscreen
-						if (settings["Daycare Pass"]){
-							if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
-								return true;
+						if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
+							if (settings["E_Lobby"]){
+								if (settings["Daycare Pass"]){
+									print("Daycare Pass");
+									return true;
+								}
+							}
+						}
+						if (current.itemCount > old.itemCount){
+							if (settings["E_Fazerblast"]){
+								if (vars.checkItem("Golden Fazerblaster", 13890, 31285, 1530)){
+									return true;
+								}
+								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
+									return true;
+								}
 							}
 						}
 						if (current.splashScreen == 4 && old.splashScreen == 0){
@@ -1513,7 +1599,7 @@ split {
 								if (vars.checkItem("Bowling Pass", 8845, 32755, 1495)){
 									return true;
 								}
-								//ADD FAZERBLASTERS HERE
+								//Fazerblasters at the start of equipment splits
 							}
 							if (settings["E_Lobby"]){
 								if (vars.checkItem("Chica Fizzy Faz", -3185, 22880, 1515)){
