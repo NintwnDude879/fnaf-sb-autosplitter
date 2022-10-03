@@ -34,8 +34,10 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-	float pqX: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D4;
-	float pqY: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D0;
+	float pq1X: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D4;
+	float pq1Y: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D0;
+	float pq2X: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D4;
+	float pq2Y: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D0;
 
 	//Keeps track of when the game has ended (end = 1)
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
@@ -548,16 +550,31 @@ startup {
 	settings.CurrentDefaultParent = "Princess Quest Splits";
 	settings.Add("Princess Quest 1");
 	settings.CurrentDefaultParent = "Princess Quest 1";
-	settings.Add("Exit Starting Room", false);
-	settings.Add("2nd Room", false);
-	settings.Add("3rd Room", false);
-	settings.Add("Key Door", false);
-	settings.Add("Crossroads", false);
-	settings.Add("Right Door", false);
-	settings.Add("Enter Graveyard", false);
-	settings.Add("Staircase", false);
-	settings.Add("Final Room", false);
-	settings.Add("Princess Quest 1 End", false);
+	settings.Add("PQ1_1", false, "Exit Starting Room");
+	settings.Add("PQ1_2", false, "2nd Room");
+	settings.Add("PQ1_3", false, "3rd Room");
+	settings.Add("PQ1_4", false, "Key Door");
+	settings.Add("PQ1_5", false, "Crossroads");
+	settings.Add("PQ1_6", false, "Right Door");
+	settings.Add("PQ1_7", false, "Enter Graveyard");
+	settings.Add("PQ1_8", false, "Staircase");
+	settings.Add("PQ1_9", false, "Final Room");
+	settings.Add("PQ1_10", false, "Princess Quest 1 End");
+
+	settings.CurrentDefaultParent = "Princess Quest Splits";
+	settings.Add("Princess Quest 2");
+	settings.CurrentDefaultParent = "Princess Quest 2";
+	settings.Add("PQ2_1", false, "Exit Starting Room");
+	settings.Add("PQ2_2", false, "2nd Room");
+	settings.Add("PQ2_3", false, "Balls Room");
+	settings.Add("PQ2_4", false, "4th Room");
+	settings.Add("PQ2_5", false, "Split Puzzle Room");
+	settings.Add("PQ2_6", false, "Big Torch Room");
+	settings.Add("PQ2_7", false, "Hallway");
+	settings.Add("PQ2_8", false, "Big Split Puzzle Room");
+	settings.Add("PQ2_9", false, "Bedroom");
+	settings.Add("PQ2_10", false, "Enter Final Room");
+	settings.Add("PQ2_E", false, "Princess Quest 2 End");
 
 }
 
@@ -631,13 +648,36 @@ init {
 		}
 		return false;
 	});
-
-	vars.checkPQPosition = (Func<string, bool, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB) => {
-		if (settings[name]){
-			if (check){
-				if (xLB <= current.pqX && current.pqX <= xUB && yLB <= current.pqY && current.pqY<= yUB){
-					print(name);
-					return true;
+	vars.checkPositionNoSplit = (Func<bool, double, double, double, double, double, double, bool>)((check, xLB, xUB, yLB, yUB, zLB, zUB) => {
+		if(check){
+			if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+				return true;
+			}
+			
+		}
+		return false;
+	});
+	vars.checkPQ1Position = (Func<string, bool, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB) => {
+		if (vars.PQ1 == true){
+			if (settings[name]){
+				if (check){
+					if (xLB <= current.pq1X && current.pq1X <= xUB && yLB <= current.pq1Y && current.pq1Y<= yUB){
+						print(name);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	});
+	vars.checkPQ2Position = (Func<string, bool, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB) => {
+		if (vars.PQ2 == true){
+			if (settings[name]){
+				if (check){
+					if (xLB <= current.pq2X && current.pq2X <= xUB && yLB <= current.pq2Y && current.pq2Y<= yUB){
+						print(name);
+						return true;
+					}
 				}
 			}
 		}
@@ -738,17 +778,35 @@ init {
 		vars.pSTRATRW = true;
 		vars.pSTRLB = true;
 		
-		//Princess Quest Positional Splits
-		vars.pPQ_D1 = true;
-		vars.pPQ_D2 = true;
-		vars.pPQ_D3 = true;
-		vars.pPQ_D4 = true;
-		vars.pPQ_D5 = true;
-		vars.pPQ_D6 = true;
-		vars.pPQ_D7 = true;
-		vars.pPQ_D8 = true;
-		vars.pPQ_D9 = true;
-		vars.pPQ_E1 = true;
+		//Princess Quest Splits
+		vars.PQ1 = true;
+		vars.pPQ1_D1 = true;
+		vars.pPQ1_D2 = true;
+		vars.pPQ1_D3 = true;
+		vars.pPQ1_D4 = true;
+		vars.pPQ1_D5 = true;
+		vars.pPQ1_D6 = true;
+		vars.pPQ1_D7 = true;
+		vars.pPQ1_D8 = true;
+		vars.pPQ1_D9 = true;
+		vars.pPQ1_E = true;
+
+		vars.prePQ2 = true;
+		vars.PQ2 = false;
+		vars.pPQ2_D1 = true;
+		vars.pPQ2_D2 = true;
+		vars.pPQ2_D3 = true;
+		vars.pPQ2_D4 = true;
+		vars.pPQ2_D5 = true;
+		vars.pPQ2_D6 = true;
+		vars.pPQ2_D7 = true;
+		vars.pPQ2_D8 = true;
+		vars.pPQ2_D9 = true;
+		vars.pPQ2_D10 = true;
+		vars.pPQ2_E = true;
+
+		vars.prePQ3 = true;
+		vars.PQ3 = false;
 
 		//Timer Splits
 		vars.tHead = true;
@@ -1551,51 +1609,103 @@ split {
 		}
 		if (settings["Princess Quest Splits"]){
 			if (settings["Princess Quest 1"]){
-				if (vars.checkPQPosition("Exit Starting Room", vars.pPQ_D1, 785, 810, -40, 40)){
-					vars.pPQ_D1 = false;
+				if (vars.checkPQ1Position("PQ1_1", vars.pPQ1_D1, 785, 810, -40, 40)){
+					vars.pPQ1_D1 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("2nd Room", vars.pPQ_D2, 1715, 1750, -40, 40)){
-					vars.pPQ_D2 = false;
+				if (vars.checkPQ1Position("PQ1_2", vars.pPQ1_D2, 1715, 1750, -40, 40)){
+					vars.pPQ1_D2 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("3rd Room", vars.pPQ_D3, 3055, 3090, -40, 40)){
-					vars.pPQ_D3 = false;
+				if (vars.checkPQ1Position("PQ1_3", vars.pPQ1_D3, 3055, 3090, -40, 40)){
+					vars.pPQ1_D3 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("Key Door", vars.pPQ_D4, 2070, 2175, 600, 635)){
-					vars.pPQ_D4 = false;
+				if (vars.checkPQ1Position("PQ1_4", vars.pPQ1_D4, 2070, 2175, 600, 635)){
+					vars.pPQ1_D4 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("Crossroads", vars.pPQ_D5, 2070, 2175, 1865, 1900)){
-					vars.pPQ_D5 = false;
+				if (vars.checkPQ1Position("PQ1_5", vars.pPQ1_D5, 2070, 2175, 1865, 1900)){
+					vars.pPQ1_D5 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("Right Door", vars.pPQ_D6, 2860, 2895, 1975, 2060)){
-					vars.pPQ_D6 = false;
+				if (vars.checkPQ1Position("PQ1_6", vars.pPQ1_D6, 2860, 2895, 1975, 2060)){
+					vars.pPQ1_D6 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("Enter Graveyard", vars.pPQ_D7, 5220, 5255, 2450, 2535)){
-					vars.pPQ_D7 = false;
+				if (vars.checkPQ1Position("PQ1_7", vars.pPQ1_D7, 5220, 5255, 2450, 2535)){
+					vars.pPQ1_D7 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("Staircase", vars.pPQ_D8, 990, 1070, 2150, 2185)){
-					vars.pPQ_D8 = false;
+				if (vars.checkPQ1Position("PQ1_8", vars.pPQ1_D8, 990, 1070, 2150, 2185)){
+					vars.pPQ1_D8 = false;
 					return true;
 				}
-				if (vars.checkPQPosition("Final Room", vars.pPQ_D9, 2070, 2170, 3420, 3455)){
-					vars.pPQ_D9 = false;
+				if (vars.checkPQ1Position("PQ1_9", vars.pPQ1_D9, 2070, 2170, 3420, 3455)){
+					vars.pPQ1_D9 = false;
 					return true;
 				}
-				if (old.pqY > 5000 && current.pqY == 0 && vars.pPQ_E1 && settings["Princess Quest 1 End"]){
-					vars.pPQ_E1 = false;
-					print("Princess Quest 1 End");
+				if (old.pq1Y > 5000 && current.pq1Y == 0 && vars.pPQ1_E && settings["PQ1_E"]){
+					vars.pPQ1_E = false;
+					print("PQ1 Ending");
+					return true;
+				}
+			}
+			if (settings["Princess Quest 2"]){
+				if (vars.checkPositionNoSplit(vars.prePQ2, 8078, 8200, 20330, 20766, 3263, 3470)){
+					vars.prePQ2 = false;
+					vars.PQ2 = true;
+					print("In Front of PQ 2");
+				}
+				if (vars.checkPQ2Position("PQ2_1", vars.pPQ2_D1, 2975, 3075, -735, -770)){
+					vars.pPQ2_D1 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_2", vars.pPQ2_D2, 4520, 4620, -2420, -2455)){
+					vars.pPQ2_D2 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_3", vars.pPQ2_D3, 3130, 3165, -1265, -1180)){
+					vars.pPQ2_D3 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_4", vars.pPQ2_D4, 2815, 2915, -2780, -2745)){
+					vars.pPQ2_D4 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_5", vars.pPQ2_D5, 3200, 3300, 745, 780)){
+					vars.pPQ2_D5 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_6", vars.pPQ2_D6, 2100, 2205, 1120, 1205)){
+					vars.pPQ2_D6 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_7", vars.pPQ2_D7, 75, 175, 155, 190)){
+					vars.pPQ2_D7 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_8", vars.pPQ2_D8, 2725, 2760, -35, 50)){
+					vars.pPQ2_D8 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_9", vars.pPQ2_D9, 3920, 3955, 455, 545)){
+					vars.pPQ2_D9 = false;
+					return true;
+				}
+				if (vars.checkPQ2Position("PQ2_10", vars.pPQ2_D10, 4905, 4975, 790, 860)){
+					vars.pPQ2_D10 = false;
+					return true;
+				}
+				if (old.pq2X > 4900 && current.pq2Y == 0 && vars.pPQ2_E && settings["PQ2_10"]){
+					vars.pPQ2_E = false;
+					print("PQ2 Ending");
 					return true;
 				}
 			}
 /*
-				if (vars.checkPQPosition("", vars.pPQ_D, )){
-					vars.pPQ_D = false;
+				if (vars.checkPQ2Position("PQ2_", vars.pPQ2_D, )){
+					vars.pPQ2_D = false;
 					return true;
 				}
 */
