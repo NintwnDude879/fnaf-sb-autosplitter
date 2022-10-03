@@ -178,6 +178,7 @@ startup {
 	settings.Add("pq2_end", false, "Finish Arcade");
 
 	settings.CurrentDefaultParent = "Princess Quest 3";
+	settings.Add("pq3_start", false, "Start Arcade");
 	settings.Add("pq3_1", false, "Hallway");
 	settings.Add("pq3_2", false, "Hub Room");
 	settings.Add("pq3_3", false, "Conveyory Room");
@@ -1134,7 +1135,7 @@ split {
 							return true;
 						}
 					}
-					if (settings["pq1_end"] && vars.pq1_end){
+					if (vars.pq1_end == true && settings["pq1_end"]){
 						if (old.pq1Y >= 4920 && current.pqY1 == 0){
 							vars.pq1_end = false;
 							print("pq1_end");
