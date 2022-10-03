@@ -51,6 +51,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
 	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
 	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Keeps track of items (splashSreen = 4)
 	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
@@ -1267,10 +1268,12 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1636, 1700)){
-						if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
-							vars.pq3_end = false;
-							return true;
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
+						if (current.pq3Attack > old.pq3Attack){
+							if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
+								vars.pq3_end = false;
+								return true;
+							}
 						}
 					}
 				}
