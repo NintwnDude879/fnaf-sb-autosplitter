@@ -1615,7 +1615,6 @@ split {
 							}
 						}
 					}
-					}
 					if (settings["Retro CDs"]){
 						if (vars.checkItem("CD_Backstage", -7595, 51270, 1545)){
 							return true;
