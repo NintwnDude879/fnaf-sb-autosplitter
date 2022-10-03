@@ -34,10 +34,10 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-	float pq1X: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D4;
-	float pq1Y: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D0;
-	float pq2X: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D4;
-	float pq2Y: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D0;
+	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
 
 	//Keeps track of when the game has ended (end = 1)
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
@@ -648,15 +648,6 @@ init {
 		}
 		return false;
 	});
-	vars.checkPositionNoSplit = (Func<bool, double, double, double, double, double, double, bool>)((check, xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if(check){
-			if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
-				return true;
-			}
-			
-		}
-		return false;
-	});
 	vars.checkPQ1Position = (Func<string, bool, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB) => {
 		if (vars.PQ1 == true){
 			if (settings[name]){
@@ -791,8 +782,7 @@ init {
 		vars.pPQ1_D9 = true;
 		vars.pPQ1_E = true;
 
-		vars.prePQ2 = true;
-		vars.PQ2 = false;
+		vars.PQ2 = true;
 		vars.pPQ2_D1 = true;
 		vars.pPQ2_D2 = true;
 		vars.pPQ2_D3 = true;
@@ -805,7 +795,6 @@ init {
 		vars.pPQ2_D10 = true;
 		vars.pPQ2_E = true;
 
-		vars.prePQ3 = true;
 		vars.PQ3 = false;
 
 		//Timer Splits
@@ -1647,16 +1636,13 @@ split {
 				}
 				if (old.pq1Y > 5000 && current.pq1Y == 0 && vars.pPQ1_E && settings["PQ1_E"]){
 					vars.pPQ1_E = false;
+					vars.PQ1 = false;
+					vars.PQ2 = true;
 					print("PQ1 Ending");
 					return true;
 				}
 			}
 			if (settings["Princess Quest 2"]){
-				if (vars.checkPositionNoSplit(vars.prePQ2, 8078, 8200, 20330, 20766, 3263, 3470)){
-					vars.prePQ2 = false;
-					vars.PQ2 = true;
-					print("In Front of PQ 2");
-				}
 				if (vars.checkPQ2Position("PQ2_1", vars.pPQ2_D1, 2975, 3075, -735, -770)){
 					vars.pPQ2_D1 = false;
 					return true;
