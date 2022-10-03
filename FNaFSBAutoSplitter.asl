@@ -1135,8 +1135,8 @@ split {
 							return true;
 						}
 					}
-					if (vars.pq1_end == true && settings["pq1_end"]){
-						if (old.pq1Y >= 4920 && current.pqY1 == 0){
+					if (settings["pq1_end"] && vars.pq1_end){
+						if (old.pq1Y >= 4920 && current.pq1Y == 0){
 							vars.pq1_end = false;
 							print("pq1_end");
 							return true;
