@@ -879,7 +879,6 @@ reset {
 			}
 		}
 	}
-	print(vars.PQ1);
 }
 
 isLoading {
