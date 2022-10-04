@@ -117,8 +117,8 @@ startup {
 
 	settings.CurrentDefaultParent = "Sewer Generators";
 	settings.Add("S_Generator 1", false, "Generator 1");
-    settings.Add("S_Generator 2", false, "Generator 2");
-    settings.Add("S_Generator 3", false, "Generator 3");
+	settings.Add("S_Generator 2", false, "Generator 2");
+	settings.Add("S_Generator 3", false, "Generator 3");
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("Balloon Deload", false);
@@ -1084,17 +1084,13 @@ split {
 					}
 				}
 			}
-			//other end splits
+			//other ending splits
 			if (settings["Afton Ending"]){
 				if (current.aftonHealth < old.aftonHealth){
 					if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
 						print("Button " + ((750 - current.aftonHealth) / 100));
 						return true;
 					}
-				}
-				if (settings["Button 8 / End"] && current.aftonEnd == 1 && old.aftonEnd == 0){
-					print("Button 8");
-					return true;
 				}
 			}
 			if (settings["Princess Quest Ending"]){
@@ -1297,18 +1293,6 @@ split {
 								vars.pq3_end = false;
 								return true;
 							}
-						}
-					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1636, 1700)){
-						if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
-							vars.pq3_end = false;
-							return true;
-						}
-					}
-					if (settings["pq3_endCutscene"]){
-						if (current.pqEnd == 1 && old.pqEnd == 0){
-							print("pq3_endCutscene");
-							return true;
 						}
 					}
 				}
