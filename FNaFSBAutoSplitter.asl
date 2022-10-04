@@ -142,6 +142,7 @@ startup {
 	settings.Add("Button 8 / End", false);
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
+	settings.Add("pq3_endCutscene", false, "End Cutscene");
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
 	settings.Add("Princess Quest 3", false);
@@ -182,8 +183,7 @@ startup {
 	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
 	settings.Add("pq3_6", false, "Prize Counter");
 	settings.Add("pq3_7", false, "Enter Final Area");
-	settings.Add("pq3_end", false, "Princess Quest Use Key");
-	settings.Add("pq3_endCutscene", false, "Princess Quest End Cutscene");
+	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
