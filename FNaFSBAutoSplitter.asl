@@ -13,10 +13,11 @@
 //200u as generator range
 
 //To Do List:
-//ADD PQ3
 //MORE POSITIONAL SPLITS?
+//TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
+//TEST SPLITS
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -26,7 +27,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int FBFlags: 0x03FF7308, 0x230, 0x8, 0x2C8, 0x3A0, 0x28, 0x30, 0x290;
 	int DGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
 	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
-	int SGens: 0x0441FCB0, 0x128, 0x360, 0x78, 0x8, 0x40;
 
 	//Player information
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
@@ -34,12 +34,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
 	//Keeps track of when the game has ended (end = 1)
-	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
-	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
-	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
-	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
-	int escEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
-	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
+	int end: 0x0441C5C8, 0xC0, 0x40, 0x8, 0x18, 0x2D0;
 
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
@@ -116,8 +111,8 @@ startup {
 
 	settings.CurrentDefaultParent = "Sewer Generators";
 	settings.Add("S_Generator 1", false, "Generator 1");
-    settings.Add("S_Generator 2", false, "Generator 2");
-    settings.Add("S_Generator 3", false, "Generator 3");
+	settings.Add("S_Generator 2", false, "Generator 2");
+	settings.Add("S_Generator 3", false, "Generator 3");
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("Balloon Deload", false);
@@ -146,6 +141,7 @@ startup {
 	settings.Add("Button 8 / End", false);
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
+	settings.Add("pq3_endCutscene", false, "End Cutscene");
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
 	settings.Add("Princess Quest 3", false);
@@ -181,12 +177,12 @@ startup {
 	settings.Add("pq3_start", false, "Start Arcade");
 	settings.Add("pq3_1", false, "Hallway");
 	settings.Add("pq3_2", false, "Hub Room");
-	settings.Add("pq3_3", false, "Conveyory Room");
+	settings.Add("pq3_3", false, "Conveyor Room");
 	settings.Add("pq3_4", false, "Split Puzzle Room (Glitchtrap Plush)");
 	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
 	settings.Add("pq3_6", false, "Prize Counter");
 	settings.Add("pq3_7", false, "Enter Final Area");
-	settings.Add("pq3_end", false, "Princess Quest Ending");
+	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -1049,6 +1045,40 @@ split {
 			}
 		}
 		if (settings["Ending Splits"]){
+			//splits based on ending cutscenes
+			if (current.end == 1 && old.end == 0){
+				if (settings["Afton Ending"]){
+					if (vars.checkPosition("Button 8 / End", true, 27000, 29500, 39000, 42200, -9000, -8000)){
+						return true;
+					}
+				}
+				if (settings["Car Battery Ending"]){
+					if (vars.checkPosition("Car Battery Ending", true, -3300, -2750, 18500, 19250, 0, 500)){
+						return true;
+					}
+				}
+				if (settings["Escape Ending"]){
+					if (vars.checkPosition("Escape Ending", true, -2800, -500, 19000, 20000, 1450, 1800)){
+						return true;
+					}
+				}
+				if (settings["Fire Escape Ending"]){
+					if (vars.checkPosition("Fire Escape Ending", true, -2000, -1400, 22500, 22800, 3300, 4000)){
+						return true;
+					}
+				}
+				if (settings["Princess Quest Ending"]){
+					if (vars.checkPosition("pq_endCutscene", true, 17750, 18000, 28740, 29000, 2500, 2800)){
+						return true;
+					}
+				}
+				if (settings["Vanny Ending"]){
+					if (vars.checkPosition("Vanny Ending", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+						return true;
+					}
+				}
+			}
+			//other ending splits
 			if (settings["Afton Ending"]){
 				if (current.aftonHealth < old.aftonHealth){
 					if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
@@ -1056,27 +1086,11 @@ split {
 						return true;
 					}
 				}
-				if (settings["Button 8 / End"] && current.aftonEnd == 1 && old.aftonEnd == 0){
-					print("Button 8");
-					return true;
-				}
-			}
-			if (settings["Car Battery Ending"] && current.carEnd == 1 && old.carEnd == 0){
-				print("Car Ending");
-				return true;
-			}
-			if (settings["Escape Ending"] && current.escEnd == 1 && old.escEnd == 0){
-				print("Escape Ending");
-				return true;
-			}
-			if (settings["Fire Escape Ending"] && current.fireEnd == 1 && old.fireEnd == 0){
-				print("Fire Escape Ending");
-				return true;
 			}
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
 					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq1_start", vars.pq1_start, -10, 10, -10, 10, -10, 10)){
+						if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
 							vars.pq1_start = false;
 							return true;
 						}
@@ -1145,7 +1159,7 @@ split {
 				}
 				if (settings["Princess Quest 2"]){
 					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq2_start", vars.pq2_start, -10, 10, -10, 10, -10, 10)){
+						if (vars.checkTime("pq2_start", vars.pq2_start, 0, 0)){
 							vars.pq2_start = false;
 							return true;
 						}
@@ -1220,7 +1234,7 @@ split {
 				}
 				if (settings["Princess Quest 3"]){
 					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
-						if (vars.checkPosition("pq3_start", vars.pq3_start, -10, 10, -10, 10, -10, 10)){
+						if (vars.checkTime("pq3_start", vars.pq3_start, 0, 0)){
 							vars.pq3_start = false;
 							return true;
 						}
@@ -1276,10 +1290,6 @@ split {
 						}
 					}
 				}
-			}
-			if (settings["Vanny Ending"] && current.vannyEnd == 1 && old.vannyEnd == 0){
-				print("Vanny End");
-				return true;
 			}
 		}
 		if (settings["Item Splits"]){
