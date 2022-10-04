@@ -14,9 +14,14 @@ Splits Include:
 - All items
 - All time changes
 - All deloads
+- All ending cutscenes
 - Monty Boss fight dump bucket balls
 - Fazerblast flags
 - Shattered Chica generators
 - Afton boss fight buttons
 
 If there is a feature or split you would like to be included, feel free to fill out [this Google Form](https://forms.gle/jxidK6RFToEXzUDe7).
+
+## How to Use
+
+There is a perfectly well documented video on how to use this autosplitter [here](https://youtu.be/UkRkU2WcJDc).
