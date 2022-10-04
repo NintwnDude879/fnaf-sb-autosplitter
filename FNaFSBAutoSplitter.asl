@@ -1054,7 +1054,7 @@ split {
 			//splits based on ending cutscenes
 			if (current.end == 1 && old.end == 0){
 				if (settings["Afton Ending"]){
-					if (vars.checkPosition("Button 8 / End", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+					if (vars.checkPosition("Button 8 / End", true, 27000, 29500, 39000, 42200, -9000, -8000)){
 						return true;
 					}
 				}
@@ -1240,12 +1240,12 @@ split {
 				}
 				if (settings["Princess Quest 3"]){
 					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
-						if (current.posX != old.posX){	
+						if (current.itemCount != old.itemCount){	
 							print("Old: " + old.posX.ToString() + ", " + old.posY.ToString() + ", " + old.posZ.ToString());
 							print("Current: " + current.posX.ToString() + ", " + current.posY.ToString() + ", " + current.posZ.ToString());
 							print("---------------------");
 						}
-						if (vars.checkPosition("pq3_start", vars.pq3_start, -10, 10, -10, 10, -10, 10)){
+						if (settings["pq3_start"] && vars.pq3_start && current.itemCount > old.itemCount){
 							vars.pq3_start = false;
 							return true;
 						}
