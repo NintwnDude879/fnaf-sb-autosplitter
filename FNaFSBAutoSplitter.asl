@@ -1074,7 +1074,7 @@ split {
 					}
 				}
 				if (settings["Princess Quest Ending"]){
-					if (vars.checkPosition("Princess Quest Ending Cutscene", true, 17750, 18000, 28740, 29000, 2500, 2800)){
+					if (vars.checkPosition("pq_endCutscene", true, 17750, 18000, 28740, 29000, 2500, 2800)){
 						return true;
 					}
 				}
@@ -1240,6 +1240,11 @@ split {
 				}
 				if (settings["Princess Quest 3"]){
 					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
+						if (current.posX != old.posX){	
+							print("Old: " + old.posX.ToString() + ", " + old.posY.ToString() + ", " + old.posZ.ToString());
+							print("Current: " + current.posX.ToString() + ", " + current.posY.ToString() + ", " + current.posZ.ToString());
+							print("---------------------");
+						}
 						if (vars.checkPosition("pq3_start", vars.pq3_start, -10, 10, -10, 10, -10, 10)){
 							vars.pq3_start = false;
 							return true;
