@@ -141,10 +141,10 @@ startup {
 	settings.Add("Button 8 / End", false);
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
-	settings.Add("pq3_endCutscene", false, "End Cutscene");
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
 	settings.Add("Princess Quest 3", false);
+	settings.Add("pq3_endCutscene", false, "End Cutscene");
 
 	settings.CurrentDefaultParent = "Princess Quest 1";
 	settings.Add("pq1_start", false, "Start Arcade");
@@ -182,7 +182,6 @@ startup {
 	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
 	settings.Add("pq3_6", false, "Prize Counter");
 	settings.Add("pq3_7", false, "Enter Final Area");
-	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -785,6 +784,7 @@ init {
 		vars.pq3_6 = true;
 		vars.pq3_7 = true;
 		vars.pq3_end = true;
+		vars.pq3_endCutscene = true;
 
 		//Item Splits
 		vars.iRepairedHead = true;
@@ -1067,11 +1067,6 @@ split {
 						return true;
 					}
 				}
-				if (settings["Princess Quest Ending"]){
-					if (vars.checkPosition("pq_endCutscene", true, 17750, 18000, 28740, 29000, 2500, 2800)){
-						return true;
-					}
-				}
 				if (settings["Vanny Ending"]){
 					if (vars.checkPosition("Vanny Ending", true, 17550, 17750, 28450, 28740, 2500, 2800)){
 						return true;
@@ -1281,12 +1276,11 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
-						if (current.pq3Attack > old.pq3Attack){
-							if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
-								vars.pq3_end = false;
-								return true;
-							}
+					if (current.end == 1){
+						if (vars.checkPosition("pq3_endCutscene", vars.pq3_endCutscene, 17700, 18000, 28750, 29050, 2500, 2750)){
+							vars.pq3_endCutscene = false;
+							return true;
+							print("PQ Ending Cutscene");
 						}
 					}
 				}
