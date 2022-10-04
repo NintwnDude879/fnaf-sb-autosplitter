@@ -13,10 +13,11 @@
 //200u as generator range
 
 //To Do List:
-//fix pq starting
 //MORE POSITIONAL SPLITS?
+//TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
+//TEST SPLITS
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
