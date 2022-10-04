@@ -13,7 +13,7 @@
 //200u as generator range
 
 //To Do List:
-//ADD PQ3
+//EDIT ENDING SPLITS (afton ending left)
 //MORE POSITIONAL SPLITS?
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -26,7 +26,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int FBFlags: 0x03FF7308, 0x230, 0x8, 0x2C8, 0x3A0, 0x28, 0x30, 0x290;
 	int DGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
 	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
-	int SGens: 0x0441FCB0, 0x128, 0x360, 0x78, 0x8, 0x40;
 
 	//Player information
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
@@ -34,6 +33,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
 	//Keeps track of when the game has ended (end = 1)
+	int end: 0x0441C5C8, 0xC0, 0x40, 0x8, 0x18, 0x2D0;
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
 	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
 	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
@@ -45,10 +45,12 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
 
 	//PQ Player Positions
-	float pq1X: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D4;
-	float pq1Y: 0x0441FCB0, 0x30, 0xA8, 0x138, 0x208, 0x0, 0x1D0;
-	float pq2X: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D4;
-	float pq2Y: 0x0441FCB0, 0x30, 0xA8, 0x290, 0x208, 0x0, 0x1D0;
+	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
 
 	//Keeps track of items (splashSreen = 4)
 	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
@@ -176,7 +178,16 @@ startup {
 	settings.Add("pq2_end", false, "Finish Arcade");
 
 	settings.CurrentDefaultParent = "Princess Quest 3";
-	settings.Add("pq3_end", false, "Finish Arcade");
+	settings.Add("pq3_start", false, "Start Arcade");
+	settings.Add("pq3_1", false, "Hallway");
+	settings.Add("pq3_2", false, "Hub Room");
+	settings.Add("pq3_3", false, "Conveyor Room");
+	settings.Add("pq3_4", false, "Split Puzzle Room (Glitchtrap Plush)");
+	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
+	settings.Add("pq3_6", false, "Prize Counter");
+	settings.Add("pq3_7", false, "Enter Final Area");
+	settings.Add("pq3_end", false, "Princess Quest Use Key");
+	settings.Add("pq3_endCutscene", false, "Princess Quest End Cutscene");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -770,6 +781,15 @@ init {
 		vars.pq2_10 = true;
 		vars.pq2_end = true;
 		//pq3
+		vars.pq3_start = true;
+		vars.pq3_1 = true;
+		vars.pq3_2 = true;
+		vars.pq3_3 = true;
+		vars.pq3_4 = true;
+		vars.pq3_5 = true;
+		vars.pq3_6 = true;
+		vars.pq3_7 = true;
+		vars.pq3_end = true;
 
 		//Item Splits
 		vars.iRepairedHead = true;
@@ -1030,6 +1050,40 @@ split {
 			}
 		}
 		if (settings["Ending Splits"]){
+			//splits based on ending cutscenes
+			if (current.end == 1 && old.end == 0){
+				if (settings["Afton Ending"]){
+					if (vars.checkPosition("Button 8 / End", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+						return true;
+					}
+				}
+				if (settings["Car Battery Ending"]){
+					if (vars.checkPosition("Car Battery Ending", true, -3300, -2750, 18500, 19250, 0, 500)){
+						return true;
+					}
+				}
+				if (settings["Escape Ending"]){
+					if (vars.checkPosition("Escape Ending", true, -2800, -500, 19000, 20000, 1450, 1800)){
+						return true;
+					}
+				}
+				if (settings["Fire Escape Ending"]){
+					if (vars.checkPosition("Fire Escape Ending", true, -2000, -1400, 22500, 22800, 3300, 4000)){
+						return true;
+					}
+				}
+				if (settings["Princess Quest Ending"]){
+					if (vars.checkPosition("Princess Quest Ending Cutscene", true, 17750, 18000, 28740, 29000, 2500, 2800)){
+						return true;
+					}
+				}
+				if (settings["Vanny Ending"]){
+					if (vars.checkPosition("Vanny Ending", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+						return true;
+					}
+				}
+			}
+			//other end splits
 			if (settings["Afton Ending"]){
 				if (current.aftonHealth < old.aftonHealth){
 					if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
@@ -1041,18 +1095,6 @@ split {
 					print("Button 8");
 					return true;
 				}
-			}
-			if (settings["Car Battery Ending"] && current.carEnd == 1 && old.carEnd == 0){
-				print("Car Ending");
-				return true;
-			}
-			if (settings["Escape Ending"] && current.escEnd == 1 && old.escEnd == 0){
-				print("Escape Ending");
-				return true;
-			}
-			if (settings["Fire Escape Ending"] && current.fireEnd == 1 && old.fireEnd == 0){
-				print("Fire Escape Ending");
-				return true;
 			}
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
@@ -1116,8 +1158,8 @@ split {
 							return true;
 						}
 					}
-					if (settings["pq1_end"] && vars.pq1_end){
-						if (old.pq1Y >= 5000 && current.pqY1 == 0){
+					if (vars.pq1_end == true && settings["pq1_end"]){
+						if (old.pq1Y >= 4920 && current.pqY1 == 0){
 							vars.pq1_end = false;
 							print("pq1_end");
 							return true;
@@ -1200,17 +1242,67 @@ split {
 					}
 				}
 				if (settings["Princess Quest 3"]){
-					if (settings["pq3_end"]){
+					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
+						if (vars.checkPosition("pq3_start", vars.pq3_start, -10, 10, -10, 10, -10, 10)){
+							vars.pq3_start = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2195, 2230, -3250, -3190)){
+						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
+							vars.pq3_1 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2050, 2135, -1340, -1305)){
+						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
+							vars.pq3_2 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2445, 2480, -1225, -1140)){
+						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
+							vars.pq3_3 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 5125, 5225, -205, -170)){
+						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
+							vars.pq3_4 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1290, 1325, 630, 713)){
+						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
+							vars.pq3_5 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 1975, -1475, -1420)){
+						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
+							vars.pq3_6 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 2000, -255, -220)){
+						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
+							vars.pq3_7 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1636, 1700)){
+						if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
+							vars.pq3_end = false;
+							return true;
+						}
+					}
+					if (settings["pq3_endCutscene"]){
 						if (current.pqEnd == 1 && old.pqEnd == 0){
-							print("pq3_end");
+							print("pq3_endCutscene");
 							return true;
 						}
 					}
 				}
-			}
-			if (settings["Vanny Ending"] && current.vannyEnd == 1 && old.vannyEnd == 0){
-				print("Vanny End");
-				return true;
 			}
 		}
 		if (settings["Item Splits"]){
