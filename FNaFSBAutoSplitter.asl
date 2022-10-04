@@ -13,7 +13,7 @@
 //200u as generator range
 
 //To Do List:
-//EDIT ENDING SPLITS (afton ending left)
+//fix pq starting
 //MORE POSITIONAL SPLITS?
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -34,12 +34,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Keeps track of when the game has ended (end = 1)
 	int end: 0x0441C5C8, 0xC0, 0x40, 0x8, 0x18, 0x2D0;
-	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
-	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
-	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
-	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
-	int escEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
-	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
@@ -1096,7 +1090,7 @@ split {
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
 					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq1_start", vars.pq1_start, -10, 10, -10, 10, -10, 10)){
+						if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
 							vars.pq1_start = false;
 							return true;
 						}
@@ -1165,7 +1159,7 @@ split {
 				}
 				if (settings["Princess Quest 2"]){
 					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && -10000 <= old.posZ && old.posZ <= 10000){
-						if (vars.checkPosition("pq2_start", vars.pq2_start, -10, 10, -10, 10, -10, 10)){
+						if (vars.checkTime("pq2_start", vars.pq2_start, 0, 0)){
 							vars.pq2_start = false;
 							return true;
 						}
@@ -1240,12 +1234,7 @@ split {
 				}
 				if (settings["Princess Quest 3"]){
 					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
-						if (current.itemCount != old.itemCount){	
-							print("Old: " + old.posX.ToString() + ", " + old.posY.ToString() + ", " + old.posZ.ToString());
-							print("Current: " + current.posX.ToString() + ", " + current.posY.ToString() + ", " + current.posZ.ToString());
-							print("---------------------");
-						}
-						if (settings["pq3_start"] && vars.pq3_start && current.itemCount > old.itemCount){
+						if (vars.checkTime("pq3_start", vars.pq3_start, 0, 0)){
 							vars.pq3_start = false;
 							return true;
 						}
