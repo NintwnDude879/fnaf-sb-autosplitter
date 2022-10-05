@@ -522,6 +522,8 @@ startup {
 	settings.CurrentDefaultParent = "P_Chica's Bakery";
 
 	settings.CurrentDefaultParent = "P_Daycare";
+	settings.Add("Enter Daycare", false);
+	settings.Add("Exit Daycare", false);
 
 	settings.CurrentDefaultParent = "P_El Chips";
 	settings.Add("Enter El Chips", false);
@@ -537,7 +539,6 @@ startup {
 	settings.CurrentDefaultParent = "P_Laundry";
 
 	settings.CurrentDefaultParent = "P_Lobby";
-	settings.Add("Enter Daycare", false);
 
 	settings.CurrentDefaultParent = "P_Main Atrium";
 
@@ -911,11 +912,11 @@ init {
 
 		//Positional Splits
 		vars.pEnBonnieBowl = true;
+		vars.pEnDaycare = true;
+		vars.pExDaycare = true;
 		vars.pEnElChips = true;
 		vars.pFazerStairs = true;
 		vars.pFazerRail = true;
-		vars.pEnDaycare = true;
-		vars.pExDaycare = true;
 		vars.pAftonElev = true;
 		vars.pChicaBath = true;
 		vars.pFirstAid = true;
@@ -1928,6 +1929,16 @@ split {
 					return true;
 				}
 			}
+			if (settings["P_Daycare"]){
+				if (vars.checkPosition("Enter Daycare", vars.pEnDaycare, -10950, -10850, 28900, 29900, 2100, 2250)){
+					vars.pEnDaycare = false;
+					return true;
+				}
+				if (vars.checkPosition("Exit Daycare", vars.pExDaycare, -10750, -10850, 28900, 29900, 2100, 2250)){
+					vars.pExDaycare = false;
+					return true;
+				}
+			}
 			if (settings["P_El Chips"]){
 				if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
 					vars.pEnElChips = false;
@@ -1943,16 +1954,6 @@ split {
 			if (settings["P_Fazerblast Sublobby"]){
 				if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
 					vars.pFazerRail = false;
-					return true;
-				}
-			}
-			if (settings["P_Lobby"]){
-				if (vars.checkPosition("Enter Daycare", vars.pEnDaycare, -10950, -10850, 28900, 29900, 2100, 2250)){
-					vars.pEnDaycare = false;
-					return true;
-				}
-				if (vars.checkPosition("Exit Daycare", vars.pExDaycare, -10750, -10850, 28900, 29900, 2100, 2250)){
-					vars.pExDaycare = false;
 					return true;
 				}
 			}
