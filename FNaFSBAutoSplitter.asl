@@ -46,9 +46,8 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
 	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
 	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
-	//Keeps track of items (splashSreen = 4)
+	//Keeps track of items (splashScreen = 4)
 	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
 	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
@@ -226,7 +225,6 @@ startup {
 	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
 	settings.Add("pq3_6", false, "Prize Counter");
 	settings.Add("pq3_7", false, "Enter Final Area");
-	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -835,6 +833,7 @@ init {
 		vars.pq3_6 = true;
 		vars.pq3_7 = true;
 		vars.pq3_end = true;
+		vars.pq3_endCutscene = true;
 
 		//Item Splits
 		vars.iRepairedHead = true;
@@ -1159,11 +1158,6 @@ split {
 						return true;
 					}
 				}
-				if (settings["Princess Quest Ending"]){
-					if (vars.checkPosition("pq_endCutscene", true, 17750, 18000, 28740, 29000, 2500, 2800)){
-						return true;
-					}
-				}
 				if (settings["Vanny Ending"]){
 					if (vars.checkPosition("Vanny Ending", true, 17550, 17750, 28450, 28740, 2500, 2800)){
 						return true;
@@ -1373,12 +1367,11 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
-						if (current.pq3Attack > old.pq3Attack){
-							if (vars.checkPQPosition2("pq3_end", vars.pq3_end)){
-								vars.pq3_end = false;
-								return true;
-							}
+					if (current.end == 1){
+						if (vars.checkPosition("pq3_endCutscene", vars.pq3_endCutscene, 17700, 18000, 28750, 29050, 2500, 2750)){
+							vars.pq3_endCutscene = false;
+							return true;
+							print("PQ Ending Cutscene");
 						}
 					}
 				}
