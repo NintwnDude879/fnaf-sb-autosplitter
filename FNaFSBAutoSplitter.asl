@@ -118,22 +118,12 @@ startup {
 	settings.Add("D_Backstage", false, "Backstage");
 	settings.Add("D_Daycare", false, "Daycare");
 	settings.Add("D_Kids Cove Sublobby", false, "Kids Cove Sublobby");
-	//settings.Add("D_Laundry", false, "Laundry");
-	//settings.Add("D_Lobby", false, "Lobby");
-	//settings.Add("D_Main Atrium", false, "Main Atrium");
-	//settings.Add("D_Monty Golf", false, "Monty Golf");
 	settings.Add("D_Monty Golf Sublobby", false, "Monty Golf Sublobby");
-	//settings.Add("D_Parts & Service", false, "Parts & Service");
 	settings.Add("D_Prize Counter", false, "Prize Counter");
 	settings.Add("D_Rockstar Row", false, "Rockstar Row");
 	settings.Add("D_Roxy Raceway", false, "Roxy Raceway");
 	settings.Add("D_Roxy Raceway Sublobby", false, "Roxy Raceway Sublobby");
 	settings.Add("D_Roxy Salon", false, "Roxy Salon");
-	//settings.Add("D_Salads & Sides", false, "Salads & Sides");
-	//settings.Add("D_Sewers", false, "Sewers");
-	//settings.Add("D_Utility Tunnels", false, "Utility Tunnels");
-	//settings.Add("D_Warehouse", false, "Warehouse");
-	//settings.Add("D_West Arcade", false, "West Arcade");
 
 	settings.CurrentDefaultParent = "D_Backstage";
 	settings.Add("Foxy Cutout Deload", false);
@@ -495,19 +485,98 @@ startup {
 	settings.Add("Security Badge 8", false);
 
 	settings.CurrentDefaultParent = "Positional Splits";
-	settings.Add("Chica's Bathroom", false);
+	settings.Add("P_Backstage", false, "Backstage");
+	settings.Add("P_Basement Kitchen", false, "Basement Kitchen");
+	settings.Add("P_Bonnie Bowl", false, "Bonnie Bowl");
+	settings.Add("P_Chica's Bakery", false, "Chica's Bakery");
+	settings.Add("P_Daycare", false, "Daycare");
+	settings.Add("P_El Chips", false, "El Chips");
+	settings.Add("P_Fazerblast", false, "Fazerblast");
+	settings.Add("P_Fazerblast Sublobby", false, "Fazerblast Sublobby");
+	settings.Add("P_Kids Cove Sublobby", false, "Kids Cove Sublobby");
+	settings.Add("P_Laundry", false, "Laundry");
+	settings.Add("P_Lobby", false, "Lobby");
+	settings.Add("P_Main Atrium", false, "Main Atrium");
+	settings.Add("P_Monty Golf", false, "Monty Golf");
+	settings.Add("P_Monty Golf Sublobby", false, "Monty Golf Sublobby");
+	settings.Add("P_Parts & Service", false, "Parts & Service");
+	settings.Add("P_Prize Counter", false, "Prize Counter");
+	settings.Add("P_Rockstar Row", false, "Rockstar Row");
+	settings.Add("P_Roxy Raceway", false, "Roxy Raceway");
+	settings.Add("P_Roxy Raceway Sublobby", false, "Roxy Raceway Sublobby");
+	settings.Add("P_Roxy Salon", false, "Roxy Salon");
+	settings.Add("P_Salads & Sides", false, "Salads & Sides");
+	settings.Add("P_Sewers", false, "Sewers");
+	settings.Add("P_Underground Afton Cave", false, "Utility Tunnels");
+	settings.Add("P_Utility Tunnels", false, "Utility Tunnels");
+	settings.Add("P_Warehouse", false, "Warehouse");
+	settings.Add("P_West Arcade", false, "West Arcade");
+
+	settings.CurrentDefaultParent = "P_Backstage";
+
+	settings.CurrentDefaultParent = "P_Basement Kitchen";
+
+	settings.CurrentDefaultParent = "P_Bonnie Bowl";
 	settings.Add("Enter Bonnie Bowl", false);
+
+	settings.CurrentDefaultParent = "P_Chica's Bakery";
+
+	settings.CurrentDefaultParent = "P_Daycare";
+
+	settings.CurrentDefaultParent = "P_El Chips";
 	settings.Add("Enter El Chips", false);
-	settings.Add("Enter West Arcade", false);
-	settings.Add("Exit Afton Elevator", false);
-	settings.Add("Exit West Arcade", false);
+
+	settings.CurrentDefaultParent = "P_Fazerblast";
 	settings.Add("Fazerblast Spiral Stairs", false);
+
+	settings.CurrentDefaultParent = "P_Fazerblast Sublobby";
+	settings.Add("Rail Outside Fazerblast", false);
+
+	settings.CurrentDefaultParent = "P_Kids Cove Sublobby";
+
+	settings.CurrentDefaultParent = "P_Laundry";
+
+	settings.CurrentDefaultParent = "P_Lobby";
+
+	settings.CurrentDefaultParent = "P_Main Atrium";
+
+	settings.CurrentDefaultParent = "P_Monty Golf";
+
+	settings.CurrentDefaultParent = "P_Monty Golf Sublobby";
+
+	settings.CurrentDefaultParent = "P_Parts & Service";
+
+	settings.CurrentDefaultParent = "P_Prize Counter";
+
+	settings.CurrentDefaultParent = "P_Rockstar Row";
+
+	settings.CurrentDefaultParent = "P_Roxy Raceway";
+
+	settings.CurrentDefaultParent = "P_Roxy Raceway Sublobby";
+
+	settings.CurrentDefaultParent = "P_Roxy Salon";
+
+	settings.CurrentDefaultParent = "P_Salads & Sides";
+
+	settings.CurrentDefaultParent = "P_Sewers";
+
+	settings.CurrentDefaultParent = "P_Underground Afton Cave";
+	settings.Add("Exit Afton Elevator", false);
+
+	settings.CurrentDefaultParent = "P_Utility Tunnels";
+	settings.Add("Chica Bathroom", false);
 	settings.Add("First Aid Vanessa Cutscene", false);
 	settings.Add("Freddy Stairs Rail", false);
 	settings.Add("Monty Chase", false);
-	settings.Add("Rail Outside Fazerblast", false);
 	settings.Add("STR-ATR-W Stairs", false);
 	settings.Add("STR-LB Stairs", false);
+
+	settings.CurrentDefaultParent = "P_Warehouse";
+
+	settings.CurrentDefaultParent = "P_West Arcade";
+	settings.Add("Enter West Arcade", false);
+	settings.Add("Exit West Arcade", false);
+
 
 	settings.CurrentDefaultParent = "Time Splits";
 	settings.Add("Exit Vents", false);
@@ -1852,58 +1921,72 @@ split {
 			}
 		}
 		if (settings["Positional Splits"]){
-			if (vars.checkPosition("Chica's Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
-				vars.pChicaBath = false;
-				return true;
+			if (settings["P_Bonnie Bowl"]){
+				if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5900, 6260, 32000, 42000, 32000, 3700)){
+					vars.pEnBonnieBowl = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5900, 6260, 32000, 42000, 32000, 3700)){
-				vars.pEnBonnieBowl = false;
-				return true;
+			if (settings["P_El Chips"]){
+				if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+					vars.pEnElChips = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-				vars.pEnElChips = false;
-				return true;
+			if (settings["P_Fazerblast"]){
+				if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
+					vars.pFazerStairs = false;
+					return true;
+				}
 			}
-			if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
-				vars.pEnWestArcade = false;
-				vars.pExWestArcade = true;
-				return true;
+			if (settings["P_Fazerblast Sublobby"]){
+				if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
+					vars.pFazerRail = false;
+					return true;
+				}
 			}
-			if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-				vars.pAftonElev = false;
-				return true;
+			if (settings["P_Underground Afton Cave"]){
+				if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
+					vars.pAftonElev = false;
+					return true;
+				}
 			}
-			if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
-				vars.pExWestArcade = false;
-				return true;
+			if (settings["P_Utility Tunnels"]){
+				if (vars.checkPosition("Chica Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
+					vars.pChicaBath = false;
+					return true;
+				}
+				if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45006, 45008, -1307, -1305)){
+					vars.pFirstAid = false;
+					return true;
+				}
+				if (vars.checkPosition("Freddy Stairs Rail", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
+					vars.pFredRail = false;
+					return true;
+				}
+				if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
+					vars.pMontyChase = false;
+					return true;
+				}
+				if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
+					vars.pSTRATRW = false;
+					return true;
+				}
+				if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
+					vars.pSTRLB = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
-				vars.pFazerStairs = false;
-				return true;
-			}
-			if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45006, 45008, -1307, -1305)){
-				vars.pFirstAid = false;
-				return true;
-			}
-			if (vars.checkPosition("Freddy Stairs Rail", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
-				vars.pFredRail = false;
-				return true;
-			}
-			if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
-				vars.pMontyChase = false;
-				return true;
-			}
-			if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
-				vars.pFazerRail = false;
-				return true;
-			}
-			if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
-				vars.pSTRATRW = false;
-				return true;
-			}
-			if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
-				vars.pSTRLB = false;
-				return true;
+			if (settings["P_West Arcade"]){
+				if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
+					vars.pEnWestArcade = false;
+					vars.pExWestArcade = true;
+					return true;
+				}
+				if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
+					vars.pExWestArcade = false;
+					return true;
+				}
 			}
 		}
 		if (settings["Time Splits"]){
