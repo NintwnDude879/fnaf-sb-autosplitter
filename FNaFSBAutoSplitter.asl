@@ -915,6 +915,7 @@ init {
 		vars.pFazerStairs = true;
 		vars.pFazerRail = true;
 		vars.pEnDaycare = true;
+		vars.pExDaycare = true;
 		vars.pAftonElev = true;
 		vars.pChicaBath = true;
 		vars.pFirstAid = true;
@@ -1948,6 +1949,10 @@ split {
 			if (settings["P_Lobby"]){
 				if (vars.checkPosition("Enter Daycare", vars.pEnDaycare, -10950, -10850, 28900, 29900, 2100, 2250)){
 					vars.pEnDaycare = false;
+					return true;
+				}
+				if (vars.checkPosition("Exit Daycare", vars.pExDaycare, -10750, -10850, 28900, 29900, 2100, 2250)){
+					vars.pExDaycare = false;
 					return true;
 				}
 			}
