@@ -1946,7 +1946,7 @@ split {
 				}
 			}
 			if (settings["P_Lobby"]){
-				if (vars.checkPositionSlant("Enter Daycare", vars.pEnDaycare, -10950, -10850, 28900, 29900, 2100, 2250)){
+				if (vars.checkPosition("Enter Daycare", vars.pEnDaycare, -10950, -10850, 28900, 29900, 2100, 2250)){
 					vars.pEnDaycare = false;
 					return true;
 				}
