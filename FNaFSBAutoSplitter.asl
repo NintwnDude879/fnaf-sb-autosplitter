@@ -507,7 +507,7 @@ startup {
 	settings.Add("P_Roxy Salon", false, "Roxy Salon");
 	settings.Add("P_Salads & Sides", false, "Salads & Sides");
 	settings.Add("P_Sewers", false, "Sewers");
-	settings.Add("P_Underground Afton Cave", false, "Utility Tunnels");
+	settings.Add("P_Underground Afton Cave", false, "Underground Afton Cave");
 	settings.Add("P_Utility Tunnels", false, "Utility Tunnels");
 	settings.Add("P_Warehouse", false, "Warehouse");
 	settings.Add("P_West Arcade", false, "West Arcade");
@@ -537,6 +537,7 @@ startup {
 	settings.CurrentDefaultParent = "P_Laundry";
 
 	settings.CurrentDefaultParent = "P_Lobby";
+	settings.Add("Enter Daycare", false);
 
 	settings.CurrentDefaultParent = "P_Main Atrium";
 
@@ -564,9 +565,9 @@ startup {
 	settings.Add("Exit Afton Elevator", false);
 
 	settings.CurrentDefaultParent = "P_Utility Tunnels";
-	settings.Add("Chica Bathroom", false);
 	settings.Add("First Aid Vanessa Cutscene", false);
 	settings.Add("Freddy Stairs Rail", false);
+	settings.Add("Leave Chica Bathroom", false);
 	settings.Add("Monty Chase", false);
 	settings.Add("STR-ATR-W Stairs", false);
 	settings.Add("STR-LB Stairs", false);
@@ -579,6 +580,7 @@ startup {
 
 
 	settings.CurrentDefaultParent = "Time Splits";
+	settings.Add("Daycare Nighttime", false);
 	settings.Add("Exit Vents", false);
 	settings.Add("Freddy Eye Repair", false);
 
@@ -902,29 +904,29 @@ init {
 		vars.pq3_6 = true;
 		vars.pq3_7 = true;
 		vars.pq3_end = true;
-		vars.pq3_endCutscene = true;
 
 		//Item Splits
 		vars.iRepairedHead = true;
 		vars.iPartyPass6am = true;
 
 		//Positional Splits
-		vars.pChicaBath = true;
 		vars.pEnBonnieBowl = true;
 		vars.pEnElChips = true;
-		vars.pEnWestArcade = true;
-		vars.pAftonElev = true;
-		vars.pExWestArcade = false;
 		vars.pFazerStairs = true;
+		vars.pFazerRail = true;
+		vars.pEnDaycare = true;
+		vars.pAftonElev = true;
+		vars.pChicaBath = true;
 		vars.pFirstAid = true;
 		vars.pFredRail = true;
 		vars.pMontyChase = true;
-		vars.pFazerRail = true;
 		vars.pSTRATRW = true;
 		vars.pSTRLB = true;
+		vars.pEnWestArcade = true;
+		vars.pExWestArcade = false;
 
 		//Timer Splits
-		vars.tHead = true;
+		vars.tDaycareNight = true;
 		vars.tVents = true;
 		vars.tRepair = true;
 
@@ -1227,6 +1229,11 @@ split {
 						return true;
 					}
 				}
+				if (settings["Princess Quest Ending"]){
+					if (vars.checkPosition("pq3_endCutscene", true, 17700, 18000, 28750, 29050, 2500, 2750)){
+						return true;
+					}
+				}
 				if (settings["Vanny Ending"]){
 					if (vars.checkPosition("Vanny Ending", true, 17550, 17750, 28450, 28740, 2500, 2800)){
 						return true;
@@ -1434,13 +1441,6 @@ split {
 						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
 							vars.pq3_7 = false;
 							return true;
-						}
-					}
-					if (current.end == 1){
-						if (vars.checkPosition("pq3_endCutscene", vars.pq3_endCutscene, 17700, 18000, 28750, 29050, 2500, 2750)){
-							vars.pq3_endCutscene = false;
-							return true;
-							print("PQ Ending Cutscene");
 						}
 					}
 				}
@@ -1945,6 +1945,12 @@ split {
 					return true;
 				}
 			}
+			if (settings["P_Lobby"]){
+				if (vars.checkPositionSlant("Enter Daycare", vars.pEnDaycare, -10950, -10850, 28900, 29900, 2100, 2250)){
+					vars.pEnDaycare = false;
+					return true;
+				}
+			}
 			if (settings["P_Underground Afton Cave"]){
 				if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
 					vars.pAftonElev = false;
@@ -1952,16 +1958,16 @@ split {
 				}
 			}
 			if (settings["P_Utility Tunnels"]){
-				if (vars.checkPosition("Chica Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
-					vars.pChicaBath = false;
-					return true;
-				}
 				if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45006, 45008, -1307, -1305)){
 					vars.pFirstAid = false;
 					return true;
 				}
 				if (vars.checkPosition("Freddy Stairs Rail", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
 					vars.pFredRail = false;
+					return true;
+				}
+				if (vars.checkPosition("Leave Chica Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
+					vars.pChicaBath = false;
 					return true;
 				}
 				if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
@@ -1991,6 +1997,10 @@ split {
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
+				if (vars.checkTime("Daycare Nighttime", vars.tDaycareNight, 0, 55)){
+					vars.tDaycareNight = false;
+					return true;
+				}
 				if (vars.checkTime("Exit Vents", vars.tVents, -1, 30)){
 					vars.tVents = false;
 					return true;
