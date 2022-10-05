@@ -15,9 +15,8 @@
 //TESTED SPLITS UP TO COLLECTABLES
 
 //To Do List:
-//ISSUES W/ pq3_7
-//ADD BACK PQ USE KEY
-//ISSUES W/ AFTON HEALTH POINTER (untested buttons)
+//ISSUES W/ pq3_7 (probably fixed)
+//ISSUES W/ AFTON HEALTH POINTER (untested buttons) (probably fixed)
 //ISSUE W/ END POINTER (untested all endings)
 //TRIM DOWN CODE
 //AOB SCANNING?
@@ -40,9 +39,10 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Keeps track of when the game has ended (end = 1)
 	int end: 0x0441C5C8, 0xC0, 0x40, 0x8, 0x18, 0x2D0;
+	int vannyEndButton: 0x0441FCB0, 0x98, 0x730, 0x7D0, 0x550, 0x5E0, 0x500, 0x240;
 
 	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
+	float aftonHealth: 0x04213660, 0x98, 0xF30, 0x4B0, 0x50, 0x300, 0xA0, 0x800;
 
 	//PQ Player Positions
 	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
@@ -51,6 +51,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
 	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
 	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Keeps track of items (splashScreen = 4)
 	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
@@ -220,6 +221,7 @@ startup {
 	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
 	settings.Add("pq3_6", false, "Prize Counter");
 	settings.Add("pq3_7", false, "Enter Final Area");
+	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -1257,6 +1259,12 @@ split {
 				}
 			}
 			if (settings["Princess Quest Ending"]){
+				if (current.end == 1){
+					if (vars.checkPosition("pq3_endCutscene", true, 17700, 18000, 28750, 29050, 2500, 2750)){
+						return true;
+						print("PQ Ending Cutscene");
+					}
+				}
 				if (settings["Princess Quest 1"]){
 					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
 						if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
@@ -1444,10 +1452,17 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 2000, -255, -220)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1930, 2050, -270, -200)){
 						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
 							vars.pq3_7 = false;
 							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
+						if (current.pq3Attack > old.pq3Attack){
+							if (vars.checkPQPosition2("pq3_end", true)){
+								return true;
+							}
 						}
 					}
 				}
