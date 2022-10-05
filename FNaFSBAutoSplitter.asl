@@ -12,8 +12,13 @@
 //~225u present collection range (300 just to be safe)
 //200u as generator range
 
+//TESTED SPLITS UP TO COLLECTABLES
+
 //To Do List:
-//MORE POSITIONAL SPLITS?
+//ISSUES W/ pq3_7
+//ADD BACK PQ USE KEY
+//ISSUES W/ AFTON HEALTH POINTER (untested buttons)
+//ISSUE W/ END POINTER (untested all endings)
 //TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -1148,7 +1153,7 @@ split {
 				}
 			}
 			if (settings["D_Daycare"]){
-				if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13400, -13200, 30000, 31800, 1821.75, 20000)){
+				if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
 					vars.dDaycareArcade = false;
 					return true;
 				}
@@ -1190,19 +1195,19 @@ split {
 				}
 			}
 			if (settings["D_Roxy Raceway"]){
-				if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 18500, 21500, 51800, 52400, 0, 450)){
+				if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
 					vars.dRoxyEyes = false;
 					return true;
 				}
 			}
 			if (settings["D_Roxy Raceway Sublobby"]){
-				if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2707, 3000)){
-					vars.dBalloon = false;
+				if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
+					vars.dBalloon = false;//9830, 41919, 2650
 					return true;
 				}
 			}
 			if (settings["D_Roxy Salon"]){
-				if (vars.checkPosition("Plant Deload", vars.dPlant, 10345, 10500, 41000, 42500, 2100, 2800)){
+				if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
 					vars.dPlant = false;
 					return true;
 				}
