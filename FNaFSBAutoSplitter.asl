@@ -116,12 +116,55 @@ startup {
 	settings.Add("S_Generator 3", false, "Generator 3");
 
 	settings.CurrentDefaultParent = "Deload Splits";
+	settings.Add("D_Backstage", false, "Backstage");
+	settings.Add("D_Daycare", false, "Daycare");
+	settings.Add("D_Kids Cove Sublobby", false, "Kids Cove Sublobby");
+	//settings.Add("D_Laundry", false, "Laundry");
+	//settings.Add("D_Lobby", false, "Lobby");
+	//settings.Add("D_Main Atrium", false, "Main Atrium");
+	//settings.Add("D_Monty Golf", false, "Monty Golf");
+	settings.Add("D_Monty Golf Sublobby", false, "Monty Golf Sublobby");
+	//settings.Add("D_Parts & Service", false, "Parts & Service");
+	settings.Add("D_Prize Counter", false, "Prize Counter");
+	settings.Add("D_Rockstar Row", false, "Rockstar Row");
+	settings.Add("D_Roxy Raceway", false, "Roxy Raceway");
+	settings.Add("D_Roxy Raceway Sublobby", false, "Roxy Raceway Sublobby");
+	settings.Add("D_Roxy Salon", false, "Roxy Salon");
+	//settings.Add("D_Salads & Sides", false, "Salads & Sides");
+	//settings.Add("D_Sewers", false, "Sewers");
+	//settings.Add("D_Utility Tunnels", false, "Utility Tunnels");
+	//settings.Add("D_Warehouse", false, "Warehouse");
+	//settings.Add("D_West Arcade", false, "West Arcade");
+
+	settings.CurrentDefaultParent = "D_Backstage";
+	settings.Add("Foxy Cutout Deload", false);
+
+	settings.CurrentDefaultParent = "D_Daycare";
+	settings.Add("Arcade Deload", false);
+	settings.Add("Theatre Deload", false);
+
+	settings.CurrentDefaultParent = "D_Kids Cove Sublobby";
+	settings.Add("KCD_Fence Deload", false, "Fence Deload");
+
+	settings.CurrentDefaultParent = "D_Monty Golf Sublobby";
+	settings.Add("MGD_Fence Deload", false, "Fence Deload");
+
+	settings.CurrentDefaultParent = "D_Prize Counter";
+	settings.Add("Counter Deload", false);
+
+	settings.CurrentDefaultParent = "D_Roxy Raceway Sublobby";
 	settings.Add("Balloon Deload", false);
+
+	settings.CurrentDefaultParent = "D_Rockstar Row";
+	settings.Add("Chica Greenroom Deload", false);
 	settings.Add("Curtain Deload", false);
-	settings.Add("Daycare Arcade Deload", false);
-	settings.Add("Daycare Theatre Deload", false);
-	settings.Add("Roxy Salon Deload", false);
+	settings.Add("Tunnel Door Deload", false);
+
+	settings.CurrentDefaultParent = "D_Roxy Raceway";
 	settings.Add("Roxy's Eye Deload", false);
+
+	settings.CurrentDefaultParent = "D_Roxy Salon";
+	settings.Add("Plant Deload", false);
 
 	settings.CurrentDefaultParent = "Ending Splits";
 	settings.Add("Afton Ending", false);
@@ -142,10 +185,10 @@ startup {
 	settings.Add("Button 8 / End", false);
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
-	settings.Add("pq3_endCutscene", false, "End Cutscene");
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
 	settings.Add("Princess Quest 3", false);
+	settings.Add("pq3_endCutscene", false, "End Cutscene");
 
 	settings.CurrentDefaultParent = "Princess Quest 1";
 	settings.Add("pq1_start", false, "Start Arcade");
@@ -743,11 +786,17 @@ init {
 		vars.cSewerGen3 = true;
 
 		//Deload Splits
-		vars.dBalloon = true;
-		vars.dCurtain = true;
+		vars.dFoxyCutout = true;
 		vars.dDaycareArcade = true;
 		vars.dDaycareTheatre = true;
+		vars.dKCFence = true;
+		vars.dMGFence = true;
+		vars.dCounter = true;
+		vars.dChicaRoom = true;
+		vars.dCurtain = true;
+		vars.dTunnelDoor = true;
 		vars.dRoxyEyes = true;
+		vars.dBalloon = true;
 		vars.dPlant = true;
 	
 		//Ending Splits
@@ -1020,29 +1069,71 @@ split {
 			}
 		}
 		if (settings["Deload Splits"]){
-			if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2707, 3000)){
-				vars.dBalloon = false;
-				return true;
+			if (settings["D_Backstage"]){
+				if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
+					vars.dFoxyCutout = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
-				vars.dCurtain = false;
-				return true;
+			if (settings["D_Daycare"]){
+				if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13400, -13200, 30000, 31800, 1821.75, 20000)){
+					vars.dDaycareArcade = false;
+					return true;
+				}
+				if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
+					vars.dDaycareTheatre = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Daycare Arcade Deload", vars.dDaycareArcade, -13400, -13200, 30000, 31800, 1821.75, 20000)){
-				vars.dDaycare = false;
-				return true;
+			if (settings["D_Kids Cove Sublobby"]){
+				if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
+					vars.dKCFence = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Daycare Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
-				vars.dDaycareTheatre = false;
-				return true;
+			if (settings["D_Monty Golf Sublobby"]){
+				if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
+					vars.dMGFence = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 18500, 21500, 51800, 52400, 0, 450)){
-				vars.dRoxyEyes = false;
-				return true;
+			if (settings["D_Prize Counter"]){
+				if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
+					vars.dCounter = false;
+					return true;
+				}
 			}
-			if (vars.checkPosition("Roxy Salon Deload", vars.dPlant, 10345, 10500, 41000, 42500, 2100, 2800)){
-				vars.dPlant = false;
-				return true;
+			if (settings["D_Rockstar Row"]){
+				if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
+					vars.dChicaRoom = false;
+					return true;
+				}
+				if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
+					vars.dCurtain = false;
+					return true;
+				}
+				if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
+					vars.dTunnelDoor = false;
+					return true;
+				}
+			}
+			if (settings["D_Roxy Raceway"]){
+				if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 18500, 21500, 51800, 52400, 0, 450)){
+					vars.dRoxyEyes = false;
+					return true;
+				}
+			}
+			if (settings["D_Roxy Raceway Sublobby"]){
+				if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2707, 3000)){
+					vars.dBalloon = false;
+					return true;
+				}
+			}
+			if (settings["D_Roxy Salon"]){
+				if (vars.checkPosition("Plant Deload", vars.dPlant, 10345, 10500, 41000, 42500, 2100, 2800)){
+					vars.dPlant = false;
+					return true;
+				}
 			}
 		}
 		if (settings["Ending Splits"]){
