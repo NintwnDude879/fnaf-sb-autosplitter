@@ -15,9 +15,7 @@
 //TESTED SPLITS UP TO COLLECTABLES
 
 //To Do List:
-//ISSUES W/ pq3_7 (probably fixed)
-//ISSUES W/ AFTON HEALTH POINTER (untested buttons) (probably fixed)
-//ISSUE W/ END POINTER (untested all endings) (probably fixed)
+//TEST FAZER FLAGS & AFTON BUTTONS
 //TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -38,11 +36,16 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
 	//Keeps track of when the game has ended (end = 1)
-	int end: 0x0441C5C8, 0xC0, 0x40, 0x8, 0x18, 0x2D0;
+	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
+	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
+	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
+	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
+	int escapeEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
+	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
 	int vannyEndButton: 0x0441FCB0, 0x98, 0x730, 0x7D0, 0x550, 0x5E0, 0x500, 0x240;
 
 	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x04213660, 0x98, 0xF30, 0x4B0, 0x50, 0x300, 0xA0, 0x800;
+	float aftonHealth: 0x042DCC28, 0xA10, 0x50, 0x190, 0x58, 0x230, 0x0, 0x800;
 
 	//PQ Player Positions
 	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
@@ -180,7 +183,7 @@ startup {
 	settings.Add("Button 8 / End", false);
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
-	settings.Add("pq3_endCutscene", false, "End Cutscene");
+	settings.Add("pq_endCutscene", false, "End Cutscene");
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
 	settings.Add("Princess Quest 3", false);
@@ -963,7 +966,7 @@ start {
 }
 
 reset {
-	//Resets variables for certain splits
+	//Resets variables for certain splits upon exiting 11:30 vents
 	if (current.hourTimer == -1 && current.minuteTimer == 30 && old.minuteTimer == 0){
 		vars.resetVariables();
 	}
@@ -1180,36 +1183,40 @@ split {
 		}
 		if (settings["Ending Splits"]){
 			//splits based on ending cutscenes
-			if (current.end > old.end){
-				if (settings["Afton Ending"]){
-					if (vars.checkPosition("Button 8 / End", true, 27000, 29500, 39000, 42200, -9000, -8000)){
-						return true;
-					}
+			if (settings["Afton Ending"]){
+				if (settings["Button 8 / End"] && current.aftonEnd > old.aftonEnd){
+					print("Button 8 / End");
+					return true;
 				}
-				if (settings["Car Battery Ending"]){
-					if (vars.checkPosition("Car Battery Ending", true, -3300, -2750, 18500, 19250, 0, 500)){
-						return true;
-					}
+			}
+			if (settings["Car Battery Ending"]){
+				if (settings["Car Battery Ending"] && current.carEnd > old.carEnd){
+					print("Car Battery Ending");
+					return true;
 				}
-				if (settings["Escape Ending"]){
-					if (vars.checkPosition("Escape Ending", true, -2800, -500, 19000, 20000, 1450, 1800)){
-						return true;
-					}
+			}
+			if (settings["Escape Ending"]){
+				if (settings["Escape Ending"] && current.escapeEnd > old.escapeEnd){
+					print("Escape Ending");
+					return true;
 				}
-				if (settings["Fire Escape Ending"]){
-					if (vars.checkPosition("Fire Escape Ending", true, -2000, -1400, 22500, 22800, 3300, 4000)){
-						return true;
-					}
+			}
+			if (settings["Fire Escape Ending"]){
+				if (settings["Fire Escape Ending"] && current.fireEnd > old.fireEnd){
+					print("Fire Escape Ending");
+					return true;
 				}
-				if (settings["Princess Quest Ending"]){
-					if (vars.checkPosition("pq3_endCutscene", true, 17700, 18000, 28750, 29050, 2500, 2750)){
-						return true;
-					}
+			}
+			if (settings["Princess Quest Ending"]){
+				if (settings["pq_endCutscene"] && current.pqEnd > old.pqEnd){
+					print("pq_endCutscene");
+					return true;
 				}
-				if (settings["Vanny Ending"]){
-					if (vars.checkPosition("Vanny Ending", true, 17550, 17750, 28450, 28740, 2500, 2800)){
-						return true;
-					}
+			}
+			if (settings["Vanny Ending"]){
+				if (settings["Vanny Ending"] && current.vannyEnd > old.vannyEnd){
+					print("Vanny Ending");
+					return true;
 				}
 			}
 			//other ending splits
