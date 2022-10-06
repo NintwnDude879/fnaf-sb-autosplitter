@@ -15,10 +15,9 @@
 //TESTED SPLITS UP TO COLLECTABLES
 
 //To Do List:
-//ISSUES W/ pq3_7
-//ADD BACK PQ USE KEY
-//ISSUES W/ AFTON HEALTH POINTER (untested buttons)
-//ISSUE W/ END POINTER (untested all endings)
+//ISSUES W/ pq3_7 (probably fixed)
+//ISSUES W/ AFTON HEALTH POINTER (untested buttons) (probably fixed)
+//ISSUE W/ END POINTER (untested all endings) (probably fixed)
 //TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
@@ -40,9 +39,10 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Keeps track of when the game has ended (end = 1)
 	int end: 0x0441C5C8, 0xC0, 0x40, 0x8, 0x18, 0x2D0;
+	int vannyEndButton: 0x0441FCB0, 0x98, 0x730, 0x7D0, 0x550, 0x5E0, 0x500, 0x240;
 
 	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x042DCC78, 0xF50, 0x0, 0xAD0, 0xA0, 0xE8, 0x258, 0x800;
+	float aftonHealth: 0x04213660, 0x98, 0xF30, 0x4B0, 0x50, 0x300, 0xA0, 0x800;
 
 	//PQ Player Positions
 	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
@@ -51,6 +51,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
 	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
 	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Keeps track of items (splashScreen = 4)
 	int splashScreen: 0x04002230, 0x420, 0xA8, 0x128, 0x328, 0x3DC;
@@ -179,10 +180,10 @@ startup {
 	settings.Add("Button 8 / End", false);
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
+	settings.Add("pq3_endCutscene", false, "End Cutscene");
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
 	settings.Add("Princess Quest 3", false);
-	settings.Add("pq3_endCutscene", false, "End Cutscene");
 
 	settings.CurrentDefaultParent = "Princess Quest 1";
 	settings.Add("pq1_start", false, "Start Arcade");
@@ -220,6 +221,7 @@ startup {
 	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
 	settings.Add("pq3_6", false, "Prize Counter");
 	settings.Add("pq3_7", false, "Enter Final Area");
+	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -517,14 +519,8 @@ startup {
 	settings.Add("P_Warehouse", false, "Warehouse");
 	settings.Add("P_West Arcade", false, "West Arcade");
 
-	settings.CurrentDefaultParent = "P_Backstage";
-
-	settings.CurrentDefaultParent = "P_Basement Kitchen";
-
 	settings.CurrentDefaultParent = "P_Bonnie Bowl";
 	settings.Add("Enter Bonnie Bowl", false);
-
-	settings.CurrentDefaultParent = "P_Chica's Bakery";
 
 	settings.CurrentDefaultParent = "P_Daycare";
 	settings.Add("Enter Daycare", false);
@@ -539,34 +535,6 @@ startup {
 	settings.CurrentDefaultParent = "P_Fazerblast Sublobby";
 	settings.Add("Rail Outside Fazerblast", false);
 
-	settings.CurrentDefaultParent = "P_Kids Cove Sublobby";
-
-	settings.CurrentDefaultParent = "P_Laundry";
-
-	settings.CurrentDefaultParent = "P_Lobby";
-
-	settings.CurrentDefaultParent = "P_Main Atrium";
-
-	settings.CurrentDefaultParent = "P_Monty Golf";
-
-	settings.CurrentDefaultParent = "P_Monty Golf Sublobby";
-
-	settings.CurrentDefaultParent = "P_Parts & Service";
-
-	settings.CurrentDefaultParent = "P_Prize Counter";
-
-	settings.CurrentDefaultParent = "P_Rockstar Row";
-
-	settings.CurrentDefaultParent = "P_Roxy Raceway";
-
-	settings.CurrentDefaultParent = "P_Roxy Raceway Sublobby";
-
-	settings.CurrentDefaultParent = "P_Roxy Salon";
-
-	settings.CurrentDefaultParent = "P_Salads & Sides";
-
-	settings.CurrentDefaultParent = "P_Sewers";
-
 	settings.CurrentDefaultParent = "P_Underground Afton Cave";
 	settings.Add("Exit Afton Elevator", false);
 
@@ -578,12 +546,9 @@ startup {
 	settings.Add("STR-ATR-W Stairs", false);
 	settings.Add("STR-LB Stairs", false);
 
-	settings.CurrentDefaultParent = "P_Warehouse";
-
 	settings.CurrentDefaultParent = "P_West Arcade";
 	settings.Add("Enter West Arcade", false);
 	settings.Add("Exit West Arcade", false);
-
 
 	settings.CurrentDefaultParent = "Time Splits";
 	settings.Add("Daycare Nighttime", false);
@@ -1202,7 +1167,7 @@ split {
 			}
 			if (settings["D_Roxy Raceway Sublobby"]){
 				if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
-					vars.dBalloon = false;//9830, 41919, 2650
+					vars.dBalloon = false;
 					return true;
 				}
 			}
@@ -1215,7 +1180,7 @@ split {
 		}
 		if (settings["Ending Splits"]){
 			//splits based on ending cutscenes
-			if (current.end == 1 && old.end == 0){
+			if (current.end > old.end){
 				if (settings["Afton Ending"]){
 					if (vars.checkPosition("Button 8 / End", true, 27000, 29500, 39000, 42200, -9000, -8000)){
 						return true;
@@ -1444,10 +1409,17 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 2000, -255, -220)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1930, 2050, -270, -200)){
 						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
 							vars.pq3_7 = false;
 							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
+						if (current.pq3Attack > old.pq3Attack){
+							if (vars.checkPQPosition2("pq3_end", true)){
+								return true;
+							}
 						}
 					}
 				}
