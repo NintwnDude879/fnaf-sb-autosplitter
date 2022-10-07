@@ -38,11 +38,14 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of when the game has ended (end = 1)
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
 	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
-	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
-	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
-	int escapeEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
-	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
 	int vannyEndButton: 0x0441FCB0, 0x98, 0x730, 0x7D0, 0x550, 0x5E0, 0x500, 0x240;
+	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
+	int fireEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4A0, 0x3D8, 0x268;
+	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
+	int carEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4A0, 0x868, 0x268;
+	int escapeEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
+	int escapeEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4B0, 0x3D8, 0x268;
+	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x0441C570, 0x68, 0x8, 0xAE0, 0x28, 0x230, 0x0, 0x800;
@@ -181,6 +184,22 @@ startup {
 	settings.Add("Button 6", false);
 	settings.Add("Button 7", false);
 	settings.Add("Button 8 / End", false);
+
+	settings.CurrentDefaultParent = "Vanny Ending";
+	settings.Add("V_B", false, "Press Ending Button");
+	settings.Add("V_C", false, "Cutscene");
+
+	settings.CurrentDefaultParent = "Car Battery Ending";
+	settings.Add("CB_B", false, "'Leave' Button");
+	settings.Add("CB_C", false, "Cutscene");
+
+	settings.CurrentDefaultParent = "Escape Ending";
+	settings.Add("E_B", false, "'Leave' Button");
+	settings.Add("E_C", false, "Cutscene");
+
+	settings.CurrentDefaultParent = "Fire Escape Ending";
+	settings.Add("F_B", false, "'Leave' Button");
+	settings.Add("F_C", false, "Cutscene");
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
 	settings.Add("pq_endCutscene", false, "End Cutscene");
@@ -1190,32 +1209,48 @@ split {
 				}
 			}
 			if (settings["Car Battery Ending"]){
-				if (settings["Car Battery Ending"] && current.carEnd > old.carEnd){
-					print("Car Battery Ending");
+				if (settings["CB_C"] && current.carEnd > old.carEnd){
+					print("Car Battery Cutscene");
+					return true;
+				}
+				if (settings["CB_B"] && current.carEndLeaveButton < old.carEndLeaveButton){
+					print("Car Battery Button");
 					return true;
 				}
 			}
 			if (settings["Escape Ending"]){
-				if (settings["Escape Ending"] && current.escapeEnd > old.escapeEnd){
-					print("Escape Ending");
+				if (settings["E_C"] && current.escapeEnd > old.escapeEnd){
+					print("Escape Cutscene");
+					return true;
+				}
+				if (settings["E_B"] && current.escapeEndLeaveButton > old.escapeEndLeaveButton){
+					print("Escape Button");
 					return true;
 				}
 			}
 			if (settings["Fire Escape Ending"]){
-				if (settings["Fire Escape Ending"] && current.fireEnd > old.fireEnd){
-					print("Fire Escape Ending");
+				if (settings["F_C"] && current.fireEnd > old.fireEnd){
+					print("Fire Escape Cutscene");
+					return true;
+				}
+				if (settings["F_B"] && current.fireEndLeaveButton > old.fireEndLeaveButton){
+					print("Fire Escape Button");
 					return true;
 				}
 			}
 			if (settings["Princess Quest Ending"]){
 				if (settings["pq_endCutscene"] && current.pqEnd > old.pqEnd){
-					print("pq_endCutscene");
+					print("Princess Quest End Cutscene");
 					return true;
 				}
 			}
 			if (settings["Vanny Ending"]){
-				if (settings["Vanny Ending"] && current.vannyEnd > old.vannyEnd){
-					print("Vanny Ending");
+				if (settings["V_C"] && current.vannyEnd > old.vannyEnd){
+					print("Vanny Cutscene");
+					return true;
+				}
+				if (settings["V_B"] && current.vannyEndButton == 0 && old.vannyEndButton == 1){
+					print("Vanny Button");
 					return true;
 				}
 			}
