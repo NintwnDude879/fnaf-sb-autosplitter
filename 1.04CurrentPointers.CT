@@ -852,12 +852,6 @@
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
-    <CheatEntry>
-      <ID>28740</ID>
-      <Description>"Leave"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>1D7D3140B40+268</Address>
-    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols>
     <SymbolEntry>
