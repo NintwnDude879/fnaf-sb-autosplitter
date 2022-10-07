@@ -395,7 +395,6 @@ startup {
 	settings.Add("E_Sewers", false, "Sewers");
 	settings.Add("E_Utility Tunnels", false, "Utility Tunnels");
 	settings.Add("E_West Arcade", false, "West Arcade");
-	settings.Add("E_Other", false, "Other");
 
 	settings.CurrentDefaultParent = "E_Backstage";
 	settings.Add("Backstage Pass", false);
@@ -462,9 +461,6 @@ startup {
 
 	settings.CurrentDefaultParent = "E_West Arcade";
 	settings.Add("Repaired Head", false);
-
-	settings.CurrentDefaultParent = "E_Other";
-	settings.Add("6am Party Pass", false);
 
 	settings.CurrentDefaultParent = "Retro CDs";
 	settings.Add("CD_Backstage", false, "Backstage");
@@ -557,6 +553,7 @@ startup {
 	settings.Add("Daycare Nighttime", false);
 	settings.Add("Exit Vents", false);
 	settings.Add("Freddy Eye Repair", false);
+	settings.Add("6am", false);
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
@@ -884,7 +881,6 @@ init {
 		vars.iFazcam = true;
 		vars.iMazercisePass = true;
 		vars.iRepairedHead = true;
-		vars.iPartyPass6am = true;
 
 		//Positional Splits
 		vars.pEnBonnieBowl = true;
@@ -904,6 +900,7 @@ init {
 		vars.pExWestArcade = false;
 
 		//Timer Splits
+		vars.t6am = true;
 		vars.tDaycareNight = true;
 		vars.tVents = true;
 		vars.tRepair = true;
@@ -1847,12 +1844,6 @@ split {
 									return true;
 								}
 							}
-							if (settings["E_Other"]){
-								if (vars.checkTime("6am Party Pass", vars.iPartyPass6am, 6, 0)){
-									vars.iPartyPass6am = false;
-									return true;
-								}
-							}
 						}
 					}
 					if (settings["Retro CDs"]){
@@ -1998,6 +1989,10 @@ split {
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
+				if (vars.checkTime("6am", vars.t6am, 6, 0)){
+					vars.t6am = false;
+					return true;
+				}
 				if (vars.checkTime("Daycare Nighttime", vars.tDaycareNight, 0, 55)){
 					vars.tDaycareNight = false;
 					return true;
