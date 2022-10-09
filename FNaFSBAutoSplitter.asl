@@ -570,10 +570,27 @@ startup {
 	settings.Add("Exit West Arcade", false);
 
 	settings.CurrentDefaultParent = "Time Splits";
-	settings.Add("Daycare Nighttime", false);
-	settings.Add("Exit Vents", false);
-	settings.Add("Freddy Eye Repair", false);
-	settings.Add("6am", false);
+	settings.Add("Exit Vent (11:30PM)", false);
+	settings.Add("Start of Intro Chase (Monty breaks through chain linked fence)(11:45PM)", false);
+	settings.Add("Enter Lobby (12:00AM)", false);
+	settings.Add("Enter Daycare (12:30AM)", false);
+	settings.Add("Daycare Lights Out (12:55AM)", false);
+	settings.Add("Vanny Cutscene (1:00AM)", false);
+	settings.Add("Salads + Sides Mini Music Man Chase (1:15AM)", false);
+	settings.Add("End Pizza Bot Minigame (1:30AM)", false);
+	settings.Add("Fred is Ded(2:15AM)", false);
+	settings.Add("Place Showtime Disk (2:45AM)", false);
+	settings.Add("Moon Man Drags Freddy Away from Parts & Service (3:00AM)", false);
+	settings.Add("Freddy & Vanessa Cutscene (3:15AM)", false);
+	settings.Add("Freddy Repair (3:30AM)", false);
+	settings.Add("Recharge Station after getting Party Pass (4:00AM)", false);
+	settings.Add("Enter Sticky Note Room (4:40AM)", false);
+	settings.Add("Voice Box Upgrade (4:55AM)", false);
+	settings.Add("Damaged Head (5:15)", false);
+	settings.Add("Repaired Head (5:30)", false);
+	settings.Add("End Roxy Chase (5:40AM)", false);
+	settings.Add("Roxy Eyes Upgrade (5:50AM)", false);
+	settings.Add("Stay/Leave/Vanny (6:00AM)", false);
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
@@ -920,10 +937,27 @@ init {
 		vars.pExWestArcade = false;
 
 		//Timer Splits
-		vars.t6am = true;
-		vars.tDaycareNight = true;
 		vars.tVents = true;
-		vars.tRepair = true;
+		vars.tIntroChase = true;
+		vars.tLobby = true;
+		vars.tDaycare = true;
+		vars.tDaycareNight = true;
+		vars.tVannyScene = true;
+		vars.tSaladsSides = true;
+		vars.tPizzaBot = true;
+		vars.tFredDed = true;
+		vars.tShowtimeDisk = true;
+		vars.tMoonManFreddy = true;
+		vars.tFreddyVannessa = true;
+		vars.tFreddyRepair = true;
+		vars.tPartyPass1 = true;
+		vars.tStickyNotes = true;
+		vars.tChicaRepair = true;
+		vars.tDamagedHead = true;
+		vars.tRepairedHead = true;
+		vars.tRoxyChase = true;
+		vars.tRoxyRepair = true;
+		vars.t6am = true;
 
 		//Pausing
 		vars.nAElev = 0;
@@ -2025,20 +2059,88 @@ split {
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
-				if (vars.checkTime("6am", vars.t6am, 6, 0)){
-					vars.t6am = false;
-					return true;
-				}
-				if (vars.checkTime("Daycare Nighttime", vars.tDaycareNight, 0, 55)){
-					vars.tDaycareNight = false;
-					return true;
-				}
-				if (vars.checkTime("Exit Vents", vars.tVents, -1, 30)){
+				if (vars.checkTime("Exit Vent (11:30PM)", vars.tVents, -1, 30)){
 					vars.tVents = false;
 					return true;
 				}
-				if (vars.checkTime("Freddy Eye Repair", vars.tRepair, 5, 50)){
-					vars.tRepair = false;
+				if (vars.checkTime("Start of Intro Chase (Monty breaks through chain linked fence)(11:45PM)", vars.tIntroChase, -1, 45)){
+					vars.tIntroChase = false;
+					return true;
+				}
+				if (vars.checkTime("Enter Lobby (12:00AM)", vars.tLobby, 0, 0)){
+					vars.tLobby = false;
+					return true;
+				}
+				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tDaycare, 0, 30)){
+					vars.tDaycare = false;
+					return true;
+				}
+				if (vars.checkTime("Daycare Lights Out (12:55AM)", vars.tDaycareNight, 0, 55)){
+					vars.tDaycareNight = false;
+					return true;
+				}
+				if (vars.checkTime("Vanny Cutscene (1:00AM)", vars.tVannyScene, 1, 0)){
+					vars.tVannyScene = false;
+					return true;
+				}
+				if (vars.checkTime("End Salads + Sides Mini Music Man Chase (1:15AM)", vars.tSaladsSides, 1, 15)){
+					vars.tSaladsSides = false;
+					return true;
+				}
+				if (vars.checkTime("End Pizza Bot Minigame (1:30AM)", vars.tPizzaBot, 1, 30)){
+					vars.tPizzaBot = false;
+					return true;
+				}
+				if (vars.checkTime("Fred is Ded (2:15AM)", vars.tFredDed, 2, 15)){
+					vars.tFredDed = false;
+					return true;
+				}
+				if (vars.checkTime("Place Showtime Disk (2:45AM)", vars.tShowtimeDisk, 2, 45)){
+					vars.tShowtimeDisk = false;
+					return true;
+				}
+				if (vars.checkTime("Moon Man Drags Freddy Away from Parts & Service (3:00AM)", vars.tMoonManFreddy, 3, 0)){
+					vars.tMoonManFreddy = false;
+					return true;
+				}
+				if (vars.checkTime("Freddy & Vanessa Cutscene (3:15AM)", vars.tFreddyVannessa, 3, 15)){
+					vars.tFreddyVannessa = false;
+					return true;
+				}
+				if (vars.checkTime("Freddy Repair (3:30AM)", vars.tFreddyRepair, 3, 30)){
+					vars.tFreddyRepair = false;
+					return true;
+				}
+				if (vars.checkTime("Recharge Station after getting Party Pass (4:00AM)", vars.tPartyPass1, 4, 0)){
+					vars.tPartyPass1 = false;
+					return true;
+				}
+				if (vars.checkTime("Enter Sticky Note Room (4:40AM)", vars.tStickyNotes, 4, 40)){
+					vars.tStickyNotes = false;
+					return true;
+				}
+				if (vars.checkTime("Voice Box Upgrade (4:55AM)", vars.tChicaRepair, 4, 55)){
+					vars.tChicaRepair = false;
+					return true;
+				}
+				if (vars.checkTime("Damaged Head (5:15)", vars.tDamagedHead, 5, 15)){
+					vars.tDamagedHead = false;
+					return true;
+				}
+				if (vars.checkTime("Repaired Head (5:30)", vars.tRepairedHead, 5, 30)){
+					vars.tRepairedHead = false;
+					return true;
+				}
+				if (vars.checkTime("End Roxy Chase (5:40AM)", vars.tRoxyChase, 5, 40)){
+					vars.t = false;
+					return true;
+				}
+				if (vars.checkTime("Roxy Eyes Upgrade (5:50AM)", vars.tRoxyRepair, 5, 50)){
+					vars.tRoxyRepair = false;
+					return true;
+				}
+				if (vars.checkTime("Stay/Leave/Vanny (6:00AM)", vars.t6am, 6, 0)){
+					vars.t6am = false;
 					return true;
 				}
 			}
