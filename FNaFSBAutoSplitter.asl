@@ -27,7 +27,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int escapeEndLeaveButtonWest: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
-	//int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
+	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
 	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
 	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
 	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
@@ -686,10 +686,11 @@ startup {
 init {
 	//Sets the version of the game upon startup
 	vars.versionSize = modules.First().ModuleMemorySize;
+	print("Size = " + vars.versionSize.ToString());
 
 	//1.04: 76210176
 	//1.05: 
-	//1.11: 
+	//1.11: 76251136
 
 	if (vars.versionSize == 76210176){
 		version = "v1.04";
@@ -697,7 +698,7 @@ init {
 	if (vars.versionSize == 0){
 		version = "v1.05";
 	}
-	if (vars.versionSize == 0){
+	if (vars.versionSize == 76251136){
 		version = "v1.11";
 	}
 
@@ -1209,7 +1210,7 @@ split {
 		if (settings["Ending Splits"]){
 			//splits based on ending cutscenes
 			if (settings["Afton Ending"]){
-				if (settings["Button 8 / End"] && current.aftonHealth != 50 && old.aftonHealth == 50){
+				if (settings["Button 8 / End"] && current.aftonEnd > old.aftonEnd){
 					print("Button 8 / End");
 					return true;
 				}
