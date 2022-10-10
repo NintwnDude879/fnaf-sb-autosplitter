@@ -3,7 +3,6 @@
 
 //To Do List:
 //ADD BOTH MAPBOT MAPS
-//TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
 
@@ -440,6 +439,7 @@ startup {
 
 	settings.CurrentDefaultParent = "E_Main Atrium";
 	settings.Add("MA_Freddy Upgrade", false, "Freddy Upgrade");
+	settings.Add("MA_Mapbot's Map", false, "Mapbot's Map");
 
 	settings.CurrentDefaultParent = "E_Monty Golf";
 	settings.Add("Fazcam", false);
@@ -466,6 +466,7 @@ startup {
 	settings.Add("Chica's Voicebox", false);
 
 	settings.CurrentDefaultParent = "E_Utility Tunnels";
+	settings.Add("UT_Mapbot's Map", false, "Mapbot's Map");
 	settings.Add("Pizzaplex Cameras", false);
 
 	settings.CurrentDefaultParent = "E_West Arcade";
@@ -1818,6 +1819,9 @@ split {
 								if (vars.checkItem("MA_Freddy Upgrade", 4650, 31285, 1520)){
 									return true;
 								}
+								if (vars.checkPosition("MA_Mapbot's Map", true, -4700, 1260, 28400, 31550, 2100, 2500)){
+									return true;
+								}
 							}
 							if (settings["E_Monty Golf"]){
 								if (vars.iFazcam){
@@ -1879,6 +1883,9 @@ split {
 								}
 							}
 							if (settings["E_Utility Tunnels"]){
+								if (vars.checkPosition("UT_Mapbot's Map", true, -4000, -280, 42300, 48000, -1400, -900)){
+									return true;
+								}
 								if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
 									return true;
 								}
