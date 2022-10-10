@@ -2033,7 +2033,7 @@ split {
 					vars.tVents = false;
 					return true;
 				}
-				if (vars.checkTime("Freddy Recharge (11:45AM)", vars.tUtilityRecharge, -1, 45)){
+				if (vars.checkTime("Freddy Recharge (11:45PM)", vars.tUtilityRecharge, -1, 45)){
 					vars.tUtilityRecharge = false;
 					return true;
 				}
