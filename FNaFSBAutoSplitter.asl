@@ -2,11 +2,8 @@
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
 //To Do List:
-//ADD BOTH MAPBOT MAPS
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
-
-//UNTESTED REPAIRED HEAD, CDs
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -911,7 +908,7 @@ init {
 		vars.tFrontEntrance = true;
 		vars.tEnDaycare = true;
 		vars.tDaycareNighttime = true;
-		vars.tDyacareRecharge = true;
+		vars.tDaycareRecharge = true;
 		vars.t1_15 = true;
 		vars.tPizzabot = true;
 		vars.tWhiteWoman = true;
