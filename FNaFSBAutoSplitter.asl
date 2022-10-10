@@ -1,25 +1,13 @@
 //Five Nights at Freddy's: Security Breach | v1.0.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
-//Roxy P&S elevator warp
-//xr = -759.5329559
-//yr = 52935.373045
-//zt = 2654.88693
-//x2 = 2(xr) - x1
-//y2 = 2(yr) - y1
-//z2 = zt + z1
-
-//~225u present collection range (300 just to be safe)
-//200u as generator range
-
-//UNTESTED REPAIRED HEAD, 6am PARTY PASS, CDs
-//HIPPO MAGNET USED POINTER NOT WORKING
-
 //To Do List:
+//ADD BOTH MAPBOT MAPS
 //TRIM DOWN CODE
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
-//TEST SPLITS
+
+//UNTESTED REPAIRED HEAD, CDs
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -35,14 +23,19 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
-	//Keeps track of when the game has ended (end = 1)
+	//Buttons that start cutscenes (pressed = 0)
+	int vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int fireEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4A0, 0x3D8, 0x268;
+	int carEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4A8, 0x3D8, 0x268;
+	int escapeEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4B0, 0x3D8, 0x268;
+
+	//Keeps track of when an ending cutscene has started playing (end = 1)
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
 	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
 	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
 	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
 	int escapeEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x398, 0xD8;
 	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
-	int vannyEndButton: 0x0441FCB0, 0x98, 0x730, 0x7D0, 0x550, 0x5E0, 0x500, 0x240;
 
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x0441C570, 0x68, 0x8, 0xAE0, 0x28, 0x230, 0x0, 0x800;
@@ -58,9 +51,9 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Keeps track of items (splashScreen = 4)
 	int splashScreen: 0x0441FCB0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
-	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
-	int hippoMagnetUsed: 0x0441FCB0, 0xB8, 0x128, 0xA8, 0xA0, 0x338;
+	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
+	int hippoMagnetUsed: 0x0441FCB0, 0x98, 0xB8, 0x128, 0xA8, 0xA0, 0x338;
 
 	//Keeps count of the time
 	int hourTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
@@ -181,6 +174,22 @@ startup {
 	settings.Add("Button 6", false);
 	settings.Add("Button 7", false);
 	settings.Add("Button 8 / End", false);
+
+	settings.CurrentDefaultParent = "Vanny Ending";
+	settings.Add("V_B", false, "Press Ending Button");
+	settings.Add("V_C", false, "Cutscene");
+
+	settings.CurrentDefaultParent = "Car Battery Ending";
+	settings.Add("CB_B", false, "'Leave' Button");
+	settings.Add("CB_C", false, "Cutscene");
+
+	settings.CurrentDefaultParent = "Escape Ending";
+	settings.Add("E_B", false, "'Leave' Button");
+	settings.Add("E_C", false, "Cutscene");
+
+	settings.CurrentDefaultParent = "Fire Escape Ending";
+	settings.Add("F_B", false, "'Leave' Button");
+	settings.Add("F_C", false, "Cutscene");
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
 	settings.Add("pq_endCutscene", false, "End Cutscene");
@@ -463,9 +472,10 @@ startup {
 	settings.Add("Repaired Head", false);
 
 	settings.CurrentDefaultParent = "Retro CDs";
-	settings.Add("CD_Backstage", false, "Backstage");
+	settings.Add("CD_Backstage Podium", false, "Backstage");
 	settings.Add("CD_Bonnie Bowl", false, "Bonnie Bowl");
 	settings.Add("CD_Chica's Bakery", false, "Chica's Bakery");
+	settings.Add("CD_East Atrium Stage", false, "East Atrium");
 	settings.Add("CD_Fazerblast", false, "Fazerblast");
 	settings.Add("CD_Kids Cove", false, "Kids Cove");
 	settings.Add("CD_Main Atrium", false, "Main Atrium");
@@ -477,7 +487,6 @@ startup {
 	settings.Add("CD_Roxy Salon", false, "Roxy Salon");
 	settings.Add("CD_Utility Tunnels Couch", false, "Utility Tunnels Couch");
 	settings.Add("CD_Utility Tunnels Foxy Plush", false, "Utility Tunnels Foxy Plush");
-	settings.Add("CD_West Atrium Stage", false, "West Atrium");
 	settings.Add("CD_West Arcade", false, "West Arcade");
 	
 	settings.CurrentDefaultParent = "Security Badges";
@@ -491,31 +500,13 @@ startup {
 	settings.Add("Security Badge 8", false);
 
 	settings.CurrentDefaultParent = "Positional Splits";
-	settings.Add("P_Backstage", false, "Backstage");
-	settings.Add("P_Basement Kitchen", false, "Basement Kitchen");
 	settings.Add("P_Bonnie Bowl", false, "Bonnie Bowl");
-	settings.Add("P_Chica's Bakery", false, "Chica's Bakery");
 	settings.Add("P_Daycare", false, "Daycare");
 	settings.Add("P_El Chips", false, "El Chips");
 	settings.Add("P_Fazerblast", false, "Fazerblast");
 	settings.Add("P_Fazerblast Sublobby", false, "Fazerblast Sublobby");
-	settings.Add("P_Kids Cove Sublobby", false, "Kids Cove Sublobby");
-	settings.Add("P_Laundry", false, "Laundry");
-	settings.Add("P_Lobby", false, "Lobby");
-	settings.Add("P_Main Atrium", false, "Main Atrium");
-	settings.Add("P_Monty Golf", false, "Monty Golf");
-	settings.Add("P_Monty Golf Sublobby", false, "Monty Golf Sublobby");
-	settings.Add("P_Parts & Service", false, "Parts & Service");
-	settings.Add("P_Prize Counter", false, "Prize Counter");
-	settings.Add("P_Rockstar Row", false, "Rockstar Row");
-	settings.Add("P_Roxy Raceway", false, "Roxy Raceway");
-	settings.Add("P_Roxy Raceway Sublobby", false, "Roxy Raceway Sublobby");
-	settings.Add("P_Roxy Salon", false, "Roxy Salon");
-	settings.Add("P_Salads & Sides", false, "Salads & Sides");
-	settings.Add("P_Sewers", false, "Sewers");
 	settings.Add("P_Underground Afton Cave", false, "Underground Afton Cave");
 	settings.Add("P_Utility Tunnels", false, "Utility Tunnels");
-	settings.Add("P_Warehouse", false, "Warehouse");
 	settings.Add("P_West Arcade", false, "West Arcade");
 
 	settings.CurrentDefaultParent = "P_Bonnie Bowl";
@@ -523,7 +514,6 @@ startup {
 
 	settings.CurrentDefaultParent = "P_Daycare";
 	settings.Add("Enter Daycare", false);
-	settings.Add("Exit Daycare", false);
 
 	settings.CurrentDefaultParent = "P_El Chips";
 	settings.Add("Enter El Chips", false);
@@ -539,8 +529,7 @@ startup {
 
 	settings.CurrentDefaultParent = "P_Utility Tunnels";
 	settings.Add("First Aid Vanessa Cutscene", false);
-	settings.Add("Freddy Stairs Rail", false);
-	settings.Add("Leave Chica Bathroom", false);
+	settings.Add("Freddy Rail Jump", false);
 	settings.Add("Monty Chase", false);
 	settings.Add("STR-ATR-W Stairs", false);
 	settings.Add("STR-LB Stairs", false);
@@ -550,10 +539,31 @@ startup {
 	settings.Add("Exit West Arcade", false);
 
 	settings.CurrentDefaultParent = "Time Splits";
-	settings.Add("Daycare Nighttime", false);
-	settings.Add("Exit Vents", false);
-	settings.Add("Freddy Eye Repair", false);
-	settings.Add("6am", false);
+	settings.Add("Exit Vents (11:30PM)", false);
+	settings.Add("Freddy Recharge (11:45PM)", false);
+	settings.Add("Front Entrance Closure (12:00AM)", false);
+	settings.Add("Enter Daycare (12:30AM)", false);
+	settings.Add("Daycare Nighttime (12:55AM)", false);
+	settings.Add("Daycare Vanny Cutscene (1:00AM)", false);
+	settings.Add("Mini Music Man Chase / Enter El Chips (1:15AM)", false);
+	settings.Add("Pizzabot (1:30AM)", false);
+	settings.Add("White Woman Abduction (2:00AM)", false);
+	settings.Add("Dead Fred (2:15AM)", false);
+	settings.Add("Backstage Pass (2:30AM)", false);
+	settings.Add("Use Showtime Disk (2:45AM)", false);
+	settings.Add("Freddy Abduction Recharge (3:00AM)", false);
+	settings.Add("Vanessa Repair Cutscene (3:15AM)", false);
+	settings.Add("Freddy Power Upgrade (3:30AM)", false);
+	settings.Add("Party Pass Recharge (4:00AM)", false);
+	settings.Add("Golden Fazerblaster (4:15AM)", false);
+	settings.Add("Monty Mix / Mazercise Key (4:30AM)", false);
+	settings.Add("Leave Sewers (4:40AM)", false);
+	settings.Add("Freddy Upgrade Recharge (5:00AM)", false);
+	settings.Add("Damaged Head (5:15AM)", false);
+	settings.Add("Repaired Head (5:30AM)", false);
+	settings.Add("Finish Roxy Sequence (5:40AM)", false);
+	settings.Add("Freddy Eye Upgrade Nighttime (5:50AM)", false);
+	settings.Add("Reach Exit Door (6:00AM)", false);
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
@@ -880,17 +890,12 @@ init {
 		vars.iBowlingPass = true;
 		vars.iFazcam = true;
 		vars.iMazercisePass = true;
-		vars.iRepairedHead = true;
 
 		//Positional Splits
 		vars.pEnBonnieBowl = true;
-		vars.pEnDaycare = true;
-		vars.pExDaycare = false;
-		vars.pEnElChips = true;
 		vars.pFazerStairs = true;
 		vars.pFazerRail = true;
 		vars.pAftonElev = true;
-		vars.pChicaBath = true;
 		vars.pFirstAid = true;
 		vars.pFredRail = true;
 		vars.pMontyChase = true;
@@ -900,10 +905,30 @@ init {
 		vars.pExWestArcade = false;
 
 		//Timer Splits
-		vars.t6am = true;
-		vars.tDaycareNight = true;
 		vars.tVents = true;
-		vars.tRepair = true;
+		vars.tUtilityRecharge = true;
+		vars.tFrontEntrance = true;
+		vars.tEnDaycare = true;
+		vars.tDaycareNighttime = true;
+		vars.tDyacareRecharge = true;
+		vars.t1_15 = true;
+		vars.tPizzabot = true;
+		vars.tWhiteWoman = true;
+		vars.tDeadFred = true;
+		vars.tBackstagePass = true;
+		vars.tShowtimeDisk = true;
+		vars.tAbductionRecharge = true;
+		vars.tVanessaRepair = true;
+		vars.tPowerUpgrade = true;
+		vars.tPartyPassRecharge = true;
+		vars.tGoldBlaster = true;
+		vars.tLeaveSewers = true;
+		vars.tFreddyUpgrade = true;
+		vars.tDamagedHead = true;
+		vars.tRepairedHead = true;
+		vars.tRoxySequence = true;
+		vars.tEyeUpgradeNighttime = true;
+		vars.t6am = true;
 
 		//Pausing
 		vars.nAElev = 0;
@@ -1184,39 +1209,56 @@ split {
 		if (settings["Ending Splits"]){
 			//splits based on ending cutscenes
 			if (settings["Afton Ending"]){
-				if (settings["Button 8 / End"] && current.aftonEnd > old.aftonEnd){
+				if (settings["Button 8 / End"] && current.aftonHealth != 50 && old.aftonHealth == 50){
 					print("Button 8 / End");
 					return true;
 				}
 			}
 			if (settings["Car Battery Ending"]){
-				if (settings["Car Battery Ending"] && current.carEnd > old.carEnd){
-					print("Car Battery Ending");
+				if (settings["CB_C"] && current.carEnd > old.carEnd){
+					print("Car Battery Cutscene");
+					return true;
+				}
+				if (settings["CB_B"] && current.carEndLeaveButton < old.carEndLeaveButton){
+					print("Car Battery Button");
 					return true;
 				}
 			}
 			if (settings["Escape Ending"]){
-				if (settings["Escape Ending"] && current.escapeEnd > old.escapeEnd){
-					print("Escape Ending");
+				if (settings["E_C"] && current.escapeEnd > old.escapeEnd){
+					print("Escape Cutscene");
+					return true;
+				}
+				if (settings["E_B"] && current.escapeEndLeaveButton < old.escapeEndLeaveButton){
+					print("Escape Button");
 					return true;
 				}
 			}
 			if (settings["Fire Escape Ending"]){
-				if (settings["Fire Escape Ending"] && current.fireEnd > old.fireEnd){
-					print("Fire Escape Ending");
+				if (settings["F_C"] && current.fireEnd > old.fireEnd){
+					print("Fire Escape Cutscene");
+					return true;
+				}
+				if (settings["F_B"] && current.fireEndLeaveButton < old.fireEndLeaveButton){
+					print("Fire Escape Button");
 					return true;
 				}
 			}
 			if (settings["Princess Quest Ending"]){
 				if (settings["pq_endCutscene"] && current.pqEnd > old.pqEnd){
-					print("pq_endCutscene");
+					print("Princess Quest End Cutscene");
 					return true;
 				}
 			}
 			if (settings["Vanny Ending"]){
-				if (settings["Vanny Ending"] && current.vannyEnd > old.vannyEnd){
-					print("Vanny Ending");
+				if (settings["V_C"] && current.vannyEnd > old.vannyEnd){
+					print("Vanny Cutscene");
 					return true;
+				}
+				if (settings["V_B"] && current.vannyEndButton < old.vannyEndButton){
+					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+						return true;
+					}
 				}
 			}
 			//other ending splits
@@ -1686,7 +1728,7 @@ split {
 						}
 					}
 					if (settings["Equipment"]){
-						//Fazerblasters and Daycare Pass don't use splashscreen
+						//Grey Fazerblaster and Daycare Pass don't use splashscreen
 						if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
 							if (settings["E_Lobby"]){
 								if (settings["Daycare Pass"]){
@@ -1697,9 +1739,6 @@ split {
 						}
 						if (current.itemCount > old.itemCount){
 							if (settings["E_Fazerblast"]){
-								if (vars.checkItem("Golden Fazerblaster", 13890, 31285, 1530)){
-									return true;
-								}
 								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
 									return true;
 								}
@@ -1708,7 +1747,8 @@ split {
 						//splashscreen items
 						if (current.splashScreen > old.splashScreen){
 							if (settings["E_Backstage"]){
-								if (vars.checkItem("Backstage Pass", -8925, 49895, 1600)){
+								if (vars.checkTime("Backstage Pass", vars.tBackstagePass, 2, 30)){
+									vars.tBackstagePass = false;
 									return true;
 								}
 								if (vars.checkItem("B_Flashlight Upgrade", -8470, 53390, 1520)){
@@ -1753,7 +1793,11 @@ split {
 										return true;
 									}
 								}
-								//Fazerblasters at the start of equipment splits
+								if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
+									vars.tGoldBlaster = false;
+									return true;
+								}
+								//Grey Fazerblaster at the start of equipment splits
 							}
 							if (settings["E_Lobby"]){
 								if (vars.checkItem("Chica Fizzy Faz", -3185, 22880, 1515)){
@@ -1807,7 +1851,8 @@ split {
 								}
 							}
 							if (settings["E_Roxy Raceway"]){
-								if (vars.checkItem("Damaged Head", 24180, 44485, 1540)){
+								if (vars.checkTime("Damaged Head", vars.tDamagedHead, 5, 15)){
+									vars.tDamagedHead = false;
 									return true;
 								}
 								if (vars.checkItem("Dance Pass", 17750, 38295, 1545)){
@@ -1839,24 +1884,24 @@ split {
 								}
 							}
 							if (settings["E_West Arcade"]){
-								if (vars.checkTime("Repaired Head", vars.iRepairedHead, 5, 30)){
-									vars.iRepairedHead = false;
+								if (vars.checkTime("Repaired Head", vars.tRepairedHead, 5, 30)){
+									vars.tRepairedHead = false;
 									return true;
 								}
 							}
 						}
 					}
 					if (settings["Retro CDs"]){
-						if (vars.checkItem("CD_Backstage", -7595, 51270, 1545)){
+						if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
 							return true;
 						}
-						if (vars.checkItem("CD_Bonnie Bowl", 16910, 31180, 3320)){
+						if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
 							return true;
 						}
 						if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
 							return true;
 						}
-						if (vars.checkItem("CD_Fazerblast", 8150, 35555, 1500)){
+						if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
 							return true;
 						}
 						if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
@@ -1865,7 +1910,7 @@ split {
 						if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
 							return true;
 						}
-						if (vars.checkItem("CD_Mazercise", -8710, 41090, 3320)){
+						if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
 							return true;
 						}
 						if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
@@ -1877,7 +1922,7 @@ split {
 						if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
 							return true;
 						}
-						if (vars.checkItem("CD_Roxy Raceway", 12765, 48005, 1545)){
+						if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
 							return true;
 						}
 						if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
@@ -1889,10 +1934,10 @@ split {
 						if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
 							return true;
 						}
-						if (vars.checkItem("CD_West Atrium Stage", -8325, 41485, 1520)){
+						if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
 							return true;
 						}
-						if (vars.checkItem("CD_West Arcade", 10910, 24441, 3360)){
+						if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
 							return true;
 						}
 					}
@@ -1915,19 +1960,14 @@ split {
 				}
 			}
 			if (settings["P_Daycare"]){
-				if (vars.checkPosition("Enter Daycare", vars.pEnDaycare, -11125, -10925, 28900, 29900, 2100, 2250)){
-					vars.pExDaycare = true;
-					vars.pEnDaycare = false;
-					return true;
-				}
-				if (vars.checkPosition("Exit Daycare", vars.pExDaycare, -10925, -10725, 28900, 29900, 2100, 2250)){
-					vars.pExDaycare = false;
+				if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
+					vars.tEnDaycare = false;
 					return true;
 				}
 			}
 			if (settings["P_El Chips"]){
-				if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-					vars.pEnElChips = false;
+				if (vars.checkPosition("Enter El Chips", vars.t1_15, -8700, -8445, 34600, 35700, 3200, 3700)){
+					vars.t1_15 = false;
 					return true;
 				}
 			}
@@ -1954,12 +1994,8 @@ split {
 					vars.pFirstAid = false;
 					return true;
 				}
-				if (vars.checkPosition("Freddy Stairs Rail", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
+				if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
 					vars.pFredRail = false;
-					return true;
-				}
-				if (vars.checkPosition("Leave Chica Bathroom", vars.pChicaBath, 5100, 5250, 33500, 34200, 0, 300)){
-					vars.pChicaBath = false;
 					return true;
 				}
 				if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
@@ -1989,20 +2025,110 @@ split {
 		}
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
-				if (vars.checkTime("6am", vars.t6am, 6, 0)){
-					vars.t6am = false;
-					return true;
-				}
-				if (vars.checkTime("Daycare Nighttime", vars.tDaycareNight, 0, 55)){
-					vars.tDaycareNight = false;
-					return true;
-				}
-				if (vars.checkTime("Exit Vents", vars.tVents, -1, 30)){
+				if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
 					vars.tVents = false;
 					return true;
 				}
-				if (vars.checkTime("Freddy Eye Repair", vars.tRepair, 5, 50)){
-					vars.tRepair = false;
+				if (vars.checkTime("Freddy Recharge (11:45AM)", vars.tUtilityRecharge, -1, 45)){
+					vars.tUtilityRecharge = false;
+					return true;
+				}
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
+					vars.tFrontEntrance = false;
+					return true;
+				}
+				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
+					vars.tEnDaycare = false;
+					return true;
+				}
+				if (vars.checkTime("Daycare Nighttime (12:55AM)", vars.tDaycareNighttime, 0, 55)){
+					vars.tDaycareNighttime = false;
+					return true;
+				}
+				if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", vars.tDaycareRecharge, 1, 0)){
+					vars.tDaycareRecharge = false;
+					return true;
+				}
+				if (vars.checkTime("Mini Music Man Chase / Enter El Chips (1:15AM)", vars.t1_15, 1, 15)){
+					vars.t1_15 = false;
+					return true;
+				}
+				if (vars.checkTime("Pizzabot (1:30AM)", vars.tPizzabot, 1, 30)){
+					vars.tPizzabot = false;
+					return true;
+				}
+				if (vars.checkTime("White Woman Abduction (2:00AM)", vars.tWhiteWoman, 2, 0)){
+					vars.tWhiteWoman = false;
+					return true;
+				}
+				if (vars.checkTime("Dead Fred (2:15AM)", vars.tDeadFred, 2, 15)){
+					vars.tDeadFred = false;
+					return true;
+				}
+				if (vars.checkTime("Backstage Pass (2:30AM)", vars.tBackstagePass, 2, 30)){
+					vars.tBackstagePass = false;
+					return true;
+				}
+				if (vars.checkTime("Use Showtime Disk (2:45AM)", vars.tShowtimeDisk, 2, 45)){
+					vars.tShowtimeDisk = false;
+					return true;
+				}
+				if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", vars.tAbductionRecharge, 3, 0)){
+					vars.tAbductionRecharge = false;
+					return true;
+				}
+				if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", vars.tVanessaRepair, 3, 15)){
+					vars.tVanessaRepair = false;
+					return true;
+				}
+				if (vars.checkTime("Freddy Power Upgrade (3:30AM)", vars.tPowerUpgrade, 3, 30)){
+					vars.tPowerUpgrade = false;
+					return true;
+				}
+				if (vars.checkTime("Party Pass Recharge (4:00AM)", vars.tPartyPassRecharge, 4, 0)){
+					vars.tPartyPassRecharge = false;
+					return true;
+				}
+				if (vars.checkTime("Golden Fazerblaster (4:15AM)", vars.tGoldBlaster, 4, 15)){
+					vars.tGoldBlaster = false;
+					return true;
+				}
+				if (settings["Monty Mix / Mazercise Key (4:30AM)"]){
+					if (current.splashScreen > old.splashScreen){
+						if (vars.checkItem("Monty Mystery Mix (4:30AM)", 15060, 30205, 3425)){
+							return true;
+						}
+						if (vars.checkItem("Mazercise Control Key (4:30AM)", -17450, 31605, 70)){
+							return true;
+						}
+					}
+				}
+				if (vars.checkTime("Leave Sewers (4:40AM)", vars.tLeaveSewers, 4, 40)){
+					vars.tLeaveSewers = false;
+					return true;
+				}
+				if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", vars.tFreddyUpgrade, 5, 0)){
+					vars.tFreddyUpgrade = false;
+					return true;
+				}
+				if (vars.checkTime("Damaged Head (5:15AM)", vars.tDamagedHead, 5, 15)){
+					vars.tDamagedHead = false;
+					return true;
+				}
+				if (vars.checkTime("Repaired Head (5:30AM)", vars.tRepairedHead, 5, 30)){
+					vars.tRepairedHead = false;
+					return true;
+				}
+				if (vars.checkTime("Finish Roxy Sequence (5:40AM)", vars.tRoxySequence, 5, 40)){
+					vars.tRoxySequence = false;
+					return true;
+				}
+				if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", vars.tEyeUpgradeNighttime, 5, 50)){
+					vars.tEyeUpgradeNighttime = false;
+					return true;
+				}
+				if (vars.checkTime("Reach Exit Door (6:00AM)", vars.t6am, 6, 0)){
+					vars.t6am = false;
 					return true;
 				}
 			}
