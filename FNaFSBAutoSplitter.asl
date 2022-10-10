@@ -21,12 +21,13 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
-	int fireEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4A0, 0x3D8, 0x268;
-	int carEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4A8, 0x3D8, 0x268;
-	int escapeEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0x98, 0x4B0, 0x3D8, 0x268;
+	int escapeEndLeaveButtonEast: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268;
+	int fireEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268;
+	int carEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268;
+	int escapeEndLeaveButtonWest: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
-	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
+	//int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
 	int vannyEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x2D8, 0xD8;
 	int fireEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x318, 0xD8;
 	int carEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x358, 0xD8;
@@ -891,6 +892,7 @@ init {
 
 		//Positional Splits
 		vars.pEnBonnieBowl = true;
+		vars.pEnElChips = true;
 		vars.pFazerStairs = true;
 		vars.pFazerRail = true;
 		vars.pAftonElev = true;
@@ -1217,9 +1219,11 @@ split {
 					print("Car Battery Cutscene");
 					return true;
 				}
-				if (settings["CB_B"] && current.carEndLeaveButton < old.carEndLeaveButton){
-					print("Car Battery Button");
-					return true;
+				if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
+					if (current.menu != 0){
+						print("Car Battery Button");
+						return true;
+					}
 				}
 			}
 			if (settings["Escape Ending"]){
@@ -1227,9 +1231,19 @@ split {
 					print("Escape Cutscene");
 					return true;
 				}
-				if (settings["E_B"] && current.escapeEndLeaveButton < old.escapeEndLeaveButton){
-					print("Escape Button");
-					return true;
+				if (settings["E_B"]){
+					if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
+						if (current.menu != 0){
+							print("Escape (East) Button");
+							return true;
+						}
+					}
+					if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
+						if (current.menu != 0){
+							print("Escape (West) Button");
+							return true;
+						}
+					}
 				}
 			}
 			if (settings["Fire Escape Ending"]){
@@ -1237,9 +1251,11 @@ split {
 					print("Fire Escape Cutscene");
 					return true;
 				}
-				if (settings["F_B"] && current.fireEndLeaveButton < old.fireEndLeaveButton){
-					print("Fire Escape Button");
-					return true;
+				if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
+					if (current.menu != 0){
+						print("Fire Escape Button");
+						return true;
+					}
 				}
 			}
 			if (settings["Princess Quest Ending"]){
@@ -1970,9 +1986,12 @@ split {
 				}
 			}
 			if (settings["P_El Chips"]){
-				if (vars.checkPosition("Enter El Chips", vars.t1_15, -8700, -8445, 34600, 35700, 3200, 3700)){
-					vars.t1_15 = false;
-					return true;
+				if (current.hourTimer == 1 && current.minuteTimer == 15){
+					if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+						vars.pEnElChips = false;
+						vars.t1_15 = false;
+						return true;
+					}
 				}
 			}
 			if (settings["P_Fazerblast"]){
