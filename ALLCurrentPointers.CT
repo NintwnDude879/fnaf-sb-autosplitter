@@ -898,10 +898,10 @@
             </CheatEntry>
             <CheatEntry>
               <ID>28748</ID>
-              <Description>"Monty Fight Bucket"</Description>
+              <Description>"Monty Fight Bucket (Patched)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+              <Address>"fnaf9-Win64-Shipping.exe"+4420F40</Address>
               <Offsets>
                 <Offset>158</Offset>
                 <Offset>228</Offset>
@@ -1271,7 +1271,7 @@
         </CheatEntry>
         <CheatEntry>
           <ID>28777</ID>
-          <Description>"Freddy Power"</Description>
+          <Description>"Freddy Power (PATCHED)"</Description>
           <Options moHideChildren="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -1280,7 +1280,7 @@
               <Description>"Current Power"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe" + 0441B738</Address>
+              <Address>"fnaf9-Win64-Shipping.exe" +441C9C8</Address>
               <Offsets>
                 <Offset>B8</Offset>
                 <Offset>38</Offset>
@@ -1293,7 +1293,7 @@
               <Description>"Max Power"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe" + 0441B738</Address>
+              <Address>"fnaf9-Win64-Shipping.exe" + 441C9C8</Address>
               <Offsets>
                 <Offset>BC</Offset>
                 <Offset>38</Offset>
@@ -1314,30 +1314,25 @@
               <Description>"Hour"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+              <Address>"fnaf9-Win64-Shipping.exe"+440AD80</Address>
               <Offsets>
                 <Offset>258</Offset>
                 <Offset>230</Offset>
-                <Offset>328</Offset>
-                <Offset>128</Offset>
-                <Offset>20</Offset>
-                <Offset>8</Offset>
-                <Offset>98</Offset>
+                <Offset>670</Offset>
+                <Offset>30</Offset>
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>28782</ID>
+              <ID>28821</ID>
               <Description>"Minute"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+              <Address>"fnaf9-Win64-Shipping.exe"+440AD80</Address>
               <Offsets>
                 <Offset>25C</Offset>
                 <Offset>230</Offset>
-                <Offset>328</Offset>
-                <Offset>128</Offset>
-                <Offset>20</Offset>
-                <Offset>8</Offset>
-                <Offset>98</Offset>
+                <Offset>670</Offset>
+                <Offset>30</Offset>
               </Offsets>
             </CheatEntry>
           </CheatEntries>
@@ -1350,10 +1345,10 @@
           <CheatEntries>
             <CheatEntry>
               <ID>28784</ID>
-              <Description>"Item Count"</Description>
+              <Description>"Item Count (PATCHED)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe" + 0441B738</Address>
+              <Address>"fnaf9-Win64-Shipping.exe" + 441C9C8</Address>
               <Offsets>
                 <Offset>138</Offset>
                 <Offset>38</Offset>
@@ -1379,10 +1374,10 @@
             </CheatEntry>
             <CheatEntry>
               <ID>28786</ID>
-              <Description>"Security Badge Count"</Description>
+              <Description>"Security Badge Count (PATCHED)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe" + 0x0441B738</Address>
+              <Address>"fnaf9-Win64-Shipping.exe" + 441C9C8</Address>
               <Offsets>
                 <Offset>0xC0</Offset>
                 <Offset>0x38</Offset>
@@ -1409,7 +1404,7 @@
         </CheatEntry>
         <CheatEntry>
           <ID>28788</ID>
-          <Description>"Pause Timer"</Description>
+          <Description>"Pause Timer (PATCHED)"</Description>
           <Options moHideChildren="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -1564,37 +1559,22 @@
             </CheatEntry>
             <CheatEntry>
               <ID>28799</ID>
-              <Description>"Menu Pause (menu=0, else!=0)"</Description>
+              <Description>"Menu Pause (menu=0, else!=0) (PATCHED)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe"+0441EB78</Address>
+              <Address>"fnaf9-Win64-Shipping.exe"+441FE08</Address>
               <Offsets>
                 <Offset>B4</Offset>
               </Offsets>
             </CheatEntry>
             <CheatEntry>
               <ID>28800</ID>
-              <Description>"Pause Menu (menu=3, else=2)"</Description>
+              <Description>"Pause Menu (menu=3, else=2) (PATCHED)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>"fnaf9-Win64-Shipping.exe" + 441C584</Address>
+              <Address>"fnaf9-Win64-Shipping.exe" + 441D814</Address>
             </CheatEntry>
           </CheatEntries>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>28801</ID>
-          <Description>"Button"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>"fnaf9-Win64-Shipping.exe"+0441D880</Address>
-          <Offsets>
-            <Offset>240</Offset>
-            <Offset>2F8</Offset>
-            <Offset>A8</Offset>
-            <Offset>128</Offset>
-            <Offset>A0</Offset>
-            <Offset>98</Offset>
-          </Offsets>
         </CheatEntry>
         <CheatEntry>
           <ID>28802</ID>
@@ -1663,7 +1643,7 @@
             </CheatEntry>
             <CheatEntry>
               <ID>28807</ID>
-              <Description>"Player Position"</Description>
+              <Description>"Player Position (PATCHED)"</Description>
               <Options moHideChildren="1"/>
               <GroupHeader>1</GroupHeader>
               <CheatEntries>
@@ -1769,6 +1749,33 @@
         <Byte>87</Byte>
         <Byte>38</Byte>
         <Byte>01</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of cmp rbp,[rsi+000000D0]</Description>
+      <AddressString>fnaf9-Win64-Shipping.exe+22FD10B</AddressString>
+      <Before>
+        <Byte>15</Byte>
+        <Byte>A5</Byte>
+        <Byte>97</Byte>
+        <Byte>D9</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>3B</Byte>
+        <Byte>AE</Byte>
+        <Byte>D0</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>CB</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
       </After>
     </CodeEntry>
   </CheatCodes>
