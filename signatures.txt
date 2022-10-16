@@ -18,3 +18,5 @@
 
 // 0441EB78 in 1.04 SIGNATURE
 48 8B 05 ??????0? 4B 8D 0C BF 48 8B 54 24 38
+
+//3rd to last offset changes???
