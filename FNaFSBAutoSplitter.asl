@@ -684,13 +684,6 @@ startup {
 }
 
 init {
-	//Sigscanning functions
-	var scanner = new SignatureScanner(game, modules.First().BaseAddress, modules.First().ModuleMemorySize);
-	var target  = new SigScanTarget(15, "48 63 5E 08 48 8B 08 8D 43 01 48 89 4C 24 30 89 46 08 3B 46 0C");
-	IntPtr ptr = scanner.Scan(target);
-	vars.watcher = new MemoryWatcher<int>(ptr);
-	print(ptr.ToString());
-
 	//Functions
 	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
 		if (settings[name]){
