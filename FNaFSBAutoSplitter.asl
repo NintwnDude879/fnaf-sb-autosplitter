@@ -5,7 +5,7 @@
 //AOB SCANNING?
 //UPDATE VERSION DETECTION?
 
-state("fnaf9-Win64-Shipping"){
+state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
 
@@ -684,6 +684,24 @@ startup {
 }
 
 init {
+	//Sets the version of the game upon startup
+	vars.versionSize = modules.First().ModuleMemorySize;
+	print("Size = " + vars.versionSize.ToString());
+
+	//1.04: 76210176
+	//1.05: 76214272
+	//1.11: 76251136
+
+	if (vars.versionSize == 76210176){
+		version = "v1.04";
+	}
+	if (vars.versionSize == 76214272){
+		version = "v1.05";
+	}
+	if (vars.versionSize == 76251136){
+		version = "v1.11";
+	}
+
 	//Functions
 	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
 		if (settings[name]){
@@ -922,15 +940,6 @@ init {
 		vars.nWAElev = 0;
 	});
 }
-
-update {
-	vars.watcher.Update(game);
-	if (vars.watcher.Current != vars.watcher.Old){
-		print("Old: " + vars.watcher.Old.ToString());
-		print("Current: " + vars.watcher.Current.ToString());
-	}
-}
-
 start {
 	//Updates refreshRate
 	if (settings["Refresh Rate"]){
