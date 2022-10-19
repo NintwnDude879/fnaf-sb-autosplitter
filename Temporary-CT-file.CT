@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>27847</ID>
+      <Description>"1.04"</Description>
+      <Options moHideChildren="1"/>
+      <ShowAsSigned>1</ShowAsSigned>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>27850</ID>
+          <Description>"Freddy Power"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27849</ID>
+              <Description>"freddyPower"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441B738</Address>
+              <Offsets>
+                <Offset>B8</Offset>
+                <Offset>38</Offset>
+                <Offset>10</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27851</ID>
+          <Description>"Counter Pointers"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27960</ID>
+              <Description>"FBFlags"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+              <Offsets>
+                <Offset>290</Offset>
+                <Offset>418</Offset>
+                <Offset>3D8</Offset>
+                <Offset>8</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>A8</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28030</ID>
+              <Description>"DCGens"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+              <Offsets>
+                <Offset>14</Offset>
+                <Offset>290</Offset>
+                <Offset>580</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>40</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28035</ID>
+              <Description>"MGBucket"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+              <Offsets>
+                <Offset>158</Offset>
+                <Offset>228</Offset>
+                <Offset>F0</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>70</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27855</ID>
+          <Description>"Player Information"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27856</ID>
+              <Description>"posX"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D0</Offset>
+                <Offset>138</Offset>
+                <Offset>318</Offset>
+                <Offset>128</Offset>
+                <Offset>120</Offset>
+                <Offset>10</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27857</ID>
+              <Description>"posY"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D4</Offset>
+                <Offset>138</Offset>
+                <Offset>318</Offset>
+                <Offset>128</Offset>
+                <Offset>120</Offset>
+                <Offset>10</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27858</ID>
+              <Description>"posZ"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D8</Offset>
+                <Offset>138</Offset>
+                <Offset>318</Offset>
+                <Offset>128</Offset>
+                <Offset>120</Offset>
+                <Offset>10</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27859</ID>
+          <Description>"Ending Buttons"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27860</ID>
+              <Description>"vannyEndButton"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>240</Offset>
+                <Offset>2F8</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>A0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27861</ID>
+              <Description>"escapeEndLeaveButtonEast"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>268</Offset>
+                <Offset>3D8</Offset>
+                <Offset>38</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>2D0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27862</ID>
+              <Description>"carEndLeaveButton"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>268</Offset>
+                <Offset>3D8</Offset>
+                <Offset>40</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>2D0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27863</ID>
+              <Description>"fireEndLeaveButton"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>268</Offset>
+                <Offset>3D8</Offset>
+                <Offset>48</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>2D0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27864</ID>
+              <Description>"escapeEndLeaveButtonWest"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>268</Offset>
+                <Offset>3D8</Offset>
+                <Offset>50</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>2D0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27865</ID>
+          <Description>"Ending Cutscenes"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27853</ID>
+              <Description>"Afton Ending"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C5C8</Address>
+              <Offsets>
+                <Offset>D8</Offset>
+                <Offset>260</Offset>
+                <Offset>118</Offset>
+                <Offset>388</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>27854</ID>
+                  <Description>"AftonHealth"</Description>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>"fnaf9-Win64-Shipping.exe"+042DCC78</Address>
+                  <Offsets>
+                    <Offset>800</Offset>
+                    <Offset>258</Offset>
+                    <Offset>E8</Offset>
+                    <Offset>A0</Offset>
+                    <Offset>AD0</Offset>
+                    <Offset>0</Offset>
+                    <Offset>F50</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28041</ID>
+              <Description>"Car Ending"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C5C8</Address>
+              <Offsets>
+                <Offset>D8</Offset>
+                <Offset>358</Offset>
+                <Offset>118</Offset>
+                <Offset>388</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28042</ID>
+              <Description>"Escape Ending"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C5C8</Address>
+              <Offsets>
+                <Offset>D8</Offset>
+                <Offset>398</Offset>
+                <Offset>118</Offset>
+                <Offset>388</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28043</ID>
+              <Description>"Fire Ending"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C5C8</Address>
+              <Offsets>
+                <Offset>D8</Offset>
+                <Offset>318</Offset>
+                <Offset>118</Offset>
+                <Offset>388</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28044</ID>
+              <Description>"PQ Ending"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C5C8</Address>
+              <Offsets>
+                <Offset>D8</Offset>
+                <Offset>3D8</Offset>
+                <Offset>118</Offset>
+                <Offset>388</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>28045</ID>
+              <Description>"Vanny Ending"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C5C8</Address>
+              <Offsets>
+                <Offset>D8</Offset>
+                <Offset>2D8</Offset>
+                <Offset>118</Offset>
+                <Offset>388</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27872</ID>
+          <Description>"Afton's Health"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27873</ID>
+              <Description>"aftonHealth"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>800</Offset>
+                <Offset>0</Offset>
+                <Offset>230</Offset>
+                <Offset>58</Offset>
+                <Offset>190</Offset>
+                <Offset>50</Offset>
+                <Offset>A10</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27874</ID>
+          <Description>"PQ Player Positions"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27875</ID>
+              <Description>"pq1X"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D4</Offset>
+                <Offset>138</Offset>
+                <Offset>260</Offset>
+                <Offset>70</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27881</ID>
+              <Description>"pq1Y"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D0</Offset>
+                <Offset>138</Offset>
+                <Offset>260</Offset>
+                <Offset>70</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27880</ID>
+              <Description>"pq2X"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D4</Offset>
+                <Offset>138</Offset>
+                <Offset>E60</Offset>
+                <Offset>70</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27879</ID>
+              <Description>"pq2Y"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D0</Offset>
+                <Offset>138</Offset>
+                <Offset>E60</Offset>
+                <Offset>70</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27878</ID>
+              <Description>"pq3X"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D4</Offset>
+                <Offset>138</Offset>
+                <Offset>38</Offset>
+                <Offset>200</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27877</ID>
+              <Description>"pq3Y"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>1D0</Offset>
+                <Offset>138</Offset>
+                <Offset>38</Offset>
+                <Offset>200</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27876</ID>
+              <Description>"pq3Attack"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C570</Address>
+              <Offsets>
+                <Offset>3F9</Offset>
+                <Offset>120</Offset>
+                <Offset>38</Offset>
+                <Offset>200</Offset>
+                <Offset>200</Offset>
+                <Offset>8</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27882</ID>
+          <Description>"Items"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27886</ID>
+              <Description>"securityBadgeCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441B738</Address>
+              <Offsets>
+                <Offset>C0</Offset>
+                <Offset>38</Offset>
+                <Offset>10</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27887</ID>
+              <Description>"itemCount"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441B738</Address>
+              <Offsets>
+                <Offset>138</Offset>
+                <Offset>38</Offset>
+                <Offset>10</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27884</ID>
+              <Description>"hippoMagnetUsed"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>338</Offset>
+                <Offset>A0</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>B8</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27883</ID>
+              <Description>"splashScreen"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>3C8</Offset>
+                <Offset>328</Offset>
+                <Offset>128</Offset>
+                <Offset>B8</Offset>
+                <Offset>128</Offset>
+                <Offset>8A0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27888</ID>
+          <Description>"Timer"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27889</ID>
+              <Description>"hourTimer"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 04409AF0</Address>
+              <Offsets>
+                <Offset>258</Offset>
+                <Offset>230</Offset>
+                <Offset>670</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27890</ID>
+              <Description>"minuteTimer"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 04409AF0</Address>
+              <Offsets>
+                <Offset>25C</Offset>
+                <Offset>230</Offset>
+                <Offset>670</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27891</ID>
+          <Description>"Pauses"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27892</ID>
+              <Description>"pause"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441C584</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27893</ID>
+              <Description>"menu"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441EB78</Address>
+              <Offsets>
+                <Offset>B4</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27894</ID>
+          <Description>"Elevators"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27895</ID>
+              <Description>"kitElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>2E8</Offset>
+                <Offset>B8</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>7D0</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27898</ID>
+              <Description>"monGElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>4</Offset>
+                <Offset>2D8</Offset>
+                <Offset>68</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>808</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27900</ID>
+              <Description>"foy1Elev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>4</Offset>
+                <Offset>2D8</Offset>
+                <Offset>B8</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>818</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27899</ID>
+              <Description>"bonBElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>4</Offset>
+                <Offset>2D8</Offset>
+                <Offset>58</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>828</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27901</ID>
+              <Description>"foy2Elev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>4</Offset>
+                <Offset>2D8</Offset>
+                <Offset>60</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>818</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27897</ID>
+              <Description>"fazerElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>2E8</Offset>
+                <Offset>288</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>830</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27902</ID>
+              <Description>"WAElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>4</Offset>
+                <Offset>2D8</Offset>
+                <Offset>B0</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>838</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27896</ID>
+              <Description>"roxyElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>2E8</Offset>
+                <Offset>288</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>848</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>27903</ID>
+              <Description>"aftonElev"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"fnaf9-Win64-Shipping.exe" + 0441FCB0</Address>
+              <Offsets>
+                <Offset>4</Offset>
+                <Offset>2D8</Offset>
+                <Offset>B8</Offset>
+                <Offset>A8</Offset>
+                <Offset>128</Offset>
+                <Offset>890</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>28022</ID>
+      <Description>"FBFlags"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"fnaf9-Win64-Shipping.exe"+0441FCB0</Address>
+      <Offsets>
+        <Offset>290</Offset>
+        <Offset>418</Offset>
+        <Offset>3D8</Offset>
+        <Offset>8</Offset>
+        <Offset>A8</Offset>
+        <Offset>128</Offset>
+        <Offset>A8</Offset>
+        <Offset>98</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>28036</ID>
+      <Description>"MGBucket"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>fnaf9-Win64-Shipping.exe+44288B0</Address>
+      <Offsets>
+        <Offset>158</Offset>
+        <Offset>228</Offset>
+        <Offset>108</Offset>
+        <Offset>A8</Offset>
+        <Offset>128</Offset>
+        <Offset>70</Offset>
+        <Offset>98</Offset>
+      </Offsets>
+    </CheatEntry>
+  </CheatEntries>
+</CheatTable>
