@@ -1,10 +1,6 @@
 //Five Nights at Freddy's: Security Breach | v1.0.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
-//To Do List:
-//AOB SCANNING?
-//UPDATE VERSION DETECTION?
-
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
