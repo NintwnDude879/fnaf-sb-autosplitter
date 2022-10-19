@@ -1,5 +1,7 @@
 //Five Nights at Freddy's: Security Breach | v1.0.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
+//Original autosplitter created by patrogue#4071
+//Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
