@@ -825,16 +825,15 @@ init {
 	if (vars.versionSize == 76210176){
 		version = "v1.04";
 	}
-	if (vars.versionSize == 76214272){
+	else if (vars.versionSize == 76214272){
 		version = "v1.05";
 	}
-	if (vars.versionSize == 76251136){
+	else if (vars.versionSize == 76251136){
 		version = "v1.11";
 	}
-
+	
 	print("Version = " + version);
 }
-
 start {
 	//Functions
 	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
@@ -875,12 +874,18 @@ start {
 		return false;
 	});
 
-	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (settings[name]){
-			if (check){
-				if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
-					print(name);
-					return true;
+	vars.checkPosition = (Func<string, int, int, bool, double, double, double, double, double, double, bool>)((name, currentpointer, oldpointer, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
+		if (currentpointer < oldpointer){
+			print("#0");
+			if (settings[name]){
+				print("#1");
+				if (check){
+					print("#2");
+					if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+						print(name);
+						print("#3");
+						return true;
+					}
 				}
 			}
 		}
@@ -1400,10 +1405,14 @@ split {
 					print("Vanny Cutscene");
 					return true;
 				}
-				if (settings["V_B"] && current.vannyEndButton < old.vannyEndButton){
-					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+				if (vars.checkPosition("V_B", current.vannyEndButton, old.vannyEndButton, true, 17550, 17750, 28450, 28740, 2500, 2800)){
+					if (current.vannyEndButton < old.vannyEndButton){
 						return true;
+						print("Vanny End Button");
 					}
+				}
+				if (current.vannyEndButton !=  old.vannyEndButton){
+					print("Vanny End Button: " + current.vannyEndButton.ToString());
 				}
 			}
 			//other ending splits
