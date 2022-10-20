@@ -1876,27 +1876,27 @@ split {
 					}
 				}
 				if (settings["Equipment"]){
+					//Fazerblasters and Daycare Pass don't use splashscreen
+					if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
+						if (settings["E_Lobby"]){
+							if (settings["Daycare Pass"]){
+								print("Daycare Pass");
+								return true;
+							}
+						}
+					}
+					if (current.itemCount > old.itemCount){
+						if (settings["E_Fazerblast"]){
+							if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
+								return true;
+							}
+							if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
+								vars.tGoldBlaster = false;
+								return true;
+							}
+						}
+					}
 					if (current.splashScreen > old.splashScreen){
-						//Fazerblasters and Daycare Pass don't use splashscreen
-						if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
-							if (settings["E_Lobby"]){
-								if (settings["Daycare Pass"]){
-									print("Daycare Pass");
-									return true;
-								}
-							}
-						}
-						if (current.itemCount > old.itemCount){
-							if (settings["E_Fazerblast"]){
-								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
-									return true;
-								}
-								if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
-									vars.tGoldBlaster = false;
-									return true;
-								}
-							}
-						}
 						//splashscreen items
 						if (settings["E_Backstage"]){
 							if (vars.checkTime("Backstage Pass", vars.tBackstagePass, 2, 30)){
