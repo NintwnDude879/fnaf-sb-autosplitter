@@ -2046,53 +2046,55 @@ split {
 					}
 				}
 				if (settings["Retro CDs"]){
-					if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
-						return true;
-					}
-					if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
-						return true;
-					}
-					if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
-						return true;
-					}
-					if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
-						return true;
-					}
-					if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
-						return true;
-					}
-					if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
-						return true;
-					}
-					if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
-						return true;
-					}
-					if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
-						return true;
-					}
-					if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
-						return true;
-					}
-					if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
-						return true;
-					}
-					if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
-						return true;
-					}
-					if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
-						return true;
-					}
-					if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
-						return true;
-					}
-					if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
-						return true;
-					}
-					if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
-						return true;
-					}
-					if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
-						return true;
+					if (current.splashScreen > old.splashScreen){
+						if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
+							return true;
+						}
+						if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
+							return true;
+						}
+						if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
+							return true;
+						}
+						if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
+							return true;
+						}
+						if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
+							return true;
+						}
+						if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
+							return true;
+						}
+						if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
+							return true;
+						}
+						if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
+							return true;
+						}
+						if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+							return true;
+						}
+						if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+							return true;
+						}
+						if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
+							return true;
+						}
+						if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
+							return true;
+						}
+						if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
+							return true;
+						}
+						if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
+							return true;
+						}
+						if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
+							return true;
+						}
+						if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
+							return true;
+						}
 					}
 				}
 			}
