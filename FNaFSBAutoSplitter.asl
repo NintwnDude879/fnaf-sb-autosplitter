@@ -2191,7 +2191,7 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posY >= 10){
 					vars.tFrontEntrance = false;
 					return true;
 				}
