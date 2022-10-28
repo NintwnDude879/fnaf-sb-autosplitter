@@ -3,6 +3,10 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
+//12AM split
+//daycare pass
+//Ace's Suggestions
+
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
@@ -1005,7 +1009,7 @@ start {
 		vars.pq2_5 = true;
 		vars.pq2_6 = true;
 		vars.pq2_7 = true;
-		vars.pq2_8 = true;
+		vars.pq2_8 = false;
 		vars.pq2_9 = true;
 		vars.pq2_10 = true;
 		vars.pq2_end = true;
@@ -1419,61 +1423,61 @@ split {
 			}
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
-					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
+					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && old.posZ >= 2100){
 						if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
 							vars.pq1_start = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 785, 810, -40, 40)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 785, 1215, -160, 160)){
 						if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
 							vars.pq1_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1715, 1750, -40, 40)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1715, 2530, -160, 160)){
 						if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
 							vars.pq1_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 3055, 3090, -40, 40)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 3055, 3800, -160, 160)){
 						if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
 							vars.pq1_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2175, 600, 635)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1715, 2530, 600, 1425)){
 						if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
 							vars.pq1_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2175, 1865, 1900)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1900, 2340, 1860, 2180)){
 						if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
 							vars.pq1_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2860, 2895, 1975, 2060)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2860, 4695, 1780, 2810)){
 						if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
 							vars.pq1_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 5220, 5255, 2450, 2535)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 5220, 6515, 2150, 2780)){
 						if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
 							vars.pq1_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 990, 1070, 2150, 2185)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 950, 1380, 1865, 2300)){
 						if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
 							vars.pq1_8 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2170, 3420, 3455)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2020, 2210, 3425, 5125)){
 						if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
 							vars.pq1_9 = false;
 							return true;
@@ -1488,74 +1492,77 @@ split {
 					}
 				}
 				if (settings["Princess Quest 2"]){
-					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && -10000 <= old.posZ && old.posZ <= 10000){
+					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000){
 						if (vars.checkTime("pq2_start", vars.pq2_start, 0, 0)){
 							vars.pq2_start = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2975, 3075, -770, -735)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2800, 3250, -1040, -735)){
 						if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
 							vars.pq2_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4520, 4620, -2455, -2420)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4300, 4840, -2800, -2420)){
 						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
 							vars.pq2_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3130, 3165, -1265, -1180)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2805, 3155, -1340, -1110)){
 						if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
 							vars.pq2_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2815, 2915, -2780, -2745)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2415, 3290, -3375, -2745)){
 						if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
 							vars.pq2_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3200, 3300, 745, 780)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2955, 3365, 745, 1125)){
 						if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
 							vars.pq2_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2100, 2205, 1120, 1205)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 1070, 2205, 830, 1470)){
 						if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
 							vars.pq2_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 75, 175, 155, 190)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 5, 1975, -185, 190)){
+						if (vars.pq2_7){
+							vars.pq2_8 = true;
+						}
 						if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
 							vars.pq2_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2725, 2760, -35, 50)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2725, 3340, -315, 320)){
 						if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
 							vars.pq2_8 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3920, 3955, 455, 545)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3920, 4345, 350, 655)){
 						if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
 							vars.pq2_9 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4905, 4975, 790, 860)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4845, 5045, 725, 925)){
 						if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
 							vars.pq2_10 = false;
 							return true;
 						}
 					}
 					if (settings["pq2_end"] && vars.pq2_end){
-						if (old.pq2X >= 4900 && current.pq2Y == 0){
+						if (old.pq2X >= 4845 && current.pq2Y == 0){
 							vars.pq2_end = false;
 							print("pq2_end");
 							return true;
@@ -1563,49 +1570,49 @@ split {
 					}
 				}
 				if (settings["Princess Quest 3"]){
-					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
+					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= old.posZ && old.posZ <= 2750){
 						if (vars.checkTime("pq3_start", vars.pq3_start, 0, 0)){
 							vars.pq3_start = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2195, 2230, -3250, -3190)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2195, 2315, -3625, -1965)){
 						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
 							vars.pq3_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2050, 2135, -1340, -1305)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1705, 2135, -1340, -895)){
 						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
 							vars.pq3_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2445, 2480, -1225, -1140)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2445, 5210, -1360, -990)){
 						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
 							vars.pq3_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 5125, 5225, -205, -170)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 4865, 5490, -210, 365)){
 						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
 							vars.pq3_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1290, 1325, 630, 713)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 500, 1325, -400, 1045)){
 						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
 							vars.pq3_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 1975, -1475, -1420)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1865, 1980, -1505, -1380)){
 						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
 							vars.pq3_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1930, 2050, -270, -200)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 2055, -260, 0)){
 						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
 							vars.pq3_7 = false;
 							return true;
@@ -2191,7 +2198,7 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posY >= 10){
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
 					vars.tFrontEntrance = false;
 					return true;
 				}
