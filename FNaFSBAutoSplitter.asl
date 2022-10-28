@@ -899,20 +899,41 @@ start {
 				if (zLB <= current.posZ && current.posZ <= zUB){
 				
 				double slope = (y1 - y2) / (x1 - x2);
+				double xAvg = (x1 + x2) / 2;
+				double yAvg = (y1 + y2) / 2;
 
-					if (yB - y1 <= slope * (xB - x1) && current.posX <= xB && current.posY >= yB){
-						if (current.posY - y1 <= slope * (current.posX - x1)){
-							print(name);
-							return true;
+					if (yB - yAvg >= slope * (xB - xAvg)){
+						if (current.posY - yAvg >= slope * (current.posX - xAvg)){
+							if (slope <= 0){
+								if (current.posX >= xB && current.posY <= yB){
+									print(name);
+									return true;
+								}
+							}
+							if (slope > 0){
+								if (current.posX <= xB && current.posY <= yB){
+									print(name);
+									return true;
+								}
+							}
 						}
-						return (current.posY - y1 < slope * (current.posX - x1));
 					}
-					if (yB - y1 > slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
-						if (current.posY - y1 > slope * (current.posX - x1)){
-							print(name);
-							return true;
+					if (yB - yAvg < slope * (xB - xAvg)){
+						if (current.posY - yAvg < slope * (current.posX - xAvg)){
+							if (slope <= 0){
+								if (current.posX >= xB && current.posY >= yB){
+									print(name);
+									return true;
+								}
+							}
+							if (slope > 0){
+								if (current.posX <= xB && current.posY >= yB){
+									print(name);
+									return true;
+								}
+							}
+						}
 					}
-				}
 				}
 			}
 		}
@@ -2198,9 +2219,13 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
-					vars.tFrontEntrance = false;
-					return true;
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
+					print("12AM (no split)");
+					if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
+						print("12AM (split)");
+						vars.tFrontEntrance = false;
+						return true;
+					}
 				}
 				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
 					vars.tEnDaycare = false;
