@@ -3,8 +3,7 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
-//12AM split
-//daycare pass
+//fix afton health
 //Ace's Suggestions
 
 state("fnaf9-Win64-Shipping", "v1.04"){
@@ -51,7 +50,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of items
 	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
-	int hippoMagnetUsed: 0x0441FCB0, 0x98, 0xB8, 0x128, 0xA8, 0xA0, 0x338;
 	int splashScreen: 0x0441FCB0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//Keeps count of the time
@@ -119,7 +117,6 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int splashScreen: 0x04420F40, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 	int itemCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0x138;
 	int securityBadgeCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0xC0;
-	int hippoMagnetUsed: 0x04420F40, 0x98, 0xB8, 0x128, 0xA8, 0xE0, 0x338;
 
 	//Keeps count of the time
 	int hourTimer: 0x0440AD80, 0x30, 0x678, 0x230, 0xA34;
@@ -185,7 +182,6 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of items (splashScreen = 4)
 	int securityBadgeCount: 0x04424338, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x04424338, 0x8, 0x10, 0x38, 0x138;
-	int hippoMagnetUsed: 0x044288B0, 0x98, 0xB8, 0x128, 0xA8, 0xE8, 0x338;
 	int splashScreen: 0x044288B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//Keeps count of the time
@@ -1047,6 +1043,7 @@ start {
 
 		//Item Splits
 		vars.iBowlingPass = true;
+		vars.nLobbyItemsUsed = 0;
 		vars.iFazcam = true;
 		vars.iMazercisePass = true;
 
@@ -1297,70 +1294,72 @@ split {
 			}
 		}
 		if (settings["Deload Splits"]){
-			if (settings["D_Backstage"]){
-				if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
-					vars.dFoxyCutout = false;
-					return true;
+			if (current.posX != old.posX){
+				if (settings["D_Backstage"]){
+					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
+						vars.dFoxyCutout = false;
+						return true;
+					}
 				}
-			}
-			if (settings["D_Daycare"]){
-				if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
-					vars.dDaycareArcade = false;
-					return true;
+				if (settings["D_Daycare"]){
+					if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
+						vars.dDaycareArcade = false;
+						return true;
+					}
+					if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
+						vars.dDaycareTheatre = false;
+						return true;
+					}
 				}
-				if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
-					vars.dDaycareTheatre = false;
-					return true;
+				if (settings["D_Kids Cove Sublobby"]){
+					if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
+						vars.dKCFence = false;
+						return true;
+					}
 				}
-			}
-			if (settings["D_Kids Cove Sublobby"]){
-				if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
-					vars.dKCFence = false;
-					return true;
+				if (settings["D_Monty Golf Sublobby"]){
+					if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
+						vars.dMGFence = false;
+						return true;
+					}
 				}
-			}
-			if (settings["D_Monty Golf Sublobby"]){
-				if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
-					vars.dMGFence = false;
-					return true;
+				if (settings["D_Prize Counter"]){
+					if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
+						vars.dCounter = false;
+						return true;
+					}
 				}
-			}
-			if (settings["D_Prize Counter"]){
-				if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
-					vars.dCounter = false;
-					return true;
+				if (settings["D_Rockstar Row"]){
+					if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
+						vars.dChicaRoom = false;
+						return true;
+					}
+					if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
+						vars.dCurtain = false;
+						return true;
+					}
+					if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
+						vars.dTunnelDoor = false;
+						return true;
+					}
 				}
-			}
-			if (settings["D_Rockstar Row"]){
-				if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
-					vars.dChicaRoom = false;
-					return true;
+				if (settings["D_Roxy Raceway"]){
+					if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
+						vars.dRoxyEyes = false;
+						return true;
+					}
 				}
-				if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
-					vars.dCurtain = false;
-					return true;
+				if (settings["D_Roxy Raceway Sublobby"]){
+					if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
+						vars.dBalloon = false;
+						return true;
+					}
 				}
-				if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
-					vars.dTunnelDoor = false;
-					return true;
-				}
-			}
-			if (settings["D_Roxy Raceway"]){
-				if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
-					vars.dRoxyEyes = false;
-					return true;
-				}
-			}
-			if (settings["D_Roxy Raceway Sublobby"]){
-				if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
-					vars.dBalloon = false;
-					return true;
-				}
-			}
-			if (settings["D_Roxy Salon"]){
-				if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
-					vars.dPlant = false;
-					return true;
+				if (settings["D_Roxy Salon"]){
+					if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
+						vars.dPlant = false;
+						return true;
+					}
 				}
 			}
 		}
@@ -1905,9 +1904,12 @@ split {
 				}
 				if (settings["Equipment"]){
 					//Fazerblasters and Daycare Pass don't use splashscreen
-					if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
+					if (900 <= current.posX && current.posX <= 1300 && 23300 <= current.posY && current.posY <= 23600 && 1400 <= current.posZ && current.posZ <= 1600){
+						if (current.itemCount == old.itemCount - 1){
+							vars.nLobbyItemsUsed++;
+						}
 						if (settings["E_Lobby"]){
-							if (settings["Daycare Pass"]){
+							if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
 								print("Daycare Pass");
 								return true;
 							}
@@ -2136,79 +2138,81 @@ split {
 			}
 		}
 		if (settings["Positional Splits"]){
-			if (settings["P_Bonnie Bowl"]){
-				if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
-					vars.pEnBonnieBowl = false;
-					return true;
+			if (current.posX != old.posX){
+				if (settings["P_Bonnie Bowl"]){
+					if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
+						vars.pEnBonnieBowl = false;
+						return true;
+					}
 				}
-			}
-			if (settings["P_Daycare"]){
-				if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
-					vars.tEnDaycare = false;
-					return true;
+				if (settings["P_Daycare"]){
+					if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
+						vars.tEnDaycare = false;
+						return true;
+					}
 				}
-			}
-			if (settings["P_El Chips"]){
-				if (current.hourTimer == 1 && current.minuteTimer == 15){
-					if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-						vars.pEnElChips = false;
-						vars.t1_15 = false;
+				if (settings["P_El Chips"]){
+					if (current.hourTimer == 1 && current.minuteTimer == 15){
+						if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+							vars.pEnElChips = false;
+							vars.t1_15 = false;
+							return true;
+						}
+					}
+				}
+				if (settings["P_Fazerblast"]){
+					if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
+						vars.pFazerStairs = false;
+						return true;
+					}
+				}
+				if (settings["P_Fazerblast Sublobby"]){
+					if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
+						vars.pFazerRail = false;
+						return true;
+					}
+				}
+				if (settings["P_Underground Afton Cave"]){
+					if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
+						vars.pAftonElev = false;
+						return true;
+					}
+				}
+				if (settings["P_Utility Tunnels"]){
+					if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
+						vars.pFirstAid = false;
+						return true;
+					}
+					if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
+						vars.pFredRail = false;
+						return true;
+					}
+					if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
+						vars.pMontyChase = false;
+						return true;
+					}
+					if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
+						vars.pSTRATRW = false;
+						return true;
+					}
+					if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
+						vars.pSTRLB = false;
+						return true;
+					}
+				}
+				if (settings["P_West Arcade"]){
+					if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
+						vars.pEnWestArcade = false;
+						vars.pExWestArcade = true;
+						return true;
+					}
+					if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
+						vars.pExWestArcade = false;
 						return true;
 					}
 				}
 			}
-			if (settings["P_Fazerblast"]){
-				if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
-					vars.pFazerStairs = false;
-					return true;
-				}
-			}
-			if (settings["P_Fazerblast Sublobby"]){
-				if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
-					vars.pFazerRail = false;
-					return true;
-				}
-			}
-			if (settings["P_Underground Afton Cave"]){
-				if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-					vars.pAftonElev = false;
-					return true;
-				}
-			}
-			if (settings["P_Utility Tunnels"]){
-				if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
-					vars.pFirstAid = false;
-					return true;
-				}
-				if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
-					vars.pFredRail = false;
-					return true;
-				}
-				if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
-					vars.pMontyChase = false;
-					return true;
-				}
-				if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
-					vars.pSTRATRW = false;
-					return true;
-				}
-				if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
-					vars.pSTRLB = false;
-					return true;
-				}
-			}
-			if (settings["P_West Arcade"]){
-				if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
-					vars.pEnWestArcade = false;
-					vars.pExWestArcade = true;
-					return true;
-				}
-				if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
-					vars.pExWestArcade = false;
-					return true;
-				}
-			}
-		}
+		}	
 		if (settings["Time Splits"]){
 			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
 				if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
