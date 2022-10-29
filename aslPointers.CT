@@ -159,17 +159,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>48</Key>
-                      </Keys>
-                      <Value>28600</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>33404</ID>
@@ -185,17 +174,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>48</Key>
-                      </Keys>
-                      <Value>40600</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>33405</ID>
@@ -211,17 +189,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>48</Key>
-                      </Keys>
-                      <Value>-7761</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
@@ -1001,17 +968,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>57</Key>
-                      </Keys>
-                      <Value>28600</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>26255</ID>
@@ -1027,17 +983,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>57</Key>
-                      </Keys>
-                      <Value>40600</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>26254</ID>
@@ -1053,17 +998,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>57</Key>
-                      </Keys>
-                      <Value>-7761</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
@@ -1827,17 +1761,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>56</Key>
-                      </Keys>
-                      <Value>28600</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>33400</ID>
@@ -1853,17 +1776,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>56</Key>
-                      </Keys>
-                      <Value>40600</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>33401</ID>
@@ -1879,17 +1791,6 @@
                     <Offset>120</Offset>
                     <Offset>10</Offset>
                   </Offsets>
-                  <Hotkeys>
-                    <Hotkey>
-                      <Action>Set Value</Action>
-                      <Keys>
-                        <Key>56</Key>
-                      </Keys>
-                      <Value>-7761</Value>
-                      <Description>Afton TP</Description>
-                      <ID>0</ID>
-                    </Hotkey>
-                  </Hotkeys>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
