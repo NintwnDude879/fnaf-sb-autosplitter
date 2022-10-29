@@ -3,7 +3,6 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
-//fix afton health
 //Ace's Suggestions
 
 state("fnaf9-Win64-Shipping", "v1.04"){
@@ -36,7 +35,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int pqEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x0441C570, 0xA10, 0x50, 0x190, 0x58, 0x230, 0x0, 0x800;
+	float aftonHealth: 0x441FCB0, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 
 	//PQ Player Positions
 	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
@@ -102,7 +101,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int pqEnd: 0x0441D858, 0x58, 0x3B0, 0x118, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x0441D800, 0x68, 0x8, 0xAE0, 0x28, 0x230, 0x0, 0x800;
+	float aftonHealth: 0x04420F40, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 
 	//PQ Player Positions
 	float pq1X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
@@ -168,7 +167,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int pqEnd: 0x044251C0, 0x58, 0x3B0, 0x390, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x044288B0, 0x98, 0x868, 0x128, 0xA8, 0x280, 0x680, 0x800;
+	float aftonHealth: 0x44288B0, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800;
 
 	//PQ Player Positions
 	float pq1X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
@@ -822,6 +821,7 @@ init {
 
 	//1.04: 76210176
 	//1.05: 76214272
+	//1.07: 
 	//1.11: 76251136
 
 	if (vars.versionSize == 76210176){
@@ -829,6 +829,9 @@ init {
 	}
 	else if (vars.versionSize == 76214272){
 		version = "v1.05";
+	}
+	else if (vars.versionSize == 0){
+		version = "v1.07";
 	}
 	else if (vars.versionSize == 76251136){
 		version = "v1.11";
@@ -1141,8 +1144,14 @@ start {
 	//Resets variables upon stopping timer
 	vars.resetVariables();
 
-	//Start condition (Freddy power)
-	return (current.freddyPower == 30 && old.freddyPower == 100);
+	//Start conditions (time, Freddy power, menu)
+	if (current.hourTimer == -1 && current.minuteTimer == 0){
+		if (current.freddyPower == 30 && current.menu != 0){
+			if (old.freddyPower == 100 || old.menu == 0){
+				return true;
+			}
+		}
+	}
 }
 
 reset {
