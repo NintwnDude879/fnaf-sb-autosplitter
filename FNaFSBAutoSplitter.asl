@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach | v1.1.1
+//Five Nights at Freddy's: Security Breach | v1.0.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
@@ -10,21 +10,30 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int freddyPower: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
 
 	//Counter pointers
-	int DGens: 0x0441FCB0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
-	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158;
+	int DGens: 0x0441C5C8, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x50, 0x53C;
+	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
 	int FBFlags: 0x0441FCB0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 
-	//Player information
+	//Positions
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
+	//PQ Player Positions
+	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int escapeEndLeaveButtonWest: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268;
 	int escapeEndLeaveButtonEast: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268;
 	int carEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268;
 	int fireEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268;
-	int escapeEndLeaveButtonWest: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
 	int aftonEnd: 0x0441C5C8, 0x58, 0x388, 0x118, 0x260, 0xD8;
@@ -37,25 +46,16 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x441FCB0, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 
-	//PQ Player Positions
-	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
-
 	//Keeps track of items
 	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
 	int splashScreen: 0x0441FCB0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
-	//Keeps count of the time
-	int hourTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
-	int minuteTimer: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
+	//In-Game Clock
+	int hourClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
 
-	//Used to pause the timer (pause = 3, menu = 0)
+	//Menus
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
 
@@ -80,17 +80,26 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int DGens: 0x0441D858, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
 	int MGBucket: 0x04420F40, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
 
-	//Player information
+	//Positions
 	float posX: 0x0441D800, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441D800, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441D800, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
+	//PQ Player Positions
+	float pq1X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x04420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int escapeEndLeaveButtonWest: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
 	int escapeEndLeaveButtonEast: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268;
 	int fireEndLeaveButton: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
 	int carEndLeaveButton: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268;
-	int escapeEndLeaveButtonWest: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
 	int aftonEnd: 0x0441D858, 0x58, 0x3B0, 0x118, 0x260, 0xD8;
@@ -103,25 +112,17 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x04420F40, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 
-	//PQ Player Positions
-	float pq1X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
-
 	//Keeps track of items (splashScreen = 4)
 	int splashScreen: 0x04420F40, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 	int itemCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0x138;
 	int securityBadgeCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0xC0;
+	int hippoMagnetUsed: 0x04420F40, 0x98, 0xB8, 0x128, 0xA8, 0xE0, 0x338;
 
-	//Keeps count of the time
-	int hourTimer: 0x0440AD80, 0x30, 0x678, 0x230, 0xA34;
-	int minuteTimer: 0x0440AD80, 0x30, 0x670, 0x230, 0xA38;
+	//In-Game Clock
+	int hourClock: 0x0440AD80, 0x30, 0x678, 0x230, 0xA34;
+	int minuteClock: 0x0440AD80, 0x30, 0x670, 0x230, 0xA38;
 
-	//Used to pause the timer (pause = 3, menu = 0)
+	//Menus
  	int pause: 0x0441D814;
 	int menu: 0x0441FE08, 0xB4;
 
@@ -137,6 +138,72 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int aftonElev: 0x04420F40, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
 }
 
+state("fnaf9-Win64-Shipping", "v1.07"){
+	//Keeps track of Freddy's power
+	int freddyPower: 0x0441CB08, 0x8, 0x10, 0x38, 0xB8;
+
+	//Counter pointers
+	int DCGens: 0x441D998, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
+	int MGBucket: 0x04421080, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
+	int FBFlags: 0x04421080, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
+
+	//Positions
+	float posX: 0x0441D940, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
+	float posY: 0x0441D940, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
+	float posZ: 0x0441D940, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
+
+	//PQ Player Positions
+	float pq1X: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
+	//Buttons that start cutscenes (pressed = 0)
+	int vannyEndButton: 0x04421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int escapeEndLeaveButtonWest: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
+	int escapeEndLeaveButtonEast: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268;
+	int carEndLeaveButton: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
+	int fireEndLeaveButton: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268;
+
+	//Keeps track of when an ending cutscene has started playing (end = 1)
+	int aftonEnd: 0x0441D998, 0x58, 0x3B0, 0x118, 0x260, 0xD8;
+	int vannyEnd: 0x0441D998, 0x58, 0x3B0, 0x118, 0x2D8, 0xD8;
+	int fireEnd: 0x0441D998, 0x58, 0x3B0, 0x118, 0x318, 0xD8;
+	int carEnd: 0x0441D998, 0x58, 0x3B0, 0x118, 0x358, 0xD8;
+	int escapeEnd: 0x0441D998, 0x58, 0x3B0, 0x118, 0x398, 0xD8;
+	int pqEnd: 0x0441D998, 0x58, 0x3B0, 0x118, 0x3D8, 0xD8;
+
+	//Afton's health (starts at 750, -100 per button)
+	float aftonHealth: 0x4421080, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
+
+	//Keeps track of items
+	int securityBadgeCount: 0x0441CB08, 0x8, 0x10, 0x38, 0xC0;
+	int itemCount: 0x0441CB08, 0x8, 0x10, 0x38, 0x138;
+	int splashScreen: 0x04421080, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
+
+	//In-Game Clock
+	int hourClock: 0x0440ADF0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x0440ADF0, 0x30, 0x670, 0x230, 0x25C;
+
+	//Menus
+ 	int pause: 0x0441D954;
+	int menu: 0x0441FF48, 0xB4;
+
+	//Elevator pointers (elevator in motion = 1)
+	int kitElev: 0x04421080, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
+	int monGElev: 0x04421080, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2D8, 0x4;
+	int foy2Elev: 0x04421080, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2D8, 0x4;
+	int foy1Elev: 0x04421080, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
+	int bonBElev: 0x04421080, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2D8, 0x4;
+	int fazerElev: 0x04421080, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
+	int WAElev: 0x04421080, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
+	int roxyElev: 0x04421080, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
+	int aftonElev: 0x04421080, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
+}
+
 state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x04424338, 0x8, 0x10, 0x38, 0xB8;
@@ -146,17 +213,26 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int MGBucket: 0x044288B0, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158;
 	int FBFlags: 0x044288B0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290;
 
-	//Player information
+	//Positions
 	float posX: 0x04425170, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x04425170, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x04425170, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
 
+	//PQ Player Positions
+	float pq1X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x044288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
+	int escapeEndLeaveButtonWest: 0x044288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270;
 	int escapeEndLeaveButtonEast: 0x044288B0, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270;
 	int carEndLeaveButton: 0x044288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270;
 	int fireEndLeaveButton: 0x044288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270;
-	int escapeEndLeaveButtonWest: 0x044288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
 	int aftonEnd: 0x044251C0, 0x58, 0x3B0, 0x390, 0x260, 0xD8;
@@ -169,25 +245,17 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x44288B0, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800;
 
-	//PQ Player Positions
-	float pq1X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
-
 	//Keeps track of items (splashScreen = 4)
 	int securityBadgeCount: 0x04424338, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x04424338, 0x8, 0x10, 0x38, 0x138;
+	int hippoMagnetUsed: 0x044288B0, 0x98, 0xB8, 0x128, 0xA8, 0xE8, 0x338;
 	int splashScreen: 0x044288B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
-	//Keeps count of the time
-	int hourTimer: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x10;
-	int minuteTimer: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x14;
+	//In-Game Clock
+	int hourClock: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x10;
+	int minuteClock: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x14;
 
-	//Used to pause the timer (pause = 3, menu = 0)
+	//Menus
  	int pause: 0x04425184;
 	int menu: 0x04427778, 0xB4;
 
@@ -199,14 +267,14 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int bonBElev: 0x044288B0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2D8, 0x4;
 	int fazerElev: 0x044288B0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
 	int WAElev: 0x044288B0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
-	int roxyElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x320, 0x2E8;
+	int roxyElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
 	int aftonElev: 0x044288B0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
 }
 
 startup {
 	settings.CurrentDefaultParent = null;
 	settings.Add("Split Settings", false);
-	settings.Add("Timer Settings", true);
+	settings.Add("Clock Settings", true);
 
 	settings.CurrentDefaultParent = "Split Settings";
 	settings.Add("Counting Splits", false);
@@ -695,10 +763,10 @@ startup {
 	settings.Add("Freddy Eye Upgrade Nighttime (5:50AM)", false);
 	settings.Add("Reach Exit Door (6:00AM)", false);
 
-	settings.CurrentDefaultParent = "Timer Settings";
+	settings.CurrentDefaultParent = "Clock Settings";
 	settings.Add("Elevator Pauses", true);
-	settings.Add("Stop Timer When On Menu", true);
-	settings.Add("Stop Timer When Paused", true);
+	settings.Add("Stop Clock When On Menu", true);
+	settings.Add("Stop Clock When Paused", true);
 
 	settings.CurrentDefaultParent = "Elevator Pauses";
 	settings.Add("Afton Elevator", true);
@@ -821,7 +889,7 @@ init {
 
 	//1.04: 76210176
 	//1.05: 76214272
-	//1.07: 
+	//1.07: 76218368
 	//1.11: 76251136
 
 	if (vars.versionSize == 76210176){
@@ -830,7 +898,7 @@ init {
 	else if (vars.versionSize == 76214272){
 		version = "v1.05";
 	}
-	else if (vars.versionSize == 0){
+	else if (vars.versionSize == 76218368){
 		version = "v1.07";
 	}
 	else if (vars.versionSize == 76251136){
@@ -898,41 +966,20 @@ start {
 				if (zLB <= current.posZ && current.posZ <= zUB){
 				
 				double slope = (y1 - y2) / (x1 - x2);
-				double xAvg = (x1 + x2) / 2;
-				double yAvg = (y1 + y2) / 2;
 
-					if (yB - yAvg >= slope * (xB - xAvg)){
-						if (current.posY - yAvg >= slope * (current.posX - xAvg)){
-							if (slope <= 0){
-								if (current.posX >= xB && current.posY <= yB){
-									print(name);
-									return true;
-								}
-							}
-							if (slope > 0){
-								if (current.posX <= xB && current.posY <= yB){
-									print(name);
-									return true;
-								}
-							}
+					if (yB - y1 <= slope * (xB - x1) && current.posX <= xB && current.posY >= yB){
+						if (current.posY - y1 <= slope * (current.posX - x1)){
+							print(name);
+							return true;
 						}
+						return (current.posY - y1 < slope * (current.posX - x1));
 					}
-					if (yB - yAvg < slope * (xB - xAvg)){
-						if (current.posY - yAvg < slope * (current.posX - xAvg)){
-							if (slope <= 0){
-								if (current.posX >= xB && current.posY >= yB){
-									print(name);
-									return true;
-								}
-							}
-							if (slope > 0){
-								if (current.posX <= xB && current.posY >= yB){
-									print(name);
-									return true;
-								}
-							}
-						}
+					if (yB - y1 > slope * (xB - x1) && current.posX >= xB && current.posY <= yB){
+						if (current.posY - y1 > slope * (current.posX - x1)){
+							print(name);
+							return true;
 					}
+				}
 				}
 			}
 		}
@@ -976,7 +1023,7 @@ start {
 	vars.checkTime = (Func<string, bool, int, int, bool>)((name, check, hour, minute) => {
 		if (settings[name]){
 			if (check){
-				if (current.hourTimer == hour && current.minuteTimer == minute){
+				if (current.hourClock == hour && current.minuteClock == minute){
 					print(name);
 					return true;
 				}
@@ -1029,7 +1076,7 @@ start {
 		vars.pq2_5 = true;
 		vars.pq2_6 = true;
 		vars.pq2_7 = true;
-		vars.pq2_8 = false;
+		vars.pq2_8 = true;
 		vars.pq2_9 = true;
 		vars.pq2_10 = true;
 		vars.pq2_end = true;
@@ -1046,7 +1093,6 @@ start {
 
 		//Item Splits
 		vars.iBowlingPass = true;
-		vars.nLobbyItemsUsed = 0;
 		vars.iFazcam = true;
 		vars.iMazercisePass = true;
 
@@ -1064,7 +1110,7 @@ start {
 		vars.pEnWestArcade = true;
 		vars.pExWestArcade = false;
 
-		//Timer Splits
+		//Clock Splits
 		vars.tVents = true;
 		vars.tUtilityRecharge = true;
 		vars.tFrontEntrance = true;
@@ -1156,14 +1202,14 @@ start {
 
 reset {
 	//Resets variables for certain splits upon exiting 11:30 vents
-	if (current.freddyPower == 100 && current.hourTimer == -1 && current.minuteTimer == 0 && old.hourTimer != -1){
+	if (current.hourClock == -1 && current.minuteClock == 30 && old.minuteClock == 0){
 		vars.resetVariables();
 	}
 
 	if (settings["Reset Settings"]){
 		if (settings["Reset On New Game"]){
-			if (current.freddyPower == 100 && current.hourTimer == -1 && current.minuteTimer == 0 && old.hourTimer != -1){
-				print("Reset Timer");
+			if (current.freddyPower == 100 && current.hourClock == -1 && old.hourClock != -1){
+				print("Reset Clock");
 				return true;
 			}
 		}
@@ -1171,7 +1217,7 @@ reset {
 }
 
 isLoading {
-	if (settings["Timer Settings"]){
+	if (settings["Clock Settings"]){
 		if (settings["Elevator Pauses"]){
 			if (vars.checkElevator1("Afton Elevator", current.aftonElev)){
 				if (old.aftonElev == 0){
@@ -1246,15 +1292,15 @@ isLoading {
 				}
 			}
 		}
-		if (settings["Stop Timer When On Menu"] && current.menu == 0){
+		if (settings["Stop Clock When On Menu"] && current.menu == 0){
 			if (old.menu != 0){
-				print("Stop Timer When On Menu");
+				print("Stop Clock When On Menu");
 			}
 			return true;
 		}
-		if (settings["Stop Timer When Paused"] && current.pause == 3){
+		if (settings["Stop Clock When Paused"] && current.pause == 3){
 			if (old.pause != 3){
-				print("Stop Timer When Paused");
+				print("Stop Clock When Paused");
 			}
 			return true;
 		}
@@ -1303,72 +1349,70 @@ split {
 			}
 		}
 		if (settings["Deload Splits"]){
-			if (current.posX != old.posX){
-				if (settings["D_Backstage"]){
-					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
-						vars.dFoxyCutout = false;
-						return true;
-					}
+			if (settings["D_Backstage"]){
+				if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
+					vars.dFoxyCutout = false;
+					return true;
 				}
-				if (settings["D_Daycare"]){
-					if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
-						vars.dDaycareArcade = false;
-						return true;
-					}
-					if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
-						vars.dDaycareTheatre = false;
-						return true;
-					}
+			}
+			if (settings["D_Daycare"]){
+				if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
+					vars.dDaycareArcade = false;
+					return true;
 				}
-				if (settings["D_Kids Cove Sublobby"]){
-					if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
-						vars.dKCFence = false;
-						return true;
-					}
+				if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
+					vars.dDaycareTheatre = false;
+					return true;
 				}
-				if (settings["D_Monty Golf Sublobby"]){
-					if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
-						vars.dMGFence = false;
-						return true;
-					}
+			}
+			if (settings["D_Kids Cove Sublobby"]){
+				if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
+					vars.dKCFence = false;
+					return true;
 				}
-				if (settings["D_Prize Counter"]){
-					if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
-						vars.dCounter = false;
-						return true;
-					}
+			}
+			if (settings["D_Monty Golf Sublobby"]){
+				if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
+					vars.dMGFence = false;
+					return true;
 				}
-				if (settings["D_Rockstar Row"]){
-					if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
-						vars.dChicaRoom = false;
-						return true;
-					}
-					if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
-						vars.dCurtain = false;
-						return true;
-					}
-					if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
-						vars.dTunnelDoor = false;
-						return true;
-					}
+			}
+			if (settings["D_Prize Counter"]){
+				if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
+					vars.dCounter = false;
+					return true;
 				}
-				if (settings["D_Roxy Raceway"]){
-					if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
-						vars.dRoxyEyes = false;
-						return true;
-					}
+			}
+			if (settings["D_Rockstar Row"]){
+				if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
+					vars.dChicaRoom = false;
+					return true;
 				}
-				if (settings["D_Roxy Raceway Sublobby"]){
-					if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
-						vars.dBalloon = false;
-						return true;
-					}
+				if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
+					vars.dCurtain = false;
+					return true;
 				}
-				if (settings["D_Roxy Salon"]){
-					if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
-						vars.dPlant = false;
-						return true;
-					}
+				if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
+					vars.dTunnelDoor = false;
+					return true;
+				}
+			}
+			if (settings["D_Roxy Raceway"]){
+				if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
+					vars.dRoxyEyes = false;
+					return true;
+				}
+			}
+			if (settings["D_Roxy Raceway Sublobby"]){
+				if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
+					vars.dBalloon = false;
+					return true;
+				}
+			}
+			if (settings["D_Roxy Salon"]){
+				if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
+					vars.dPlant = false;
+					return true;
 				}
 			}
 		}
@@ -1452,61 +1496,61 @@ split {
 			}
 			if (settings["Princess Quest Ending"]){
 				if (settings["Princess Quest 1"]){
-					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && old.posZ >= 2100){
+					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && -10000 <= old.posZ && old.posZ <= 10000){
 						if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
 							vars.pq1_start = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 785, 1215, -160, 160)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 785, 810, -40, 40)){
 						if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
 							vars.pq1_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1715, 2530, -160, 160)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1715, 1750, -40, 40)){
 						if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
 							vars.pq1_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 3055, 3800, -160, 160)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 3055, 3090, -40, 40)){
 						if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
 							vars.pq1_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1715, 2530, 600, 1425)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2175, 600, 635)){
 						if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
 							vars.pq1_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 1900, 2340, 1860, 2180)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2175, 1865, 1900)){
 						if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
 							vars.pq1_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2860, 4695, 1780, 2810)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2860, 2895, 1975, 2060)){
 						if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
 							vars.pq1_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 5220, 6515, 2150, 2780)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 5220, 5255, 2450, 2535)){
 						if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
 							vars.pq1_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 950, 1380, 1865, 2300)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 990, 1070, 2150, 2185)){
 						if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
 							vars.pq1_8 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2020, 2210, 3425, 5125)){
+					if (vars.checkPQPosition1(current.pq1X, current.pq1Y, 2070, 2170, 3420, 3455)){
 						if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
 							vars.pq1_9 = false;
 							return true;
@@ -1521,77 +1565,74 @@ split {
 					}
 				}
 				if (settings["Princess Quest 2"]){
-					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000){
+					if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && -10000 <= old.posZ && old.posZ <= 10000){
 						if (vars.checkTime("pq2_start", vars.pq2_start, 0, 0)){
 							vars.pq2_start = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2800, 3250, -1040, -735)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2975, 3075, -770, -735)){
 						if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
 							vars.pq2_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4300, 4840, -2800, -2420)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4520, 4620, -2455, -2420)){
 						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
 							vars.pq2_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2805, 3155, -1340, -1110)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3130, 3165, -1265, -1180)){
 						if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
 							vars.pq2_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2415, 3290, -3375, -2745)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2815, 2915, -2780, -2745)){
 						if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
 							vars.pq2_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2955, 3365, 745, 1125)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3200, 3300, 745, 780)){
 						if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
 							vars.pq2_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 1070, 2205, 830, 1470)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2100, 2205, 1120, 1205)){
 						if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
 							vars.pq2_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 5, 1975, -185, 190)){
-						if (vars.pq2_7){
-							vars.pq2_8 = true;
-						}
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 75, 175, 155, 190)){
 						if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
 							vars.pq2_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2725, 3340, -315, 320)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 2725, 2760, -35, 50)){
 						if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
 							vars.pq2_8 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3920, 4345, 350, 655)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 3920, 3955, 455, 545)){
 						if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
 							vars.pq2_9 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4845, 5045, 725, 925)){
+					if (vars.checkPQPosition1(current.pq2X, current.pq2Y, 4905, 4975, 790, 860)){
 						if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
 							vars.pq2_10 = false;
 							return true;
 						}
 					}
 					if (settings["pq2_end"] && vars.pq2_end){
-						if (old.pq2X >= 4845 && current.pq2Y == 0){
+						if (old.pq2X >= 4900 && current.pq2Y == 0){
 							vars.pq2_end = false;
 							print("pq2_end");
 							return true;
@@ -1599,49 +1640,49 @@ split {
 					}
 				}
 				if (settings["Princess Quest 3"]){
-					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= old.posZ && old.posZ <= 2750){
+					if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 30000 && 2500 <= old.posZ && old.posZ <= 2750){
 						if (vars.checkTime("pq3_start", vars.pq3_start, 0, 0)){
 							vars.pq3_start = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2195, 2315, -3625, -1965)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2195, 2230, -3250, -3190)){
 						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
 							vars.pq3_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1705, 2135, -1340, -895)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2050, 2135, -1340, -1305)){
 						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
 							vars.pq3_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2445, 5210, -1360, -990)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 2445, 2480, -1225, -1140)){
 						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
 							vars.pq3_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 4865, 5490, -210, 365)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 5125, 5225, -205, -170)){
 						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
 							vars.pq3_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 500, 1325, -400, 1045)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1290, 1325, 630, 713)){
 						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
 							vars.pq3_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1865, 1980, -1505, -1380)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 1975, -1475, -1420)){
 						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
 							vars.pq3_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1940, 2055, -260, 0)){
+					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1930, 2050, -270, -200)){
 						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
 							vars.pq3_7 = false;
 							return true;
@@ -1913,12 +1954,9 @@ split {
 				}
 				if (settings["Equipment"]){
 					//Fazerblasters and Daycare Pass don't use splashscreen
-					if (900 <= current.posX && current.posX <= 1300 && 23300 <= current.posY && current.posY <= 23600 && 1400 <= current.posZ && current.posZ <= 1600){
-						if (current.itemCount == old.itemCount - 1){
-							vars.nLobbyItemsUsed++;
-						}
+					if (current.hippoMagnetUsed == 1 && old.hippoMagnetUsed == 0){
 						if (settings["E_Lobby"]){
-							if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
+							if (settings["Daycare Pass"]){
 								print("Daycare Pass");
 								return true;
 							}
@@ -2085,55 +2123,53 @@ split {
 					}
 				}
 				if (settings["Retro CDs"]){
-					if (current.splashScreen > old.splashScreen){
-						if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
-							return true;
-						}
-						if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
-							return true;
-						}
-						if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
-							return true;
-						}
-						if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
-							return true;
-						}
-						if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
-							return true;
-						}
-						if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
-							return true;
-						}
-						if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
-							return true;
-						}
-						if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
-							return true;
-						}
-						if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
-							return true;
-						}
-						if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
-							return true;
-						}
-						if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
-							return true;
-						}
-						if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
-							return true;
-						}
-						if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
-							return true;
-						}
-						if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
-							return true;
-						}
-						if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
-							return true;
-						}
-						if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
-							return true;
-						}
+					if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
+						return true;
+					}
+					if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
+						return true;
+					}
+					if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
+						return true;
+					}
+					if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
+						return true;
+					}
+					if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
+						return true;
+					}
+					if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
+						return true;
+					}
+					if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
+						return true;
+					}
+					if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
+						return true;
+					}
+					if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+						return true;
+					}
+					if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+						return true;
+					}
+					if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
+						return true;
+					}
+					if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
+						return true;
+					}
+					if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
+						return true;
+					}
+					if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
+						return true;
+					}
+					if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
+						return true;
+					}
+					if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
+						return true;
 					}
 				}
 			}
@@ -2147,83 +2183,81 @@ split {
 			}
 		}
 		if (settings["Positional Splits"]){
-			if (current.posX != old.posX){
-				if (settings["P_Bonnie Bowl"]){
-					if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
-						vars.pEnBonnieBowl = false;
-						return true;
-					}
+			if (settings["P_Bonnie Bowl"]){
+				if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
+					vars.pEnBonnieBowl = false;
+					return true;
 				}
-				if (settings["P_Daycare"]){
-					if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
-						vars.tEnDaycare = false;
-						return true;
-					}
+			}
+			if (settings["P_Daycare"]){
+				if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
+					vars.tEnDaycare = false;
+					return true;
 				}
-				if (settings["P_El Chips"]){
-					if (current.hourTimer == 1 && current.minuteTimer == 15){
-						if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-							vars.pEnElChips = false;
-							vars.t1_15 = false;
-							return true;
-						}
-					}
-				}
-				if (settings["P_Fazerblast"]){
-					if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
-						vars.pFazerStairs = false;
-						return true;
-					}
-				}
-				if (settings["P_Fazerblast Sublobby"]){
-					if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
-						vars.pFazerRail = false;
-						return true;
-					}
-				}
-				if (settings["P_Underground Afton Cave"]){
-					if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-						vars.pAftonElev = false;
-						return true;
-					}
-				}
-				if (settings["P_Utility Tunnels"]){
-					if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
-						vars.pFirstAid = false;
-						return true;
-					}
-					if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
-						vars.pFredRail = false;
-						return true;
-					}
-					if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
-						vars.pMontyChase = false;
-						return true;
-					}
-					if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
-						vars.pSTRATRW = false;
-						return true;
-					}
-					if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
-						vars.pSTRLB = false;
-						return true;
-					}
-				}
-				if (settings["P_West Arcade"]){
-					if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
-						vars.pEnWestArcade = false;
-						vars.pExWestArcade = true;
-						return true;
-					}
-					if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
-						vars.pExWestArcade = false;
+			}
+			if (settings["P_El Chips"]){
+				if (current.hourClock == 1 && current.minuteClock == 15){
+					if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+						vars.pEnElChips = false;
+						vars.t1_15 = false;
 						return true;
 					}
 				}
 			}
-		}	
+			if (settings["P_Fazerblast"]){
+				if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
+					vars.pFazerStairs = false;
+					return true;
+				}
+			}
+			if (settings["P_Fazerblast Sublobby"]){
+				if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
+					vars.pFazerRail = false;
+					return true;
+				}
+			}
+			if (settings["P_Underground Afton Cave"]){
+				if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
+					vars.pAftonElev = false;
+					return true;
+				}
+			}
+			if (settings["P_Utility Tunnels"]){
+				if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
+					vars.pFirstAid = false;
+					return true;
+				}
+				if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
+					vars.pFredRail = false;
+					return true;
+				}
+				if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
+					vars.pMontyChase = false;
+					return true;
+				}
+				if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
+					vars.pSTRATRW = false;
+					return true;
+				}
+				if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
+					vars.pSTRLB = false;
+					return true;
+				}
+			}
+			if (settings["P_West Arcade"]){
+				if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
+					vars.pEnWestArcade = false;
+					vars.pExWestArcade = true;
+					return true;
+				}
+				if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
+					vars.pExWestArcade = false;
+					return true;
+				}
+			}
+		}
 		if (settings["Time Splits"]){
-			if (current.hourTimer != old.hourTimer || current.minuteTimer != old.minuteTimer){
+			if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
 				if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
 					vars.tVents = false;
 					return true;
@@ -2232,13 +2266,9 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
-					print("12AM (no split)");
-					if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
-						print("12AM (split)");
-						vars.tFrontEntrance = false;
-						return true;
-					}
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
+					vars.tFrontEntrance = false;
+					return true;
 				}
 				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
 					vars.tEnDaycare = false;
