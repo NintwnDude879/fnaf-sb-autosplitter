@@ -1269,9 +1269,13 @@ start {
 }
 
 reset {
-	//Resets variables for certain splits upon exiting 11:30 vents
-	if (current.freddyPower == 100 && current.hourClock == -1 && current.minuteClock == 0 && old.hourClock != -1){
-		vars.resetVariables();
+	//Resets variables for certain splits upon starting in freddy
+	if (current.hourClock == -1 && current.minuteClock == 0){
+		if (current.freddyPower == 30 && current.menu != 0){
+			if (old.freddyPower == 100 || old.menu == 0){
+				vars.resetVariables();
+			}
+		}
 	}
 
 	if (settings["Reset Settings"]){
