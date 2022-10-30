@@ -1,9 +1,12 @@
-//Five Nights at Freddy's: Security Breach | v1.1.1
+//Five Nights at Freddy's: Security Breach | v1.2.1
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
-//Ace's Suggestions
+//black screen time pauses (load save, pq arcade, death)
+//timer pauses for other greenroom elevators
+//monty golf arcade hole splits
+//west arcade generator splits
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
