@@ -1276,13 +1276,12 @@ reset {
 				vars.resetVariables();
 			}
 		}
-	}
-
-	if (settings["Reset Settings"]){
-		if (settings["Reset On New Game"]){
-			if (current.freddyPower == 100 && current.hourClock == -1 && current.minuteClock == 0 && old.hourClock != -1){
-				print("Reset Timer");
-				return true;
+		if (settings["Reset Settings"]){
+			if (settings["Reset On New Game"]){
+				if (old.hourClock != -1){
+					print("Reset Timer");
+					return true;
+				}
 			}
 		}
 	}
