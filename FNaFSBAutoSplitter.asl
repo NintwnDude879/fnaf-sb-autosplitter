@@ -70,7 +70,10 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int bonBElev: 0x0441FCB0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2D8, 0x4;
 	int fazerElev: 0x0441FCB0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
 	int WAElev: 0x0441FCB0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
+	int chicaElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
+	int montyElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
 	int roxyElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
+	int freddyElev: 0x0441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
 	int aftonElev: 0x0441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
 }
 
@@ -268,7 +271,10 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int bonBElev: 0x044288B0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2D8, 0x4;
 	int fazerElev: 0x044288B0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
 	int WAElev: 0x044288B0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2D8, 0x4;
-	int roxyElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x320, 0x2E8;
+	int montyElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x2C0, 0x2E8;
+	int freddyElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x2D0, 0x2E8;
+	int roxyElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x2E0, 0x2E8;
+	int chicaElev: 0x044288B0, 0x98, 0x848, 0x128, 0xA8, 0x300, 0x2E8;
 	int aftonElev: 0x044288B0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2D8, 0x4;
 }
 
@@ -771,11 +777,14 @@ startup {
 
 	settings.CurrentDefaultParent = "Elevator Pauses";
 	settings.Add("Afton Elevator", true);
-	settings.Add("Bonnie Bowl Elevator", true);
-	settings.Add("Fazerblast Elevator", true);
 	settings.Add("Basement Kitchen Elevator", true);
+	settings.Add("Bonnie Bowl Elevator", true);
+	settings.Add("Chica's Greenroom Elevator", true);
+	settings.Add("Fazerblast Elevator", true);
+	settings.Add("Freddy's Greenroom Elevator", true);
 	settings.Add("Lobby Elevators", true);
 	settings.Add("Monty Golf Elevator", true);
+	settings.Add("Monty's Greenroom Elevator", true);
 	settings.Add("Roxy's Greenroom Elevator", true);
 	settings.Add("West Arcade Elevator", true);
 
@@ -790,6 +799,17 @@ startup {
 	settings.Add("AEn4", false, "#4");
 	settings.Add("AEn5", false, "#5");
 
+	settings.CurrentDefaultParent = "Basement Kitchen Elevator";
+	settings.Add("KE_EUOE", true, "Every Use Of Elevator");
+	settings.Add("KE_POOU", false, "Pause Only On Use:");
+
+	settings.CurrentDefaultParent = "KE_POOU";
+	settings.Add("KEn1", false, "#1");
+	settings.Add("KEn2", false, "#2");
+	settings.Add("KEn3", false, "#3");
+	settings.Add("KEn4", false, "#4");
+	settings.Add("KEn5", false, "#5");
+
 	settings.CurrentDefaultParent = "Bonnie Bowl Elevator";
 	settings.Add("BBE_EUOE", true, "Every Use Of Elevator");
 	settings.Add("BBE_POOU", false, "Pause Only On Use:");
@@ -800,6 +820,17 @@ startup {
 	settings.Add("BBEn3", false, "#3");
 	settings.Add("BBEn4", false, "#4");
 	settings.Add("BBEn5", false, "#5");
+
+	settings.CurrentDefaultParent = "Chica's Greenroom Elevator";
+	settings.Add("CGE_EUOE", true, "Every Use Of Elevator");
+	settings.Add("CGE_POOU", false, "Pause Only On Use:");
+
+	settings.CurrentDefaultParent = "CGE_POOU";
+	settings.Add("CGEn1", false, "#1");
+	settings.Add("CGEn2", false, "#2");
+	settings.Add("CGEn3", false, "#3");
+	settings.Add("CGEn4", false, "#4");
+	settings.Add("CGEn5", false, "#5");
 
 	settings.CurrentDefaultParent = "Fazerblast Elevator";
 	settings.Add("FBE_EUOE", true, "Every Use Of Elevator");
@@ -812,16 +843,16 @@ startup {
 	settings.Add("FBEn4", false, "#4");
 	settings.Add("FBEn5", false, "#5");
 
-	settings.CurrentDefaultParent = "Basement Kitchen Elevator";
-	settings.Add("KE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("KE_POOU", false, "Pause Only On Use:");
+	settings.CurrentDefaultParent = "Freddy's Greenroom Elevator";
+	settings.Add("FGE_EUOE", true, "Every Use Of Elevator");
+	settings.Add("FGE_POOU", false, "Pause Only On Use:");
 
-	settings.CurrentDefaultParent = "KE_POOU";
-	settings.Add("KEn1", false, "#1");
-	settings.Add("KEn2", false, "#2");
-	settings.Add("KEn3", false, "#3");
-	settings.Add("KEn4", false, "#4");
-	settings.Add("KEn5", false, "#5");
+	settings.CurrentDefaultParent = "FGE_POOU";
+	settings.Add("FGEn1", false, "#1");
+	settings.Add("FGEn2", false, "#2");
+	settings.Add("FGEn3", false, "#3");
+	settings.Add("FGEn4", false, "#4");
+	settings.Add("FGEn5", false, "#5");
 
 	settings.CurrentDefaultParent = "Lobby Elevators";
 	settings.Add("LE_EUOE", true, "Every Use Of Elevator");
@@ -835,6 +866,17 @@ startup {
 	settings.Add("LEn5", false, "#5");
 
 	settings.CurrentDefaultParent = "Monty Golf Elevator";
+	settings.Add("MGolf_EUOE", true, "Every Use Of Elevator");
+	settings.Add("MGolf_POOU", false, "Pause Only On Use:");
+
+	settings.CurrentDefaultParent = "MGolf_POOU";
+	settings.Add("MGolfn1", false, "#1");
+	settings.Add("MGolfn2", false, "#2");
+	settings.Add("MGolfn3", false, "#3");
+	settings.Add("MGolfn4", false, "#4");
+	settings.Add("MGolfn5", false, "#5");
+
+	settings.CurrentDefaultParent = "Monty's Greenroom Elevator";
 	settings.Add("MGE_EUOE", true, "Every Use Of Elevator");
 	settings.Add("MGE_POOU", false, "Pause Only On Use:");
 
@@ -1165,8 +1207,11 @@ start {
 		vars.nFBElev = 0;
 		vars.nKElev = 0;
 		vars.nLElev = 0;
+		vars.nMGolflev = 0;
 		vars.nMGElev = 0;
+		vars.nFGElev = 0;
 		vars.nRGElev = 0;
+		vars.nCGElev = 0;
 		vars.nWAElev = 0;
 	});
 
@@ -1250,11 +1295,27 @@ isLoading {
 					return true;
 				}
 			}
+			if (vars.checkElevator1("Basement Kitchen Elevator", current.kitElev)){
+				if (old.kitElev == 0){
+					vars.nKElev++;
+				}
+				if (vars.checkElevator2("KE", old.kitElev, vars.nKElev)){
+					return true;
+				}
+			}
 			if (vars.checkElevator1("Bonnie Bowl Elevator", current.bonBElev)){
 				if (old.bonBElev == 0){
 					vars.nBBElev++;
 				}
 				if (vars.checkElevator2("BBE", old.bonBElev, vars.nBBElev)){
+					return true;
+				}
+			}
+			if (vars.checkElevator1("Chica's Greenroom Elevator", current.chicaElev)){
+				if (old.chicaElev == 0){
+					vars.nCGElev++;
+				}
+				if (vars.checkElevator2("CGE", old.chicaElev, vars.nCGElev)){
 					return true;
 				}
 			}
@@ -1266,11 +1327,11 @@ isLoading {
 					return true;
 				}
 			}
-			if (vars.checkElevator1("Basement Kitchen Elevator", current.kitElev)){
-				if (old.kitElev == 0){
-					vars.nKElev++;
+			if (vars.checkElevator1("Freddy's Greenroom Elevator", current.freddyElev)){
+				if (old.freddyElev == 0){
+					vars.nFGElev++;
 				}
-				if (vars.checkElevator2("KE", old.kitElev, vars.nKElev)){
+				if (vars.checkElevator2("FGE", old.freddyElev, vars.nFGElev)){
 					return true;
 				}
 			}
@@ -1292,9 +1353,17 @@ isLoading {
 			}
 			if (vars.checkElevator1("Monty Golf Elevator", current.monGElev)){
 				if (old.monGElev == 0){
+					vars.nMGolflev++;
+				}
+				if (vars.checkElevator2("MGolf", old.monGElev, vars.nMGolflev)){
+					return true;
+				}
+			}
+			if (vars.checkElevator1("Monty's Greenroom Elevator", current.montyElev)){
+				if (old.montyElev == 0){
 					vars.nMGElev++;
 				}
-				if (vars.checkElevator2("MGE", old.monGElev, vars.nMGElev)){
+				if (vars.checkElevator2("MGE", old.montyElev, vars.nMGElev)){
 					return true;
 				}
 			}
