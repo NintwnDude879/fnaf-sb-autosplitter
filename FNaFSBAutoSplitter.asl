@@ -4,7 +4,7 @@
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
 //black screen time pauses (load save, pq arcade, death)
-//timer pauses for other greenroom elevators
+//timer pauses for other greenroom elevators (1.05, 1.07)
 //monty golf arcade hole splits
 //west arcade generator splits
 
