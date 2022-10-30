@@ -296,6 +296,7 @@ startup {
 	settings.Add("Fazerblast Flags", false);
 	settings.Add("Monty Bucket Count", false);
 	settings.Add("Sewer Generators", false);
+	settings.Add("West Arcade Generators", false);
 
 	settings.CurrentDefaultParent = "Daycare Generators";
 	settings.Add("D_Generator 1", false, "Generator 1");
@@ -318,6 +319,12 @@ startup {
 	settings.Add("S_Generator 1", false, "Generator 1");
 	settings.Add("S_Generator 2", false, "Generator 2");
 	settings.Add("S_Generator 3", false, "Generator 3");
+
+	settings.CurrentDefaultParent = "West Arcade Generators";
+	settings.Add("WA_Generator 1", false, "Generator 1");
+	settings.Add("WA_Generator 2", false, "Generator 2");
+	settings.Add("WA_Generator 3", false, "Generator 3");
+	settings.Add("WA_Generator 4", false, "Generator 4");
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("D_Backstage", false, "Backstage");
@@ -1067,11 +1074,11 @@ start {
 		return false;
 	});
 
-	vars.checkSewerGen = (Func<string, bool, double, double, double, double, bool>)((name, check, x, y, oldPositionX, oldPositionY) => {
-		//checks in a circle (z <= -2500, radius 200)
+	vars.checkGen = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, x, y, zLB, zUB, oldPositionX, oldPositionY) => {
+		//checks in a circle (radius 200)
 		if (settings[name]){
 			if (check){
-				if (current.posZ <= -2500){
+				if (zLB <= current.posZ && current.posZ <= zUB){
 					if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) <= Math.Pow(200, 2)){
 						if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) > Math.Pow(200, 2)){
 							print(name);
@@ -1103,6 +1110,10 @@ start {
 		vars.cSewerGen1 = true;
 		vars.cSewerGen2 = true;
 		vars.cSewerGen3 = true;
+		vars.cWAGen1 = true;
+		vars.cWAGen2 = true;
+		vars.cWAGen3 = true;
+		vars.cWAGen4 = true;
 
 		//Deload Splits
 		vars.dFoxyCutout = true;
@@ -1430,17 +1441,37 @@ split {
 					}
 				}
 			}
-			if (vars.checkSewerGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, old.posX, old.posY)){
-				vars.cSewerGen1 = false;
-				return true;
+			if (settings["Sewer Generators"]){
+				if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.posX, old.posY)){
+					vars.cSewerGen1 = false;
+					return true;
+				}
+				if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.posX, old.posY)){
+					vars.cSewerGen2 = false;
+					return true;
+				}
+				if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.posX, old.posY)){
+					vars.cSewerGen3 = false;
+					return true;
+				}
 			}
-			if (vars.checkSewerGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, old.posX, old.posY)){
-				vars.cSewerGen2 = false;
-				return true;
-			}
-			if (vars.checkSewerGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, old.posX, old.posY)){
-				vars.cSewerGen3 = false;
-				return true;
+			if (settings["West Arcade Generators"]){
+				if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.posX, old.posY)){
+					vars.cWAGen1 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.posX, old.posY)){
+					vars.cWAGen2 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.posX, old.posY)){
+					vars.cWAGen3 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.posX, old.posY)){
+					vars.cWAGen4 = false;
+					return true;
+				}
 			}
 		}
 		if (settings["Deload Splits"]){
