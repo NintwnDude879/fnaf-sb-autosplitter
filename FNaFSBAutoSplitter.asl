@@ -11,6 +11,16 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x0441B738, 0x8, 0x10, 0x38, 0xB8;
 
+	//Arcade pointers
+	int golfStrokeCount: 0x0441FCB0, 0x128, 0x378, 0x270, 0x230, 0x40;
+	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Counter pointers
 	int DGens: 0x0441FCB0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
 	int MGBucket: 0x0441FCB0, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158;
@@ -20,15 +30,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posX: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441C570, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-
-	//PQ Player Positions
-	float pq1X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x0441C570, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -81,6 +82,15 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x0441C9C8, 0x8, 0x10, 0x38, 0xB8;
 
+	//Arcade pointers
+	float pq1X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Counter pointers
 	int FBFlags: 0x04420F40, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 	int DGens: 0x0441D858, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
@@ -90,15 +100,6 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	float posX: 0x0441D800, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441D800, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441D800, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-
-	//PQ Player Positions
-	float pq1X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x0441D800, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x04420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -147,6 +148,15 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x0441CB08, 0x8, 0x10, 0x38, 0xB8;
 
+	//Arcade pointers
+	float pq1X: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Counter pointers
 	int DGens: 0x441D998, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
 	int MGBucket: 0x04421080, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
@@ -156,15 +166,6 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	float posX: 0x0441D940, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x0441D940, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x0441D940, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-
-	//PQ Player Positions
-	float pq1X: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x0441D940, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x04421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -213,6 +214,15 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x04424338, 0x8, 0x10, 0x38, 0xB8;
 
+	//Arcade pointers
+	float pq1X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
+	float pq1Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
+	float pq2X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
+	float pq2Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
+	float pq3X: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
+	float pq3Y: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
+	int pq3Attack: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+
 	//Counter pointers
 	int DGens: 0x044288B0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
 	int MGBucket: 0x044288B0, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158;
@@ -222,15 +232,6 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	float posX: 0x04425170, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D0;
 	float posY: 0x04425170, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D4;
 	float posZ: 0x04425170, 0x10, 0x120, 0x128, 0x318, 0x138, 0x1D8;
-
-	//PQ Player Positions
-	float pq1X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D4;
-	float pq1Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0x260, 0x138, 0x1D0;
-	float pq2X: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D4;
-	float pq2Y: 0x04425170, 0x8, 0x8, 0x200, 0x70, 0xE60, 0x138, 0x1D0;
-	float pq3X: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D4;
-	float pq3Y: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x138, 0x1D0;
-	int pq3Attack: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
 
 	//Buttons that start cutscenes (pressed = 0)
 	int vannyEndButton: 0x044288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
@@ -285,12 +286,60 @@ startup {
 	settings.Add("Timer Settings", true);
 
 	settings.CurrentDefaultParent = "Split Settings";
+	settings.Add("Arcade Splits", false);
 	settings.Add("Counting Splits", false);
 	settings.Add("Deload Splits", false);
 	settings.Add("Ending Splits", false);
 	settings.Add("Item Splits", false);
 	settings.Add("Positional Splits", false);
 	settings.Add("Time Splits", false);
+
+	settings.CurrentDefaultParent = "Arcade Splits";
+	settings.Add("Monty Golf", false);
+	settings.Add("Princess Quest", false);
+
+	settings.CurrentDefaultParent = "Princess Quest";
+	settings.Add("Princess Quest 1", false);
+	settings.Add("Princess Quest 2", false);
+	settings.Add("Princess Quest 3", false);
+
+	settings.CurrentDefaultParent = "Princess Quest 1";
+	settings.Add("pq1_start", false, "Start Arcade");
+	settings.Add("pq1_1", false, "Exit Starting Room");
+	settings.Add("pq1_2", false, "2nd Room");
+	settings.Add("pq1_3", false, "3rd Room");
+	settings.Add("pq1_4", false, "Key Door");
+	settings.Add("pq1_5", false, "Crossroads");
+	settings.Add("pq1_6", false, "Right Door");
+	settings.Add("pq1_7", false, "Enter Graveyard");
+	settings.Add("pq1_8", false, "Staircase");
+	settings.Add("pq1_9", false, "Final Room");
+	settings.Add("pq1_end", false, "Finish Arcade");
+	
+	settings.CurrentDefaultParent = "Princess Quest 2";
+	settings.Add("pq2_start", false, "Start Arcade");
+	settings.Add("pq2_1", false, "Exit Starting Room");
+	settings.Add("pq2_2", false, "2nd Room");
+	settings.Add("pq2_3", false, "Balls Room");
+	settings.Add("pq2_4", false, "4th Room");
+	settings.Add("pq2_5", false, "Split Puzzle Room");
+	settings.Add("pq2_6", false, "Big Torch Room");
+	settings.Add("pq2_7", false, "Hallway");
+	settings.Add("pq2_8", false, "Big Split Puzzle Room");
+	settings.Add("pq2_9", false, "Bedroom");
+	settings.Add("pq2_10", false, "Enter Final Room");
+	settings.Add("pq2_end", false, "Finish Arcade");
+
+	settings.CurrentDefaultParent = "Princess Quest 3";
+	settings.Add("pq3_start", false, "Start Arcade");
+	settings.Add("pq3_1", false, "Hallway");
+	settings.Add("pq3_2", false, "Hub Room");
+	settings.Add("pq3_3", false, "Conveyor Room");
+	settings.Add("pq3_4", false, "Split Puzzle Room (Glitchtrap Plush)");
+	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
+	settings.Add("pq3_6", false, "Prize Counter");
+	settings.Add("pq3_7", false, "Enter Final Area");
+	settings.Add("pq3_endArcade", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Counting Splits";
 	settings.Add("Daycare Generators", false);
@@ -403,48 +452,8 @@ startup {
 	settings.Add("F_C", false, "Cutscene");
 
 	settings.CurrentDefaultParent = "Princess Quest Ending";
+	settings.Add("pq3_endEndings", false, "Use Key");
 	settings.Add("pq_endCutscene", false, "End Cutscene");
-	settings.Add("Princess Quest 1", false);
-	settings.Add("Princess Quest 2", false);
-	settings.Add("Princess Quest 3", false);
-
-	settings.CurrentDefaultParent = "Princess Quest 1";
-	settings.Add("pq1_start", false, "Start Arcade");
-	settings.Add("pq1_1", false, "Exit Starting Room");
-	settings.Add("pq1_2", false, "2nd Room");
-	settings.Add("pq1_3", false, "3rd Room");
-	settings.Add("pq1_4", false, "Key Door");
-	settings.Add("pq1_5", false, "Crossroads");
-	settings.Add("pq1_6", false, "Right Door");
-	settings.Add("pq1_7", false, "Enter Graveyard");
-	settings.Add("pq1_8", false, "Staircase");
-	settings.Add("pq1_9", false, "Final Room");
-	settings.Add("pq1_end", false, "Finish Arcade");
-	
-	settings.CurrentDefaultParent = "Princess Quest 2";
-	settings.Add("pq2_start", false, "Start Arcade");
-	settings.Add("pq2_1", false, "Exit Starting Room");
-	settings.Add("pq2_2", false, "2nd Room");
-	settings.Add("pq2_3", false, "Balls Room");
-	settings.Add("pq2_4", false, "4th Room");
-	settings.Add("pq2_5", false, "Split Puzzle Room");
-	settings.Add("pq2_6", false, "Big Torch Room");
-	settings.Add("pq2_7", false, "Hallway");
-	settings.Add("pq2_8", false, "Big Split Puzzle Room");
-	settings.Add("pq2_9", false, "Bedroom");
-	settings.Add("pq2_10", false, "Enter Final Room");
-	settings.Add("pq2_end", false, "Finish Arcade");
-
-	settings.CurrentDefaultParent = "Princess Quest 3";
-	settings.Add("pq3_start", false, "Start Arcade");
-	settings.Add("pq3_1", false, "Hallway");
-	settings.Add("pq3_2", false, "Hub Room");
-	settings.Add("pq3_3", false, "Conveyor Room");
-	settings.Add("pq3_4", false, "Split Puzzle Room (Glitchtrap Plush)");
-	settings.Add("pq3_5", false, "Flamin' Hot Foxy");
-	settings.Add("pq3_6", false, "Prize Counter");
-	settings.Add("pq3_7", false, "Enter Final Area");
-	settings.Add("pq3_end", false, "Use Key");
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -1424,213 +1433,11 @@ isLoading {
 
 split {
 	if (settings["Split Settings"]){
-		if (settings["Counting Splits"]){
-			if (current.DGens > old.DGens){
-				if (settings["Daycare Generators"]){
-					if (settings["D_Generator " + current.DGens]){
-						print("DGen " + current.DGens);
-						return true;
-					}
-				}
+		if (settings["Arcade Splits"]){
+			if (settings["Monty Golf"]){
+
 			}
-			if (current.FBFlags > old.FBFlags){
-				if (settings["Fazerblast Flags"]){
-					if (settings["Flag " + current.FBFlags]){
-						print("Flag " + current.FBFlags);
-						return true;
-					}
-				}
-			}
-			if (current.MGBucket > old.MGBucket){
-				if (settings["Monty Bucket Count"]){
-					if (settings[current.MGBucket + " Balls"]){
-						print(current.MGBucket + " Balls");
-						return true;
-					}
-				}
-			}
-			if (settings["Sewer Generators"]){
-				if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.posX, old.posY)){
-					vars.cSewerGen1 = false;
-					return true;
-				}
-				if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.posX, old.posY)){
-					vars.cSewerGen2 = false;
-					return true;
-				}
-				if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.posX, old.posY)){
-					vars.cSewerGen3 = false;
-					return true;
-				}
-			}
-			if (settings["West Arcade Generators"]){
-				if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.posX, old.posY)){
-					vars.cWAGen1 = false;
-					return true;
-				}
-				if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.posX, old.posY)){
-					vars.cWAGen2 = false;
-					return true;
-				}
-				if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.posX, old.posY)){
-					vars.cWAGen3 = false;
-					return true;
-				}
-				if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.posX, old.posY)){
-					vars.cWAGen4 = false;
-					return true;
-				}
-			}
-		}
-		if (settings["Deload Splits"]){
-			if (current.posX != old.posX){
-				if (settings["D_Backstage"]){
-					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
-						vars.dFoxyCutout = false;
-						return true;
-					}
-				}
-				if (settings["D_Daycare"]){
-					if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
-						vars.dDaycareArcade = false;
-						return true;
-					}
-					if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
-						vars.dDaycareTheatre = false;
-						return true;
-					}
-				}
-				if (settings["D_Kids Cove Sublobby"]){
-					if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
-						vars.dKCFence = false;
-						return true;
-					}
-				}
-				if (settings["D_Monty Golf Sublobby"]){
-					if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
-						vars.dMGFence = false;
-						return true;
-					}
-				}
-				if (settings["D_Prize Counter"]){
-					if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
-						vars.dCounter = false;
-						return true;
-					}
-				}
-				if (settings["D_Rockstar Row"]){
-					if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
-						vars.dChicaRoom = false;
-						return true;
-					}
-					if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
-						vars.dCurtain = false;
-						return true;
-					}
-					if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
-						vars.dTunnelDoor = false;
-						return true;
-					}
-				}
-				if (settings["D_Roxy Raceway"]){
-					if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
-						vars.dRoxyEyes = false;
-						return true;
-					}
-				}
-				if (settings["D_Roxy Raceway Sublobby"]){
-					if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
-						vars.dBalloon = false;
-						return true;
-					}
-				}
-				if (settings["D_Roxy Salon"]){
-					if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
-						vars.dPlant = false;
-						return true;
-					}
-				}
-			}
-		}
-		if (settings["Ending Splits"]){
-			//splits based on ending cutscenes
-			if (settings["Afton Ending"]){
-				if (settings["Button 8 / End"] && current.aftonEnd > old.aftonEnd){
-					print("Button 8 / End");
-					return true;
-				}
-			}
-			if (settings["Car Battery Ending"]){
-				if (settings["CB_C"] && current.carEnd > old.carEnd){
-					print("Car Battery Cutscene");
-					return true;
-				}
-				if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
-					if (current.menu != 0){
-						print("Car Battery Button");
-						return true;
-					}
-				}
-			}
-			if (settings["Escape Ending"]){
-				if (settings["E_C"] && current.escapeEnd > old.escapeEnd){
-					print("Escape Cutscene");
-					return true;
-				}
-				if (settings["E_B"]){
-					if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-						if (current.menu != 0){
-							print("Escape (East) Button");
-							return true;
-						}
-					}
-					if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-						if (current.menu != 0){
-							print("Escape (West) Button");
-							return true;
-						}
-					}
-				}
-			}
-			if (settings["Fire Escape Ending"]){
-				if (settings["F_C"] && current.fireEnd > old.fireEnd){
-					print("Fire Escape Cutscene");
-					return true;
-				}
-				if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-					if (current.menu != 0){
-						print("Fire Escape Button");
-						return true;
-					}
-				}
-			}
-			if (settings["Princess Quest Ending"]){
-				if (settings["pq_endCutscene"] && current.pqEnd > old.pqEnd){
-					print("Princess Quest End Cutscene");
-					return true;
-				}
-			}
-			if (settings["Vanny Ending"]){
-				if (settings["V_C"] && current.vannyEnd > old.vannyEnd){
-					print("Vanny Cutscene");
-					return true;
-				}
-				if (settings["V_B"] && current.vannyEndButton < old.vannyEndButton){
-					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
-						return true;
-					}
-				}
-			}
-			//other ending splits
-			if (settings["Afton Ending"]){
-				if (current.aftonHealth < old.aftonHealth){
-					if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
-						print("Button " + ((750 - current.aftonHealth) / 100));
-						return true;
-					}
-				}
-			}
-			if (settings["Princess Quest Ending"]){
+			if (settings["Princess Quest"]){
 				if (settings["Princess Quest 1"]){
 					if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && old.posZ >= 2100){
 						if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
@@ -1829,10 +1636,226 @@ split {
 					}
 					if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
 						if (current.pq3Attack > old.pq3Attack){
-							if (vars.checkPQPosition2("pq3_end", true)){
+							if (vars.checkPQPosition2("pq3_endArcade", vars.pq3_end)){
+								vars.pq3_end = false;
 								return true;
 							}
 						}
+					}
+				}
+			}
+		}
+		if (settings["Counting Splits"]){
+			if (current.DGens > old.DGens){
+				if (settings["Daycare Generators"]){
+					if (settings["D_Generator " + current.DGens]){
+						print("DGen " + current.DGens);
+						return true;
+					}
+				}
+			}
+			if (current.FBFlags > old.FBFlags){
+				if (settings["Fazerblast Flags"]){
+					if (settings["Flag " + current.FBFlags]){
+						print("Flag " + current.FBFlags);
+						return true;
+					}
+				}
+			}
+			if (current.MGBucket > old.MGBucket){
+				if (settings["Monty Bucket Count"]){
+					if (settings[current.MGBucket + " Balls"]){
+						print(current.MGBucket + " Balls");
+						return true;
+					}
+				}
+			}
+			if (settings["Sewer Generators"]){
+				if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.posX, old.posY)){
+					vars.cSewerGen1 = false;
+					return true;
+				}
+				if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.posX, old.posY)){
+					vars.cSewerGen2 = false;
+					return true;
+				}
+				if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.posX, old.posY)){
+					vars.cSewerGen3 = false;
+					return true;
+				}
+			}
+			if (settings["West Arcade Generators"]){
+				if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.posX, old.posY)){
+					vars.cWAGen1 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.posX, old.posY)){
+					vars.cWAGen2 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.posX, old.posY)){
+					vars.cWAGen3 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.posX, old.posY)){
+					vars.cWAGen4 = false;
+					return true;
+				}
+			}
+		}
+		if (settings["Deload Splits"]){
+			if (current.posX != old.posX){
+				if (settings["D_Backstage"]){
+					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
+						vars.dFoxyCutout = false;
+						return true;
+					}
+				}
+				if (settings["D_Daycare"]){
+					if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
+						vars.dDaycareArcade = false;
+						return true;
+					}
+					if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
+						vars.dDaycareTheatre = false;
+						return true;
+					}
+				}
+				if (settings["D_Kids Cove Sublobby"]){
+					if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
+						vars.dKCFence = false;
+						return true;
+					}
+				}
+				if (settings["D_Monty Golf Sublobby"]){
+					if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
+						vars.dMGFence = false;
+						return true;
+					}
+				}
+				if (settings["D_Prize Counter"]){
+					if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
+						vars.dCounter = false;
+						return true;
+					}
+				}
+				if (settings["D_Rockstar Row"]){
+					if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
+						vars.dChicaRoom = false;
+						return true;
+					}
+					if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
+						vars.dCurtain = false;
+						return true;
+					}
+					if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
+						vars.dTunnelDoor = false;
+						return true;
+					}
+				}
+				if (settings["D_Roxy Raceway"]){
+					if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
+						vars.dRoxyEyes = false;
+						return true;
+					}
+				}
+				if (settings["D_Roxy Raceway Sublobby"]){
+					if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
+						vars.dBalloon = false;
+						return true;
+					}
+				}
+				if (settings["D_Roxy Salon"]){
+					if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
+						vars.dPlant = false;
+						return true;
+					}
+				}
+			}
+		}
+		if (settings["Ending Splits"]){
+			//splits based on ending cutscenes
+			if (settings["Afton Ending"]){
+				if (settings["Button 8 / End"] && current.aftonEnd > old.aftonEnd){
+					print("Button 8 / End");
+					return true;
+				}
+			}
+			if (settings["Car Battery Ending"]){
+				if (settings["CB_C"] && current.carEnd > old.carEnd){
+					print("Car Battery Cutscene");
+					return true;
+				}
+				if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
+					if (current.menu != 0){
+						print("Car Battery Button");
+						return true;
+					}
+				}
+			}
+			if (settings["Escape Ending"]){
+				if (settings["E_C"] && current.escapeEnd > old.escapeEnd){
+					print("Escape Cutscene");
+					return true;
+				}
+				if (settings["E_B"]){
+					if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
+						if (current.menu != 0){
+							print("Escape (East) Button");
+							return true;
+						}
+					}
+					if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
+						if (current.menu != 0){
+							print("Escape (West) Button");
+							return true;
+						}
+					}
+				}
+			}
+			if (settings["Fire Escape Ending"]){
+				if (settings["F_C"] && current.fireEnd > old.fireEnd){
+					print("Fire Escape Cutscene");
+					return true;
+				}
+				if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
+					if (current.menu != 0){
+						print("Fire Escape Button");
+						return true;
+					}
+				}
+			}
+			if (settings["Princess Quest Ending"]){
+				if (vars.checkPQPosition1(current.pq3X, current.pq3Y, 1800, 2200, 1635.34, 1700)){
+					if (current.pq3Attack > old.pq3Attack){
+						if (vars.checkPQPosition2("pq3_endEndings", vars.pq3_end)){
+							vars.pq3_end = false;
+							return true;
+						}
+					}
+				}
+				if (settings["pq_endCutscene"] && current.pqEnd > old.pqEnd){
+					print("Princess Quest End Cutscene");
+					return true;
+				}
+			}
+			if (settings["Vanny Ending"]){
+				if (settings["V_C"] && current.vannyEnd > old.vannyEnd){
+					print("Vanny Cutscene");
+					return true;
+				}
+				if (settings["V_B"] && current.vannyEndButton < old.vannyEndButton){
+					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+						return true;
+					}
+				}
+			}
+			//other ending splits
+			if (settings["Afton Ending"]){
+				if (current.aftonHealth < old.aftonHealth){
+					if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
+						print("Button " + ((750 - current.aftonHealth) / 100));
+						return true;
 					}
 				}
 			}
