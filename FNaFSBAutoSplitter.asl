@@ -2146,11 +2146,11 @@ split {
 				}
 				if (settings["Equipment"]){
 					//Fazerblasters and Daycare Pass don't use splashscreen
-					if (900 <= current.posX && current.posX <= 1300 && 23300 <= current.posY && current.posY <= 23600 && 1400 <= current.posZ && current.posZ <= 1600){
-						if (current.itemCount == old.itemCount - 1){
-							vars.nLobbyItemsUsed++;
-						}
-						if (settings["E_Lobby"]){
+					if (settings["E_Lobby"]){
+						if (900 <= current.posX && current.posX <= 1300 && 23300 <= current.posY && current.posY <= 23600 && 1400 <= current.posZ && current.posZ <= 1600){
+							if (current.itemCount == old.itemCount - 1){
+								vars.nLobbyItemsUsed++;
+							}
 							if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
 								print("Daycare Pass");
 								return true;
