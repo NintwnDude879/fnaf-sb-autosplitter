@@ -388,6 +388,7 @@ startup {
 	settings.Add("WA_Generator 2", false, "Generator 2");
 	settings.Add("WA_Generator 3", false, "Generator 3");
 	settings.Add("WA_Generator 4", false, "Generator 4");
+	settings.Add("WA_Generator 5", false, "Generator 5");
 
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("D_Backstage", false, "Backstage");
@@ -1177,6 +1178,7 @@ start {
 		vars.cWAGen2 = true;
 		vars.cWAGen3 = true;
 		vars.cWAGen4 = true;
+		vars.cWAGen5 = true;
 
 		//Deload Splits
 		vars.dFoxyCutout = true;
@@ -1723,6 +1725,10 @@ split {
 				}
 				if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.posX, old.posY)){
 					vars.cWAGen4 = false;
+					return true;
+				}
+				if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, old.posX, old.posY)){
+					vars.cWAGen5 = false;
 					return true;
 				}
 			}
