@@ -298,6 +298,17 @@ startup {
 	settings.Add("Monty Golf", false);
 	settings.Add("Princess Quest", false);
 
+	settings.CurrentDefaultParent = "Monty Golf";
+	settings.Add("Finish Hole 1", false);
+	settings.Add("Finish Hole 2", false);
+	settings.Add("Finish Hole 3", false);
+	settings.Add("Finish Hole 4", false);
+	settings.Add("Finish Hole 5", false);
+	settings.Add("Finish Hole 6", false);
+	settings.Add("Finish Hole 7", false);
+	settings.Add("Finish Hole 8", false);
+	settings.Add("Finish Hole 9", false);
+
 	settings.CurrentDefaultParent = "Princess Quest";
 	settings.Add("Princess Quest 1", false);
 	settings.Add("Princess Quest 2", false);
@@ -1116,31 +1127,10 @@ start {
 
 	vars.resetVariables = (Action)(() => {
 		//Used to keep certain splits from repeating (reset)
-
-		//Counter Splits
-		vars.cSewerGen1 = true;
-		vars.cSewerGen2 = true;
-		vars.cSewerGen3 = true;
-		vars.cWAGen1 = true;
-		vars.cWAGen2 = true;
-		vars.cWAGen3 = true;
-		vars.cWAGen4 = true;
-
-		//Deload Splits
-		vars.dFoxyCutout = true;
-		vars.dDaycareArcade = true;
-		vars.dDaycareTheatre = true;
-		vars.dKCFence = true;
-		vars.dMGFence = true;
-		vars.dCounter = true;
-		vars.dChicaRoom = true;
-		vars.dCurtain = true;
-		vars.dTunnelDoor = true;
-		vars.dRoxyEyes = true;
-		vars.dBalloon = true;
-		vars.dPlant = true;
 	
-		//Ending Splits
+		//Arcade Splits
+		//monty golf
+		vars.nHole = 0;
 		//pq1
 		vars.pq1_start = true;
 		vars.pq1_1 = true;
@@ -1176,6 +1166,29 @@ start {
 		vars.pq3_6 = true;
 		vars.pq3_7 = true;
 		vars.pq3_end = true;
+
+		//Counter Splits
+		vars.cSewerGen1 = true;
+		vars.cSewerGen2 = true;
+		vars.cSewerGen3 = true;
+		vars.cWAGen1 = true;
+		vars.cWAGen2 = true;
+		vars.cWAGen3 = true;
+		vars.cWAGen4 = true;
+
+		//Deload Splits
+		vars.dFoxyCutout = true;
+		vars.dDaycareArcade = true;
+		vars.dDaycareTheatre = true;
+		vars.dKCFence = true;
+		vars.dMGFence = true;
+		vars.dCounter = true;
+		vars.dChicaRoom = true;
+		vars.dCurtain = true;
+		vars.dTunnelDoor = true;
+		vars.dRoxyEyes = true;
+		vars.dBalloon = true;
+		vars.dPlant = true;
 
 		//Item Splits
 		vars.iBowlingPass = true;
@@ -1435,7 +1448,16 @@ split {
 	if (settings["Split Settings"]){
 		if (settings["Arcade Splits"]){
 			if (settings["Monty Golf"]){
-
+				if (current.golfStrokeCount == 0){
+					vars.nHole = 0;
+				}
+				if (current.golfStrokeCount > old.golfStrokeCount){
+					vars.nHole++;
+					if (settings["Finish Hole " + vars.nHole.ToString()]){
+						print("Finish Hole " + vars.nHole.ToString());
+						return true;
+					}
+				}
 			}
 			if (settings["Princess Quest"]){
 				if (settings["Princess Quest 1"]){
