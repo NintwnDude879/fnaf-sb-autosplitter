@@ -3,10 +3,9 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
-//black screen time pauses (load save, pq arcade, death)
+//black screen time pauses (load save, pq arcade, death) (1.05, 1.07)
 //timer pauses for other greenroom elevators (1.05, 1.07)
 //monty golf arcade hole splits
-//west arcade generator splits
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -58,9 +57,10 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int hourClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
 	int minuteClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
 
-	//Used to pause the timer (pause = 3, menu = 0)
+	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
+	int blackScreen: 0x042A4B80, 0x100, 0x1768, 0x160, 0x1D1C;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -262,6 +262,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x04425184;
 	int menu: 0x04427778, 0xB4;
+	int blackScreen: 0x04453ED8, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x044288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -779,6 +780,7 @@ startup {
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
+	settings.Add("Stop Timer When Loading", true);
 	settings.Add("Stop Timer When On Menu", true);
 	settings.Add("Stop Timer When Paused", true);
 
@@ -1397,6 +1399,12 @@ isLoading {
 					return true;
 				}
 			}
+		}
+		if (settings["Stop Timer When Loading"] && current.blackScreen != 0){
+			if (old.blackScreen == 0){
+				print("Stop Timer When Loading");
+			}
+			return true;
 		}
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
 			if (old.menu != 0){
