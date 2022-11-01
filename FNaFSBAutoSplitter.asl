@@ -5,7 +5,6 @@
 
 //black screen time pauses (load save, pq arcade, death) (1.05, 1.07)
 //timer pauses for other greenroom elevators (1.05, 1.07)
-//monty golf arcade hole splits
 
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
