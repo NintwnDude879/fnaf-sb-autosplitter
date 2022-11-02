@@ -3,9 +3,6 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
-//black screen time pauses (load save, pq arcade, death) (1.05, 1.07)
-//timer pauses for other greenroom elevators (1.05, 1.07)
-
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
