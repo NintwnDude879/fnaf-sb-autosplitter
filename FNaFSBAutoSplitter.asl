@@ -1258,6 +1258,9 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
+		if (current.menu == 0 && current.posY >= 100){
+			vars.notLoadingConstant = current.blackScreen;
+		}
 	});
 
 	//Updates refreshRate
@@ -1432,7 +1435,7 @@ isLoading {
 				}
 			}
 		}
-		if (settings["Stop Timer When Loading"] && current.blackScreen != 0){
+		if (settings["Stop Timer When Loading"] && current.blackScreen != vars.notLoadingConstant){
 			if (old.blackScreen == 0){
 				print("Stop Timer When Loading");
 			}
@@ -2471,13 +2474,9 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
-					print("12AM (no split)");
-					if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
-						print("12AM (split)");
-						vars.tFrontEntrance = false;
-						return true;
-					}
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posY <= 100){
+					vars.tFrontEntrance = false;
+					return true;
 				}
 				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
 					vars.tEnDaycare = false;
