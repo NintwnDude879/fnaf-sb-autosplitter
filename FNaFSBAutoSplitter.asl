@@ -3,6 +3,10 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
+//Todo:
+//test loadins
+//Piturrete- splitting when pausing (1.04)
+
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
@@ -1259,10 +1263,14 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
-		if (current.menu == 0 && vars.checkConstant && current.freddyPower != 0){
+		if (current.menu == 0 && current.freddyPower != 0 && vars.checkConstant){
 			vars.notLoadingConstant = current.blackScreen;
 			vars.checkConstant = false;
 			print("Constant: " + vars.notLoadingConstant.ToString());
+		}
+
+		if (current.blackScreen != old.blackScreen){
+			print("Current: " + current.blackScreen.ToString());
 		}
 	});
 
