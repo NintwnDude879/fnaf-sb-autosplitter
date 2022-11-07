@@ -1259,7 +1259,7 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
-		if (current.menu == 0 && vars.checkConstant){
+		if (current.menu == 0 && vars.checkConstant && current.freddyPower != 0){
 			vars.notLoadingConstant = current.blackScreen;
 			vars.checkConstant = false;
 			print("Constant: " + vars.notLoadingConstant.ToString());
