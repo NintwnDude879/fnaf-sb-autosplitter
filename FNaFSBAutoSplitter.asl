@@ -987,6 +987,7 @@ init {
 	}
 
 	print("Version = " + version);
+	vars.checkConstant = true;
 }
 
 start {
@@ -1258,8 +1259,10 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
-		if (current.menu == 0 && current.posY >= 100){
+		if (current.menu == 0 && vars.checkConstant){
 			vars.notLoadingConstant = current.blackScreen;
+			vars.checkConstant = false;
+			print("Constant: " + vars.notLoadingConstant.ToString());
 		}
 	});
 
@@ -1436,9 +1439,10 @@ isLoading {
 			}
 		}
 		if (settings["Stop Timer When Loading"] && current.blackScreen != vars.notLoadingConstant){
-			if (old.blackScreen == 0){
+			if (old.blackScreen == vars.notLoadingConstant){
 				print("Stop Timer When Loading");
 			}
+			print("Loading");
 			return true;
 		}
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
