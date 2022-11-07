@@ -2474,9 +2474,13 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posY <= 100){
-					vars.tFrontEntrance = false;
-					return true;
+				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
+					print("12AM (no split)");
+					if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
+						print("12AM (split)");
+						vars.tFrontEntrance = false;
+						return true;
+					}
 				}
 				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
 					vars.tEnDaycare = false;
