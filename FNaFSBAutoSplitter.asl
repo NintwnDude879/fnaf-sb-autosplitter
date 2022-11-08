@@ -991,7 +991,6 @@ init {
 	}
 
 	print("Version = " + version);
-	vars.checkConstant = true;
 }
 
 start {
@@ -1263,14 +1262,9 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
-		if (current.menu == 0 && current.freddyPower != 0 && vars.checkConstant){
-			vars.notLoadingConstant = current.blackScreen;
-			vars.checkConstant = false;
-			print("Constant: " + vars.notLoadingConstant.ToString());
-		}
-
-		if (current.blackScreen != old.blackScreen){
-			print("Current: " + current.blackScreen.ToString());
+		if (current.menu == 0 && current.posY != 0 && old.posY == 0){
+			vars.loadingConstant = current.blackScreen;
+			print("Constant: " + vars.loadingConstant.ToString());
 		}
 	});
 
@@ -1446,11 +1440,10 @@ isLoading {
 				}
 			}
 		}
-		if (settings["Stop Timer When Loading"] && current.blackScreen != vars.notLoadingConstant){
-			if (old.blackScreen == vars.notLoadingConstant){
+		if (settings["Stop Timer When Loading"] && current.blackScreen == vars.loadingConstant){
+			if (old.blackScreen != vars.loadingConstant){
 				print("Stop Timer When Loading");
 			}
-			print("Loading");
 			return true;
 		}
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
@@ -2486,12 +2479,14 @@ split {
 					vars.tUtilityRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0) && current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
-					print("12AM (no split)");
-					if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
-						print("12AM (split)");
-						vars.tFrontEntrance = false;
-						return true;
+				if (current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
+					if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
+						print("12AM (no split)");
+							if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
+								print("12AM (split)");
+								vars.tFrontEntrance = false;
+								return true;
+						}
 					}
 				}
 				if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
