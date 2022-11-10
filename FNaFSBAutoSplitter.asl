@@ -62,7 +62,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
-	int blackScreen: 0x042A4B80, 0x100, 0x1768, 0x160, 0x1D1C;
+	int blackScreen: 0x042A4B80, 0x100, 0x1768, 0x160, 0x1284;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -1264,7 +1264,7 @@ start {
 		vars.nWAElev = 0;
 		if (current.menu == 0 && current.posY != 0 && old.posY == 0){
 			vars.loadingConstant = current.blackScreen;
-			print("Constant: " + vars.loadingConstant.ToString());
+			print("Loading Constant: " + vars.loadingConstant.ToString());
 		}
 	});
 
