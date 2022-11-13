@@ -6,6 +6,7 @@
 //Todo:
 //test loadins
 //Piturrete- splitting when pausing (1.04)
+//add afton ending roxy raceway deload
 
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
@@ -1310,6 +1311,9 @@ start {
 
 	//Resets variables upon stopping timer
 	vars.resetVariables();
+	if (current.blackScreen != old.blackScreen){
+		print(current.blackScreen.ToString());
+	}
 
 	//Start conditions (time, Freddy power, menu)
 	if (current.hourClock == -1 && current.minuteClock == 0){
@@ -1463,6 +1467,9 @@ isLoading {
 }
 
 split {
+	if (current.blackScreen != old.blackScreen){
+		print(current.blackScreen.ToString());
+	}
 	if (settings["Split Settings"]){
 		if (settings["Arcade Splits"]){
 			if (settings["Monty Golf"]){
