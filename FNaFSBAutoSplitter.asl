@@ -63,7 +63,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
-	int blackScreen: 0x042A4B80, 0x100, 0x1768, 0x160, 0x1284;
+	//int blackScreen: 0x042A4B80, 0x100, 0x1768, 0x160, 0x1284;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -134,7 +134,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x0441D814;
 	int menu: 0x0441FE08, 0xB4;
-	int blackScreen: 0x0444C568, 0x184;
+	//int blackScreen: 0x0444C568, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x04420F40, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -205,7 +205,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	//Menus
  	int pause: 0x0441D954;
 	int menu: 0x0441FF48, 0xB4;
-	int blackScreen: 0x444C6B0, 0x184;
+	//int blackScreen: 0x444C6B0, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x04421080, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -276,7 +276,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x04425184;
 	int menu: 0x04427778, 0xB4;
-	int blackScreen: 0x04453ED8, 0x184;
+	//int blackScreen: 0x04453ED8, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x044288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -814,7 +814,7 @@ startup {
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
-	settings.Add("Stop Timer When Loading", true);
+	//settings.Add("Stop Timer When Loading", true);
 	settings.Add("Stop Timer When On Menu", true);
 	settings.Add("Stop Timer When Paused", true);
 
@@ -962,10 +962,10 @@ startup {
 	settings.Add("15Hz", false);
 
 	settings.CurrentDefaultParent = null;
-	settings.Add("Reset Settings", true);
+	settings.Add("Reset Settings", false);
 
 	settings.CurrentDefaultParent = "Reset Settings";
-	settings.Add("Reset On New Game", true);
+	settings.Add("Reset On New Game", false);
 }
 
 init {
@@ -1263,10 +1263,12 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
+		/*
 		if (current.menu == 0 && current.posY != 0 && old.posY == 0){
 			vars.loadingConstant = current.blackScreen;
 			print("Loading Constant: " + vars.loadingConstant.ToString());
 		}
+		*/
 	});
 
 	//Updates refreshRate
@@ -1311,9 +1313,6 @@ start {
 
 	//Resets variables upon stopping timer
 	vars.resetVariables();
-	if (current.blackScreen != old.blackScreen){
-		print(current.blackScreen.ToString());
-	}
 
 	//Start conditions (time, Freddy power, menu)
 	if (current.hourClock == -1 && current.minuteClock == 0){
@@ -1444,12 +1443,14 @@ isLoading {
 				}
 			}
 		}
+		/*
 		if (settings["Stop Timer When Loading"] && current.blackScreen == vars.loadingConstant){
 			if (old.blackScreen != vars.loadingConstant){
 				print("Stop Timer When Loading");
 			}
 			return true;
 		}
+		*/
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
 			if (old.menu != 0){
 				print("Stop Timer When On Menu");
@@ -1467,9 +1468,6 @@ isLoading {
 }
 
 split {
-	if (current.blackScreen != old.blackScreen){
-		print(current.blackScreen.ToString());
-	}
 	if (settings["Split Settings"]){
 		if (settings["Arcade Splits"]){
 			if (settings["Monty Golf"]){
