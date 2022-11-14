@@ -792,7 +792,7 @@ startup {
 	settings.Add("Enter Daycare (12:30AM)", false);
 	settings.Add("Daycare Nighttime (12:55AM)", false);
 	settings.Add("Daycare Vanny Cutscene (1:00AM)", false);
-	settings.Add("Mini Music Man Chase / Enter El Chips (1:15AM)", false);
+	settings.Add("Mini Music Man Chase (1:15AM)", false);
 	settings.Add("Pizzabot (1:30AM)", false);
 	settings.Add("White Woman Abduction (2:00AM)", false);
 	settings.Add("Dead Fred (2:15AM)", false);
@@ -1051,19 +1051,22 @@ start {
 			if (check){
 				if (zLB <= current.posZ && current.posZ <= zUB){
 				
-				double slope = (y1 - y2) / (x1 - x2);
-				double xAvg = (x1 + x2) / 2;
-				double yAvg = (y1 + y2) / 2;
+					double slope = (y1 - y2) / (x1 - x2);
+					double xAvg = (x1 + x2) / 2;
+					double yAvg = (y1 + y2) / 2;
 
+					//north
 					if (yB - yAvg >= slope * (xB - xAvg)){
 						if (current.posY - yAvg >= slope * (current.posX - xAvg)){
-							if (slope <= 0){
+							//east
+							if (slope >= 0){
 								if (current.posX >= xB && current.posY <= yB){
 									print(name);
 									return true;
 								}
 							}
-							if (slope > 0){
+							//west
+							if (slope < 0){
 								if (current.posX <= xB && current.posY <= yB){
 									print(name);
 									return true;
@@ -1071,16 +1074,19 @@ start {
 							}
 						}
 					}
+					//south
 					if (yB - yAvg < slope * (xB - xAvg)){
 						if (current.posY - yAvg < slope * (current.posX - xAvg)){
-							if (slope <= 0){
-								if (current.posX >= xB && current.posY >= yB){
+							//west
+							if (slope >= 0){
+								if (current.posX <= xB && current.posY >= yB){
 									print(name);
 									return true;
 								}
 							}
-							if (slope > 0){
-								if (current.posX <= xB && current.posY >= yB){
+							//east
+							if (slope < 0){
+								if (current.posX >= xB && current.posY >= yB){
 									print(name);
 									return true;
 								}
@@ -1755,13 +1761,13 @@ split {
 		if (settings["Deload Splits"]){
 			if (current.posX != old.posX){
 				if (settings["D_Backstage"]){
-					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4160, 53000, -5250, 52750, -5500, 53450, 1780, 2000)){
+					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -5310, 52780, -5500, 523050, -5300, 53235, 1780, 2000)){
 						vars.dFoxyCutout = false;
 						return true;
 					}
 				}
 				if (settings["D_Daycare"]){
-					if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 20000)){
+					if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 2000)){
 						vars.dDaycareArcade = false;
 						return true;
 					}
@@ -2413,12 +2419,9 @@ split {
 					}
 				}
 				if (settings["P_El Chips"]){
-					if (current.hourClock == 1 && current.minuteClock == 15){
-						if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-							vars.pEnElChips = false;
-							vars.t1_15 = false;
-							return true;
-						}
+					if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+						vars.pEnElChips = false;
+						return true;
 					}
 				}
 				if (settings["P_Fazerblast"]){
@@ -2506,7 +2509,7 @@ split {
 					vars.tDaycareRecharge = false;
 					return true;
 				}
-				if (vars.checkTime("Mini Music Man Chase / Enter El Chips (1:15AM)", vars.t1_15, 1, 15)){
+				if (vars.checkTime("Mini Music Man Chase (1:15AM)", vars.t1_15, 1, 15)){
 					vars.t1_15 = false;
 					return true;
 				}
