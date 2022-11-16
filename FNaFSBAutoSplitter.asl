@@ -436,6 +436,7 @@ startup {
 
 	settings.CurrentDefaultParent = "D_Roxy Raceway";
 	settings.Add("Afton Rock Column Deload", false);
+	settings.Add("Garage Fence Jump", false);
 	settings.Add("Roxy's Eye Deload", false);
 
 	settings.CurrentDefaultParent = "D_Roxy Raceway Sublobby";
@@ -1210,6 +1211,7 @@ start {
 		vars.dCurtain = true;
 		vars.dTunnelDoor = true;
 		vars.dAftonRock = true;
+		vars.dGarageJump = true;
 		vars.dRoxyEyes = true;
 		vars.dBalloon = true;
 		vars.dPlant = true;
@@ -1261,7 +1263,6 @@ start {
 		vars.t6am = true;
 
 		//Pausing
-		vars.isLoading = false;
 		vars.nAElev = 0;
 		vars.nBBElev = 0;
 		vars.nFBElev = 0;
@@ -1273,6 +1274,15 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
+		if (version == "v1.04"){
+			vars.isLoading = false;
+		}
+		else {
+			if (current.menu == 0 && current.posY != 0 && old.posY == 0){
+				vars.loadingConstant = current.blackScreen;
+				print("Loading Constant: " + vars.loadingConstant.ToString());
+			}
+		}
 	});
 
 	//Updates refreshRate
@@ -1448,17 +1458,27 @@ isLoading {
 			}
 		}
 		if (settings["Stop Timer When Loading"]){
-			if (current.hasLoaded == 1){
-				vars.isLoading = false;
-			}
-			else {
-				if ((current.mainGameGM_C != 0 || old.pause == 3) && !vars.isLoading){
-					print("Stop Timer When Loading");
-					vars.isLoading = true;
+			if (version == "v1.04"){
+				if (current.hasLoaded == 1){
+					vars.isLoading = false;
+				}
+				else {
+					if ((current.mainGameGM_C != 0 || old.pause == 3) && !vars.isLoading){
+						print("Stop Timer When Loading");
+						vars.isLoading = true;
+					}
+				}
+				if (vars.isLoading){
+					return true;
 				}
 			}
-			if (vars.isLoading){
-				return true;
+			else {
+				if (current.blackScreen == vars.loadingConstant){
+					if (old.blackScreen != vars.loadingConstant){
+						print("Stop Timer When Loading");
+					}
+					return true;
+				}
 			}
 		}
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
@@ -1815,6 +1835,10 @@ split {
 				if (settings["D_Roxy Raceway"]){
 					if (vars.checkPosition("Afton Rock Column Deload", vars.dAftonRock, 24000, 25500, 48000, 49500, 2411.5, 2800)){
 						vars.dAftonRock = false;
+						return true;
+					}
+					if (vars.checkPosition("Garage Fence Jump", vars.dGarageJump, 18000, 19500, 38800, 39100, 2411.5, 2800)){
+						vars.dGarageJump = false;
 						return true;
 					}
 					if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
