@@ -26,5 +26,5 @@ If there is a feature or split you would like to be included, feel free to fill 
 
 There is a perfectly well documented video on how to use this autosplitter [here](https://youtu.be/UkRkU2WcJDc).
 
-## Disclaimer:
+## Disclaimer
 This Autosplitter is NOT meant to replace timing by verifiers, but instead to allow the runner to get a more accurate idea of their pace.
