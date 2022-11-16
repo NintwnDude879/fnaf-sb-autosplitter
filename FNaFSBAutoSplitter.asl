@@ -1463,7 +1463,7 @@ isLoading {
 					vars.isLoading = false;
 				}
 				else {
-					if ((current.mainGameGM_C != 0 || old.pause == 3) && !vars.isLoading){
+					if ((current.mainGameGM_C != 0 || (old.pause == 3 && old.mainGameGM_C != 0)) && !vars.isLoading){
 						print("Stop Timer When Loading");
 						vars.isLoading = true;
 					}
