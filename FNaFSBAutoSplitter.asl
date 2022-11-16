@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach | v1.2.1
+//Five Nights at Freddy's: Security Breach | v1.2.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
@@ -63,7 +63,8 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
  	int pause: 0x0441C584;
 	int menu: 0x0441EB78, 0xB4;
-	//int blackScreen: 0x042A4B80, 0x100, 0x1768, 0x160, 0x1284;
+	int mainGameGM_C: 0x0441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x0;
+	int hasLoaded: 0x0441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x0441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -134,7 +135,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x0441D814;
 	int menu: 0x0441FE08, 0xB4;
-	//int blackScreen: 0x0444C568, 0x184;
+	int blackScreen: 0x0444C568, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x04420F40, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -205,7 +206,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	//Menus
  	int pause: 0x0441D954;
 	int menu: 0x0441FF48, 0xB4;
-	//int blackScreen: 0x444C6B0, 0x184;
+	int blackScreen: 0x444C6B0, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x04421080, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -276,7 +277,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x04425184;
 	int menu: 0x04427778, 0xB4;
-	//int blackScreen: 0x04453ED8, 0x184;
+	int blackScreen: 0x04453ED8, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
 	int kitElev: 0x044288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -428,16 +429,17 @@ startup {
 	settings.CurrentDefaultParent = "D_Prize Counter";
 	settings.Add("Counter Deload", false);
 
-	settings.CurrentDefaultParent = "D_Roxy Raceway Sublobby";
-	settings.Add("Balloon Deload", false);
-
 	settings.CurrentDefaultParent = "D_Rockstar Row";
 	settings.Add("Chica Greenroom Deload", false);
 	settings.Add("Curtain Deload", false);
 	settings.Add("Tunnel Door Deload", false);
 
 	settings.CurrentDefaultParent = "D_Roxy Raceway";
+	settings.Add("Afton Rock Column Deload", false);
 	settings.Add("Roxy's Eye Deload", false);
+
+	settings.CurrentDefaultParent = "D_Roxy Raceway Sublobby";
+	settings.Add("Balloon Deload", false);
 
 	settings.CurrentDefaultParent = "D_Roxy Salon";
 	settings.Add("Plant Deload", false);
@@ -814,7 +816,7 @@ startup {
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
-	//settings.Add("Stop Timer When Loading", true);
+	settings.Add("Stop Timer When Loading", true);
 	settings.Add("Stop Timer When On Menu", true);
 	settings.Add("Stop Timer When Paused", true);
 
@@ -1207,6 +1209,7 @@ start {
 		vars.dChicaRoom = true;
 		vars.dCurtain = true;
 		vars.dTunnelDoor = true;
+		vars.dAftonRock = true;
 		vars.dRoxyEyes = true;
 		vars.dBalloon = true;
 		vars.dPlant = true;
@@ -1258,6 +1261,7 @@ start {
 		vars.t6am = true;
 
 		//Pausing
+		vars.isLoading = false;
 		vars.nAElev = 0;
 		vars.nBBElev = 0;
 		vars.nFBElev = 0;
@@ -1269,12 +1273,6 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
-		/*
-		if (current.menu == 0 && current.posY != 0 && old.posY == 0){
-			vars.loadingConstant = current.blackScreen;
-			print("Loading Constant: " + vars.loadingConstant.ToString());
-		}
-		*/
 	});
 
 	//Updates refreshRate
@@ -1449,14 +1447,20 @@ isLoading {
 				}
 			}
 		}
-		/*
-		if (settings["Stop Timer When Loading"] && current.blackScreen == vars.loadingConstant){
-			if (old.blackScreen != vars.loadingConstant){
-				print("Stop Timer When Loading");
+		if (settings["Stop Timer When Loading"]){
+			if (current.hasLoaded == 1){
+				vars.isLoading = false;
 			}
-			return true;
+			else {
+				if ((current.mainGameGM_C != 0 || old.pause == 3) && !vars.isLoading){
+					print("Stop Timer When Loading");
+					vars.isLoading = true;
+				}
+			}
+			if (vars.isLoading){
+				return true;
+			}
 		}
-		*/
 		if (settings["Stop Timer When On Menu"] && current.menu == 0){
 			if (old.menu != 0){
 				print("Stop Timer When On Menu");
@@ -1759,7 +1763,7 @@ split {
 			}
 		}
 		if (settings["Deload Splits"]){
-			if (current.posX != old.posX){
+			if (current.posX != old.posX || current.posY != old.posY || current.posZ != old.posZ){
 				if (settings["D_Backstage"]){
 					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -5310, 52780, -5500, 523050, -5300, 53235, 1780, 2000)){
 						vars.dFoxyCutout = false;
@@ -1809,6 +1813,10 @@ split {
 					}
 				}
 				if (settings["D_Roxy Raceway"]){
+					if (vars.checkPosition("Afton Rock Column Deload", vars.dAftonRock, 24000, 25500, 48000, 49500, 2411.5, 2800)){
+						vars.dAftonRock = false;
+						return true;
+					}
 					if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
 						vars.dRoxyEyes = false;
 						return true;
@@ -2490,7 +2498,7 @@ split {
 				if (current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
 					if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
 						print("12AM (no split)");
-							if (vars.checkPositionSlant("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 2060, 20700, 1840, 22960, 1000, 19500, 1450, 2000)){
+							if (vars.checkPosition("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 500, 2500, 19500, 23000, 1450, 2000)){
 								print("12AM (split)");
 								vars.tFrontEntrance = false;
 								return true;
