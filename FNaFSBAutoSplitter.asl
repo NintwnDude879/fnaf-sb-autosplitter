@@ -4,7 +4,6 @@
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
 //Todo:
-//test loadins
 //Piturrete- splitting when pausing (1.04)
 
 //base address change: 0
@@ -1466,7 +1465,7 @@ isLoading {
 				return true;
 			}
 		}
-			else {
+		else {
 			if (current.blackScreen == vars.loadingConstant){
 				if (old.blackScreen != vars.loadingConstant){
 					print("Stop Timer When Loading");
