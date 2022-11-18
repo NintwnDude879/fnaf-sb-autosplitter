@@ -6,7 +6,6 @@
 //Todo:
 //test loadins
 //Piturrete- splitting when pausing (1.04)
-//add afton ending roxy raceway deload
 
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
@@ -816,9 +815,6 @@ startup {
 
 	settings.CurrentDefaultParent = "Timer Settings";
 	settings.Add("Elevator Pauses", true);
-	settings.Add("Stop Timer When Loading", true);
-	settings.Add("Stop Timer When On Menu", true);
-	settings.Add("Stop Timer When Paused", true);
 
 	settings.CurrentDefaultParent = "Elevator Pauses";
 	settings.Add("Afton Elevator", true);
@@ -1456,37 +1452,35 @@ isLoading {
 				}
 			}
 		}
-		if (settings["Stop Timer When Loading"]){
-			if (version == "v1.04"){
-				if (current.hasLoaded == 1){
-					vars.isLoading = false;
-				}
-				else {
-					if ((current.posY != 0 || (old.pause == 3 && old.posY != 0)) && !vars.isLoading){
-						print("Stop Timer When Loading");
-						vars.isLoading = true;
-					}
-				}
-				if (vars.isLoading){
-					return true;
-				}
+		if (version == "v1.04"){
+			if (current.hasLoaded == 1){
+				vars.isLoading = false;
 			}
 			else {
-				if (current.blackScreen == vars.loadingConstant){
-					if (old.blackScreen != vars.loadingConstant){
-						print("Stop Timer When Loading");
-					}
-					return true;
+				if ((current.posY != 0 || (old.pause == 3 && old.posY != 0)) && !vars.isLoading){
+					print("Stop Timer When Loading");
+					vars.isLoading = true;
 				}
 			}
+			if (vars.isLoading){
+				return true;
+			}
 		}
-		if (settings["Stop Timer When On Menu"] && current.menu == 0){
-			if (old.menu != 0){
+			else {
+			if (current.blackScreen == vars.loadingConstant){
+				if (old.blackScreen != vars.loadingConstant){
+					print("Stop Timer When Loading");
+				}
+				return true;
+			}
+		}
+		if (current.menu == 0){
+			if (current.menu == 0 && old.menu != 0){
 				print("Stop Timer When On Menu");
 			}
 			return true;
 		}
-		if (settings["Stop Timer When Paused"] && current.pause == 3){
+		if (current.pause == 3){
 			if (old.pause != 3){
 				print("Stop Timer When Paused");
 			}
