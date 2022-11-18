@@ -294,7 +294,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 startup {
 	settings.CurrentDefaultParent = null;
 	settings.Add("Split Settings", false);
-	settings.Add("Timer Settings", true);
+	settings.Add("In-Game Time Settings", true);
 
 	settings.CurrentDefaultParent = "Split Settings";
 	settings.Add("Arcade Splits", false);
@@ -812,7 +812,7 @@ startup {
 	settings.Add("Freddy Eye Upgrade Nighttime (5:50AM)", false);
 	settings.Add("Reach Exit Door (6:00AM)", false);
 
-	settings.CurrentDefaultParent = "Timer Settings";
+	settings.CurrentDefaultParent = "In-Game Time Settings";
 	settings.Add("Elevator Pauses", true);
 
 	settings.CurrentDefaultParent = "Elevator Pauses";
@@ -1352,7 +1352,7 @@ reset {
 }
 
 isLoading {
-	if (settings["Timer Settings"]){
+	if (settings["In-Game Time Settings"]){
 		if (settings["Elevator Pauses"]){
 			if (vars.checkElevator1("Afton Elevator", current.aftonElev)){
 				if (old.aftonElev == 0){
