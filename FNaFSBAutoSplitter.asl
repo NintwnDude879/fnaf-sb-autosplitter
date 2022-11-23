@@ -126,8 +126,8 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int securityBadgeCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0xC0;
 
 	//In-Game Clock
-	int hourClock: 0x04409AF0, 0x30, 0x258, 0x5B0, 0x670, 0x230, 0x258;
-	int minuteClock: 0x04409AF0, 0x30, 0x258, 0x5B0, 0x670, 0x230, 0x25C;
+	int hourClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA34;
+	int minuteClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA38;
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x0441D814;
@@ -197,8 +197,8 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int splashScreen: 0x444C6B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//In-Game Clock
-	int hourClock: 0x0440ADF0, 0x30, 0x678, 0x230, 0xA34;
-	int minuteClock: 0x0440ADF0, 0x30, 0x678, 0x230, 0xA38;
+	int hourClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA34;
+	int minuteClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA38;
 
 	//Menus
  	int pause: 0x0441D954;
@@ -1323,13 +1323,13 @@ start {
 	vars.resetVariables();
 
 	//Start conditions (time, Freddy power, menu)
-	if (current.hourClock == -1 && current.minuteClock == 0){
-		if (current.freddyPower == 30 && current.menu != 0){
-			if (old.freddyPower == 100 || old.menu == 0){
-				return true;
-			}
-		}
-	}
+if (current.hourClock == -1 && current.minuteClock == 0){
+        if (current.freddyPower == 30 && current.menu != 0){
+            if (old.freddyPower == 100 || old.menu == 0){
+                return true;
+            }
+        }
+    }
 }
 
 reset {
