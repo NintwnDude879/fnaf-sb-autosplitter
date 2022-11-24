@@ -1,10 +1,10 @@
-//Five Nights at Freddy's: Security Breach | v1.2.0
+//Five Nights at Freddy's: Security Breach | v1.2.1
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
 //Todo:
-//Piturrete- splitting when pausing (1.04)
+//Piturrete suggestion- add message bags
 
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
@@ -126,8 +126,8 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int securityBadgeCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0xC0;
 
 	//In-Game Clock
-	int hourClock: 0x04409AF0, 0x30, 0x258, 0x5B0, 0x670, 0x230, 0x258;
-	int minuteClock: 0x04409AF0, 0x30, 0x258, 0x5B0, 0x670, 0x230, 0x25C;
+	int hourClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA34;
+	int minuteClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA38;
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x0441D814;
@@ -197,8 +197,8 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int splashScreen: 0x444C6B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//In-Game Clock
-	int hourClock: 0x0440ADF0, 0x30, 0x678, 0x230, 0xA34;
-	int minuteClock: 0x0440ADF0, 0x30, 0x678, 0x230, 0xA38;
+	int hourClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA34;
+	int minuteClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA38;
 
 	//Menus
  	int pause: 0x0441D954;
@@ -294,7 +294,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 startup {
 	settings.CurrentDefaultParent = null;
 	settings.Add("Split Settings", false);
-	settings.Add("Timer Settings", true);
+	settings.Add("In-Game Time Settings", true);
 
 	settings.CurrentDefaultParent = "Split Settings";
 	settings.Add("Arcade Splits", false);
@@ -812,8 +812,9 @@ startup {
 	settings.Add("Freddy Eye Upgrade Nighttime (5:50AM)", false);
 	settings.Add("Reach Exit Door (6:00AM)", false);
 
-	settings.CurrentDefaultParent = "Timer Settings";
+	settings.CurrentDefaultParent = "In-Game Time Settings";
 	settings.Add("Elevator Pauses", true);
+	settings.Add("Stop Timer When Paused", true);
 
 	settings.CurrentDefaultParent = "Elevator Pauses";
 	settings.Add("Afton Elevator", true);
@@ -1323,13 +1324,13 @@ start {
 	vars.resetVariables();
 
 	//Start conditions (time, Freddy power, menu)
-	if (current.hourClock == -1 && current.minuteClock == 0){
-		if (current.freddyPower == 30 && current.menu != 0){
-			if (old.freddyPower == 100 || old.menu == 0){
-				return true;
-			}
-		}
-	}
+if (current.hourClock == -1 && current.minuteClock == 0){
+        if (current.freddyPower == 30 && current.menu != 0){
+            if (old.freddyPower == 100 || old.menu == 0){
+                return true;
+            }
+        }
+    }
 }
 
 reset {
@@ -1352,7 +1353,7 @@ reset {
 }
 
 isLoading {
-	if (settings["Timer Settings"]){
+	if (settings["In-Game Time Settings"]){
 		if (settings["Elevator Pauses"]){
 			if (vars.checkElevator1("Afton Elevator", current.aftonElev)){
 				if (old.aftonElev == 0){
@@ -1479,11 +1480,13 @@ isLoading {
 			}
 			return true;
 		}
-		if (current.pause == 3){
-			if (old.pause != 3){
-				print("Stop Timer When Paused");
+		if (settings["Stop Timer When Paused"]){
+			if (current.pause == 3){
+				if (old.pause != 3){
+					print("Stop Timer When Paused");
+				}
+				return true;
 			}
-			return true;
 		}
 	}
 	return false;
