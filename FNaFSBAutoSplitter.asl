@@ -5,6 +5,7 @@
 
 //Todo:
 //Piturrete suggestion- add message bags
+//Piturrete issue- time items
 
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
@@ -32,7 +33,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	float posZ: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
-	int vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	bool vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
 	int escapeEndLeaveButtonEast: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268;
 	int carEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268;
 	int fireEndLeaveButton: 0x0441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268;
@@ -103,7 +104,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	float posZ: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
-	int vannyEndButton: 0x04420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	bool vannyEndButton: 0x04420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
 	int escapeEndLeaveButtonEast: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268;
 	int fireEndLeaveButton: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
 	int carEndLeaveButton: 0x04420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268;
@@ -174,7 +175,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	float posZ: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
-	int vannyEndButton: 0x04421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	bool vannyEndButton: 0x04421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
 	int escapeEndLeaveButtonWest: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
 	int escapeEndLeaveButtonEast: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268;
 	int carEndLeaveButton: 0x04421080, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
@@ -245,7 +246,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	float posZ: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
-	int vannyEndButton: 0x044288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
+	bool vannyEndButton: 0x044288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
 	int escapeEndLeaveButtonEast: 0x044288B0, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270;
 	int carEndLeaveButton: 0x044288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270;
 	int fireEndLeaveButton: 0x044288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270;
@@ -994,7 +995,7 @@ init {
 
 start {
 	//Functions
-	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
+	vars.checkElevator1 = (Func<string, bool, bool>)((name, checkCurrent) => {
 		if (settings[name]){
 			if (checkCurrent){
 				return true;
@@ -1003,7 +1004,7 @@ start {
 		return false;
 	});
 	
-	vars.checkElevator2 = (Func<string, int, int, bool>)((nameShort, checkOld, checkCount) => {
+	vars.checkElevator2 = (Func<string, bool, int, bool>)((nameShort, checkOld, checkCount) => {
 		if (settings[nameShort + "_EUOE"]){
 			if (!checkOld){
 				print(nameShort + " :  Every Use");
@@ -1325,8 +1326,8 @@ start {
 
 	//Start conditions (time, Freddy power, menu)
 	if (current.hourClock == -1 && current.minuteClock == 0){
-        if (current.freddyPower == 30 && current.menu != 0){
-            if (old.freddyPower == 100 || old.menu == 0){
+        if (current.freddyPower == 30 && !current.menu){
+            if (old.freddyPower == 100 || old.menu){
                 return true;
             }
         }
@@ -1336,8 +1337,8 @@ start {
 reset {
 	//Resets variables for certain splits upon starting in freddy
 	if (current.hourClock == -1 && current.minuteClock == 0){
-		if (current.freddyPower == 30 && current.menu != 0){
-			if (old.freddyPower == 100 || old.menu == 0){
+		if (current.freddyPower == 30 && !current.menu){
+			if (old.freddyPower == 100 || old.menu){
 				vars.resetVariables();
 			}
 		}
@@ -1868,7 +1869,7 @@ split {
 					print("Car Battery Cutscene");
 					return true;
 				}
-				if (settings["CB_B"] && current.carEndLeaveButton < old.carEndLeaveButton != 0){
+				if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
 					if (!current.menu){
 						print("Car Battery Button");
 						return true;
@@ -1881,13 +1882,13 @@ split {
 					return true;
 				}
 				if (settings["E_B"]){
-					if (current.escapeEndLeaveButtonEast < old.escapeEndLeaveButtonEast != 0){
+					if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
 						if (!current.menu){
 							print("Escape (East) Button");
 							return true;
 						}
 					}
-					if (current.escapeEndLeaveButtonWest < old.escapeEndLeaveButtonWest != 0){
+					if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
 						if (!current.menu){
 							print("Escape (West) Button");
 							return true;
@@ -1900,7 +1901,7 @@ split {
 					print("Fire Escape Cutscene");
 					return true;
 				}
-				if (settings["F_B"] && current.fireEndLeaveButton < old.fireEndLeaveButton){
+				if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
 					if (!current.menu){
 						print("Fire Escape Button");
 						return true;
@@ -1926,7 +1927,8 @@ split {
 					print("Vanny Cutscene");
 					return true;
 				}
-				if (settings["V_B"] && current.vannyEndButton < old.vannyEndButton){
+				print(current.vannyEndButton.ToString());
+				if (settings["V_B"] && !current.vannyEndButton && old.vannyEndButton){
 					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
 						return true;
 					}
