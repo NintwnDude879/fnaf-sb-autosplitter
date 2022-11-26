@@ -1345,10 +1345,10 @@ reset {
 	//Resets variables for certain splits upon starting in freddy
 	if (current.hourClock == -1 && current.minuteClock == 0){
         if (current.freddyPower == 30){
-			if (vars.version != "v1.11" && old.freddyPower == 100){
+			if (version == "v1.11" && current.freddyThing == 0 && old.freddyThing == 18){
 				return true;
 			}
-			else if (current.freddyThing == 0 && old.freddyThing == 18){
+			else if (old.freddyPower == 100){
 				return true;
 			}
         }
