@@ -995,7 +995,7 @@ init {
 
 start {
 	//Functions
-	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
+	vars.checkElevator1 = (Func<string, bool, bool>)((name, checkCurrent) => {
 		if (settings[name]){
 			if (checkCurrent){
 				return true;
@@ -1004,7 +1004,7 @@ start {
 		return false;
 	});
 	
-	vars.checkElevator2 = (Func<string, int, int, bool>)((nameShort, checkOld, checkCount) => {
+	vars.checkElevator2 = (Func<string, bool, int, bool>)((nameShort, checkOld, checkCount) => {
 		if (settings[nameShort + "_EUOE"]){
 			if (!checkOld){
 				print(nameShort + " :  Every Use");
@@ -1270,6 +1270,7 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
+		vars.freddyThing = 0;
 		if (version == "v1.04"){
 			vars.isLoading = false;
 		}
@@ -1278,6 +1279,9 @@ start {
 				vars.loadingConstant = current.blackScreen;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
+		}
+		if (version != "v1.11"){
+			vars.freddyThing = 0;
 		}
 	});
 
@@ -1327,9 +1331,12 @@ start {
 	//Start conditions (time, Freddy power, menu)
 	if (current.hourClock == -1 && current.minuteClock == 0){
         if (current.freddyPower == 30){
-            if (old.freddyPower == 100 || (current.freddyThing == 0 && old.freddyThing == 18)){
-                return true;
-            }
+			if (version == "v1.11" && current.freddyThing == 0 && old.freddyThing == 18){
+				return true;
+			}
+			else if (old.freddyPower == 100){
+				return true;
+			}
         }
     }
 }
@@ -1338,9 +1345,12 @@ reset {
 	//Resets variables for certain splits upon starting in freddy
 	if (current.hourClock == -1 && current.minuteClock == 0){
         if (current.freddyPower == 30){
-            if (old.freddyPower == 100 || (current.freddyThing == 0 && old.freddyThing == 18)){
-                return true;
-            }
+			if (vars.version != "v1.11" && old.freddyPower == 100){
+				return true;
+			}
+			else if (current.freddyThing == 0 && old.freddyThing == 18){
+				return true;
+			}
         }
 		if (settings["Reset Settings"]){
 			if (settings["Reset On New Game"]){
