@@ -276,6 +276,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
  	int pause: 0x04425184;
 	bool menu: 0x044288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x04453ED8, 0x184;
+	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x230;
 
 	//Elevator pointers (elevator in motion = 1)
 	bool kitElev: 0x044288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -1270,6 +1271,7 @@ start {
 		vars.nRGElev = 0;
 		vars.nCGElev = 0;
 		vars.nWAElev = 0;
+		vars.freddyThing = 0;
 		if (version == "v1.04"){
 			vars.isLoading = false;
 		}
@@ -1326,10 +1328,13 @@ start {
 
 	//Start conditions (time, Freddy power, menu)
 	if (current.hourClock == -1 && current.minuteClock == 0){
-        if (current.freddyPower == 30 && !current.menu){
-            if (old.freddyPower == 100 || old.menu){
-                return true;
-            }
+        if (current.freddyPower == 30){
+			if (version == "v1.11" && current.freddyThing == 0 && old.freddyThing == 18){
+				return true;
+			}
+			else if (old.freddyPower == 100){
+				return true;
+			}
         }
     }
 }
@@ -1337,11 +1342,14 @@ start {
 reset {
 	//Resets variables for certain splits upon starting in freddy
 	if (current.hourClock == -1 && current.minuteClock == 0){
-		if (current.freddyPower == 30 && !current.menu){
-			if (old.freddyPower == 100 || old.menu){
-				vars.resetVariables();
+        if (current.freddyPower == 30){
+			if (version == "v1.11" && current.freddyThing == 0 && old.freddyThing == 18){
+				return true;
 			}
-		}
+			else if (old.freddyPower == 100){
+				return true;
+			}
+        }
 		if (settings["Reset Settings"]){
 			if (settings["Reset On New Game"]){
 				if (old.hourClock != -1){
