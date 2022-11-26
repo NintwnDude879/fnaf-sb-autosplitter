@@ -222,8 +222,8 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 }
 //base address change: 8C00
 state("fnaf9-Win64-Shipping", "v1.11"){
-	//Keeps track of Freddy's power
-	int freddyPower: 0x04424338, 0x8, 0x10, 0x38, 0xB8;
+	//Keeps track of Freddy's battery popup
+	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x230;
 
 	//Arcade pointers
 	int golfStrokeCount: 0x044288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
@@ -276,7 +276,6 @@ state("fnaf9-Win64-Shipping", "v1.11"){
  	int pause: 0x04425184;
 	bool menu: 0x044288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x04453ED8, 0x184;
-	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x230;
 
 	//Elevator pointers (elevator in motion = 1)
 	bool kitElev: 0x044288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
@@ -1326,36 +1325,29 @@ start {
 	//Resets variables upon stopping timer
 	vars.resetVariables();
 
-	//Start conditions (time, Freddy power, menu)
+	//Start conditions (time, Freddy power, freddyThing)
 	if (current.hourClock == -1 && current.minuteClock == 0){
-        if (current.freddyPower == 30){
-			if (version == "v1.11" && current.freddyThing == 0 && old.freddyThing == 18){
+		if (version != "v1.11"){
+			if (current.freddyPower < old.freddyPower){
+				print("Start Timer");
 				return true;
 			}
-			else if (old.freddyPower == 100){
+		}
+		else if (version == "v1.11"){
+			if (current.freddyThing == 0 && old.freddyThing != 0){
+				print("Start Timer");
 				return true;
 			}
-        }
+		}
     }
 }
 
 reset {
-	//Resets variables for certain splits upon starting in freddy
-	if (current.hourClock == -1 && current.minuteClock == 0){
-        if (current.freddyPower == 30){
-			if (version == "v1.11" && current.freddyThing == 0 && old.freddyThing == 18){
+	//Resets timer upon starting new game
+	if (settings["Reset Settings"]){
+		if (old.hourClock != -1){
+			if (vars.checkTime("Reset On New Game", true, -1, 0)){
 				return true;
-			}
-			else if (old.freddyPower == 100){
-				return true;
-			}
-        }
-		if (settings["Reset Settings"]){
-			if (settings["Reset On New Game"]){
-				if (old.hourClock != -1){
-					print("Reset Timer");
-					return true;
-				}
 			}
 		}
 	}
