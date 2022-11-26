@@ -1326,8 +1326,8 @@ start {
 
 	//Start conditions (time, Freddy power, menu)
 	if (current.hourClock == -1 && current.minuteClock == 0){
-        if (current.freddyPower == 30 && current.menu != 0){
-            if (old.freddyPower == 100 || old.menu == 0){
+        if (current.freddyPower == 30){
+            if (old.freddyPower == 100 || (current.freddyThing == 0 && old.freddyThing == 18)){
                 return true;
             }
         }
