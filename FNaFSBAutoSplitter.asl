@@ -60,7 +60,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
  	int pause: 0x0441C584;
-	int menu: 0x0441EB78, 0xB4;
+	bool menu: 0x0441FCB0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	bool hasLoaded: 0x0441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
 
 	//Elevator pointers (elevator in motion = 1)
@@ -131,7 +131,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x0441D814;
-	int menu: 0x0441FE08, 0xB4;
+	bool menu: 0x04420F40, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x0444C568, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
@@ -202,7 +202,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 
 	//Menus
  	int pause: 0x0441D954;
-	int menu: 0x0441FF48, 0xB4;
+	bool menu: 0x04421080, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x444C6B0, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
@@ -273,7 +273,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	int pause: 0x04425184;
-	int menu: 0x04427778, 0xB4;
+	bool menu: 0x044288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x04453ED8, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
