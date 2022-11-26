@@ -996,7 +996,7 @@ start {
 	//Functions
 	vars.checkElevator1 = (Func<string, int, bool>)((name, checkCurrent) => {
 		if (settings[name]){
-			if (checkCurrent == 1){
+			if (checkCurrent){
 				return true;
 			}
 		}
@@ -1005,14 +1005,14 @@ start {
 	
 	vars.checkElevator2 = (Func<string, int, int, bool>)((nameShort, checkOld, checkCount) => {
 		if (settings[nameShort + "_EUOE"]){
-			if (checkOld == 0){
+			if (!checkOld){
 				print(nameShort + " :  Every Use");
 			}
 			return true;
 		}
 		if (settings[nameShort + "_POOU"]){
 			if (settings[nameShort + "n" + checkCount]){
-				if (checkOld == 0){
+				if (!checkOld){
 					print(nameShort + " : Use #" + checkCount);
 				}
 				return true;
@@ -1273,7 +1273,7 @@ start {
 			vars.isLoading = false;
 		}
 		else {
-			if (current.menu == 0 && current.posY != 0 && old.posY == 0){
+			if (current.posY != 0 && old.posY == 0){
 				vars.loadingConstant = current.blackScreen;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
@@ -1356,7 +1356,7 @@ isLoading {
 	if (settings["In-Game Time Settings"]){
 		if (settings["Elevator Pauses"]){
 			if (vars.checkElevator1("Afton Elevator", current.aftonElev)){
-				if (old.aftonElev == 0){
+				if (!old.aftonElev){
 					vars.nAElev++;
 				}
 				if (vars.checkElevator2("AE", old.aftonElev, vars.nAElev)){
@@ -1364,7 +1364,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Basement Kitchen Elevator", current.kitElev)){
-				if (old.kitElev == 0){
+				if (!old.kitElev){
 					vars.nKElev++;
 				}
 				if (vars.checkElevator2("KE", old.kitElev, vars.nKElev)){
@@ -1372,7 +1372,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Bonnie Bowl Elevator", current.bonBElev)){
-				if (old.bonBElev == 0){
+				if (!old.bonBElev){
 					vars.nBBElev++;
 				}
 				if (vars.checkElevator2("BBE", old.bonBElev, vars.nBBElev)){
@@ -1380,7 +1380,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Chica's Greenroom Elevator", current.chicaElev)){
-				if (old.chicaElev == 0){
+				if (!old.chicaElev){
 					vars.nCGElev++;
 				}
 				if (vars.checkElevator2("CGE", old.chicaElev, vars.nCGElev)){
@@ -1388,7 +1388,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Fazerblast Elevator", current.fazerElev)){
-				if (old.fazerElev == 0){
+				if (!old.fazerElev){
 					vars.nFBElev++;
 				}
 				if (vars.checkElevator2("FBE", old.fazerElev, vars.nFBElev)){
@@ -1396,7 +1396,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Freddy's Greenroom Elevator", current.freddyElev)){
-				if (old.freddyElev == 0){
+				if (!old.freddyElev){
 					vars.nFGElev++;
 				}
 				if (vars.checkElevator2("FGE", old.freddyElev, vars.nFGElev)){
@@ -1404,7 +1404,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Lobby Elevators", current.foy1Elev)){
-				if (old.foy1Elev == 0){
+				if (!old.foy1Elev){
 					vars.nLElev++;
 				}
 				if (vars.checkElevator2("LE", old.foy1Elev, vars.nLElev)){
@@ -1412,7 +1412,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Lobby Elevators", current.foy2Elev)){
-				if (old.foy2Elev == 0){
+				if (!old.foy2Elev){
 					vars.nLElev++;
 				}
 				if (vars.checkElevator2("LE", old.foy2Elev, vars.nLElev)){
@@ -1420,7 +1420,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Monty Golf Elevator", current.monGElev)){
-				if (old.monGElev == 0){
+				if (!old.monGElev){
 					vars.nMGolflev++;
 				}
 				if (vars.checkElevator2("MGolf", old.monGElev, vars.nMGolflev)){
@@ -1428,7 +1428,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Monty's Greenroom Elevator", current.montyElev)){
-				if (old.montyElev == 0){
+				if (!old.montyElev){
 					vars.nMGElev++;
 				}
 				if (vars.checkElevator2("MGE", old.montyElev, vars.nMGElev)){
@@ -1436,7 +1436,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("Roxy's Greenroom Elevator", current.roxyElev)){
-				if (old.roxyElev == 0){
+				if (!old.roxyElev){
 					vars.nRGElev++;
 				}
 				if (vars.checkElevator2("RGE", old.roxyElev, vars.nRGElev)){
@@ -1444,7 +1444,7 @@ isLoading {
 				}
 			}
 			if (vars.checkElevator1("West Arcade Elevator", current.WAElev)){
-				if (old.WAElev == 0){
+				if (!old.WAElev){
 					vars.nWAElev++;
 				}
 				if (vars.checkElevator2("WAE", old.WAElev, vars.nWAElev)){
@@ -1453,7 +1453,7 @@ isLoading {
 			}
 		}
 		if (version == "v1.04"){
-			if (current.hasLoaded == 1){
+			if (current.hasLoaded){
 				vars.isLoading = false;
 			}
 			else {
@@ -1474,8 +1474,8 @@ isLoading {
 				return true;
 			}
 		}
-		if (current.menu == 0){
-			if (current.menu == 0 && old.menu != 0){
+		if (current.menu){
+			if (current.menu && !old.menu){
 				print("Stop Timer When On Menu");
 			}
 			return true;
@@ -1858,37 +1858,37 @@ split {
 		if (settings["Ending Splits"]){
 			//splits based on ending cutscenes
 			if (settings["Afton Ending"]){
-				if (settings["Button 8 / End"] && current.aftonEnd > old.aftonEnd){
+				if (settings["Button 8 / End"] && current.aftonEnd && !old.aftonEnd){
 					print("Button 8 / End");
 					return true;
 				}
 			}
 			if (settings["Car Battery Ending"]){
-				if (settings["CB_C"] && current.carEnd > old.carEnd){
+				if (settings["CB_C"] && current.carEnd && !old.carEnd){
 					print("Car Battery Cutscene");
 					return true;
 				}
-				if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
-					if (current.menu != 0){
+				if (settings["CB_B"] && current.carEndLeaveButton < old.carEndLeaveButton != 0){
+					if (!current.menu){
 						print("Car Battery Button");
 						return true;
 					}
 				}
 			}
 			if (settings["Escape Ending"]){
-				if (settings["E_C"] && current.escapeEnd > old.escapeEnd){
+				if (settings["E_C"] && current.escapeEnd && !old.escapeEnd){
 					print("Escape Cutscene");
 					return true;
 				}
 				if (settings["E_B"]){
-					if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-						if (current.menu != 0){
+					if (current.escapeEndLeaveButtonEast < old.escapeEndLeaveButtonEast != 0){
+						if (!current.menu){
 							print("Escape (East) Button");
 							return true;
 						}
 					}
-					if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-						if (current.menu != 0){
+					if (current.escapeEndLeaveButtonWest < old.escapeEndLeaveButtonWest != 0){
+						if (!current.menu){
 							print("Escape (West) Button");
 							return true;
 						}
@@ -1896,12 +1896,12 @@ split {
 				}
 			}
 			if (settings["Fire Escape Ending"]){
-				if (settings["F_C"] && current.fireEnd > old.fireEnd){
+				if (settings["F_C"] && current.fireEnd && !old.fireEnd){
 					print("Fire Escape Cutscene");
 					return true;
 				}
-				if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-					if (current.menu != 0){
+				if (settings["F_B"] && current.fireEndLeaveButton < old.fireEndLeaveButton){
+					if (!current.menu){
 						print("Fire Escape Button");
 						return true;
 					}
@@ -1916,13 +1916,13 @@ split {
 						}
 					}
 				}
-				if (settings["pq_endCutscene"] && current.pqEnd > old.pqEnd){
+				if (settings["pq_endCutscene"] && current.pqEnd && !old.pqEnd){
 					print("Princess Quest End Cutscene");
 					return true;
 				}
 			}
 			if (settings["Vanny Ending"]){
-				if (settings["V_C"] && current.vannyEnd > old.vannyEnd){
+				if (settings["V_C"] && current.vannyEnd && !old.vannyEnd){
 					print("Vanny Cutscene");
 					return true;
 				}
