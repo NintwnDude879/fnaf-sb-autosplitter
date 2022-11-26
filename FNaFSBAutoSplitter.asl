@@ -1273,7 +1273,7 @@ start {
 			vars.isLoading = false;
 		}
 		else {
-			if (current.menu == 0 && current.pause == 2 && current.posY != 0 && old.posY == 0){
+			if (current.menu == 0 && current.posY != 0 && old.posY == 0){
 				vars.loadingConstant = current.blackScreen;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
