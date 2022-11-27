@@ -1336,7 +1336,7 @@ start {
 			}
 		}
 		else if (version == "v1.11"){
-			if (current.freddyThing == 0 && old.freddyThing != 0){
+			if (current.freddyThing == 16 && old.freddyThing == 18){
 				print("Start Timer");
 				return true;
 			}
