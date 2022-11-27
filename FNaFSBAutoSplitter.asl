@@ -59,7 +59,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int minuteClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
- 	int pause: 0x0441C584;
+ 	bool pause: 0x0441C5F0, 0x8B8;
 	bool menu: 0x0441FCB0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	bool hasLoaded: 0x0441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
 
@@ -130,7 +130,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int minuteClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA38;
 
 	//Used to pause the timer (pause = 3, menu = 0)
- 	int pause: 0x0441D814;
+ 	bool pause: 0x0441D880, 0x8B8;
 	bool menu: 0x04420F40, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x0444C568, 0x184;
 
@@ -201,7 +201,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int minuteClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA38;
 
 	//Menus
- 	int pause: 0x0441D954;
+ 	bool pause: 0x0441D9C0, 0x8B8;
 	bool menu: 0x04421080, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x444C6B0, 0x184;
 
@@ -272,7 +272,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int minuteClock: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x14;
 
 	//Used to pause the timer (pause = 3, menu = 0)
- 	int pause: 0x04425184;
+ 	bool pause: 0x044251F0, 0x8B8;
 	bool menu: 0x044288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x04453ED8, 0x184;
 	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x230;
@@ -430,6 +430,7 @@ startup {
 	settings.CurrentDefaultParent = "D_Rockstar Row";
 	settings.Add("Chica Greenroom Deload", false);
 	settings.Add("Curtain Deload", false);
+	settings.Add("Roxy Cutout Deload", false);
 	settings.Add("Tunnel Door Deload", false);
 
 	settings.CurrentDefaultParent = "D_Roxy Raceway";
@@ -1205,6 +1206,7 @@ start {
 		vars.dCounter = true;
 		vars.dChicaRoom = true;
 		vars.dCurtain = true;
+		vars.dRoxyCutout = true;
 		vars.dTunnelDoor = true;
 		vars.dAftonRock = true;
 		vars.dGarageJump = true;
@@ -1468,7 +1470,7 @@ isLoading {
 				vars.isLoading = false;
 			}
 			else {
-				if ((current.posY != 0 || (old.pause == 3 && old.posY != 0)) && !vars.isLoading){
+				if ((current.posY != 0 || (old.pause && old.posY != 0)) && !vars.isLoading){
 					print("Stop Timer When Loading");
 					vars.isLoading = true;
 				}
@@ -1492,8 +1494,8 @@ isLoading {
 			return true;
 		}
 		if (settings["Stop Timer When Paused"]){
-			if (current.pause == 3){
-				if (old.pause != 3){
+			if (current.pause){
+				if (!old.pause){
 					print("Stop Timer When Paused");
 				}
 				return true;
@@ -1833,6 +1835,10 @@ split {
 						vars.dCurtain = false;
 						return true;
 					}
+					if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3800, 44400, 44500, 1877, 1950)){
+						vars.dRoxyCutout = false;
+						return true;
+					}
 					if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
 						vars.dTunnelDoor = false;
 						return true;
@@ -1879,10 +1885,12 @@ split {
 					print("Car Battery Cutscene");
 					return true;
 				}
-				if (settings["CB_B"] && current.carEndLeaveButton < old.carEndLeaveButton != 0){
-					if (!current.menu){
-						print("Car Battery Button");
-						return true;
+				if (settings["CB_B"]){
+					if (current.carEndLeaveButton < old.carEndLeaveButton){
+						if (!current.menu){
+							print("Car Battery Button");
+							return true;
+						}
 					}
 				}
 			}
@@ -1892,13 +1900,13 @@ split {
 					return true;
 				}
 				if (settings["E_B"]){
-					if (current.escapeEndLeaveButtonEast < old.escapeEndLeaveButtonEast != 0){
+					if (current.escapeEndLeaveButtonEast < old.escapeEndLeaveButtonEast){
 						if (!current.menu){
 							print("Escape (East) Button");
 							return true;
 						}
 					}
-					if (current.escapeEndLeaveButtonWest < old.escapeEndLeaveButtonWest != 0){
+					if (current.escapeEndLeaveButtonWest < old.escapeEndLeaveButtonWest){
 						if (!current.menu){
 							print("Escape (West) Button");
 							return true;
