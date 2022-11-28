@@ -223,7 +223,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 //base address change: 8C00
 state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of Freddy's battery popup
-	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x18C;
+	bool freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x18C;
 
 	//Arcade pointers
 	int golfStrokeCount: 0x044288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
@@ -1336,7 +1336,7 @@ start {
 			}
 		}
 		else if (version == "v1.11"){
-			if (current.freddyThing == 1 && old.freddyThing == 0){
+			if (current.freddyThing && !old.freddyThing){
 				print("Start Timer");
 				return true;
 			}
