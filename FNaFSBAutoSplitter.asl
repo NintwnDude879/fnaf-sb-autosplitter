@@ -223,7 +223,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 //base address change: 8C00
 state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of Freddy's battery popup
-	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x230;
+	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x18C;
 
 	//Arcade pointers
 	int golfStrokeCount: 0x044288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
@@ -1336,7 +1336,7 @@ start {
 			}
 		}
 		else if (version == "v1.11"){
-			if (current.freddyThing == 16 && old.freddyThing == 18){
+			if (current.freddyThing == 1 && old.freddyThing == 0){
 				print("Start Timer");
 				return true;
 			}
@@ -1933,10 +1933,12 @@ split {
 					print("Vanny Cutscene");
 					return true;
 				}
-				print(current.vannyEndButton.ToString());
-				if (settings["V_B"] && !current.vannyEndButton && old.vannyEndButton){
-					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
-						return true;
+				if (!current.vannyEndButton && old.vannyEndButton){
+					print("Vanny Button: " + current.vannyEndButton.ToString());
+					if (settings["V_B"]){
+						if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+							return true;
+						}
 					}
 				}
 			}
