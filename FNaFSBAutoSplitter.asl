@@ -1278,11 +1278,9 @@ isLoading {
 			if (current.hasLoaded){
 				vars.isLoading = false;
 			}
-			else {
-				if ((current.posY != 0 || (old.pause && old.posY != 0)) && !vars.isLoading){
-					print("Stop Timer When Loading");
-					vars.isLoading = true;
-				}
+			else if ((current.posY != 0 || (old.pause && old.posY != 0)) && !vars.isLoading){
+				print("Stop Timer When Loading");
+				vars.isLoading = true;
 			}
 			if (vars.isLoading){
 				return true;
@@ -1303,7 +1301,7 @@ isLoading {
 			return true;
 		}
 		if (settings["Stop Timer When Paused"]){
-			if (current.pause){
+			if (current.pause && current.posY != 0){
 				if (!old.pause){
 					print("Stop Timer When Paused");
 				}
