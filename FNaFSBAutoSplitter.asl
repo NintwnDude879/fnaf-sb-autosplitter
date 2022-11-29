@@ -1286,14 +1286,13 @@ isLoading {
 				return true;
 			}
 		}
-		else {
-			if (current.blackScreen == vars.loadingConstant){
-				if (old.blackScreen != vars.loadingConstant){
-					print("Stop Timer When Loading");
-				}
-				return true;
+		else if (current.blackScreen == vars.loadingConstant){
+			if (old.blackScreen != vars.loadingConstant){
+				print("Stop Timer When Loading");
 			}
+			return true;
 		}
+			
 		if (current.menu){
 			if (current.menu && !old.menu){
 				print("Stop Timer When On Menu");
