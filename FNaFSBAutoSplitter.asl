@@ -1287,7 +1287,7 @@ isLoading {
 			if (vars.isLoading){
 				return true;
 			}
-		}/*
+		}
 		else {
 			if (current.blackScreen == vars.loadingConstant){
 				if (old.blackScreen != vars.loadingConstant){
@@ -1295,7 +1295,7 @@ isLoading {
 				}
 				return true;
 			}
-		}*/
+		}
 		if (current.menu){
 			if (current.menu && !old.menu){
 				print("Stop Timer When On Menu");
