@@ -60,7 +60,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int minuteClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
- 	int pause: 0x0441C584;
+ 	bool pause: 0x0441C5F0, 0x8B8;
 	bool menu: 0x0441FCB0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	bool hasLoaded: 0x0441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
 
@@ -131,7 +131,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int minuteClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA38;
 
 	//Used to pause the timer (pause = 3, menu = 0)
- 	int pause: 0x0441D814;
+ 	bool pause: 0x0441D880, 0x8B8;
 	bool menu: 0x04420F40, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x0444C568, 0x184;
 
@@ -202,7 +202,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int minuteClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA38;
 
 	//Menus
- 	int pause: 0x0441D954;
+ 	bool pause: 0x0441D9C0, 0x8B8;
 	bool menu: 0x04421080, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x444C6B0, 0x184;
 
@@ -223,7 +223,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 //base address change: 8C00
 state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of Freddy's battery popup
-	int freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x230;
+	bool freddyThing: 0x044288B0, 0x128, 0x310, 0x120, 0x18C;
 
 	//Arcade pointers
 	int golfStrokeCount: 0x044288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
@@ -273,7 +273,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int minuteClock: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x14;
 
 	//Used to pause the timer (pause = 3, menu = 0)
- 	int pause: 0x04425184;
+ 	bool pause: 0x044251F0, 0x8B8;
 	bool menu: 0x044288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x04453ED8, 0x184;
 
@@ -293,6 +293,22 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 }
 
 startup {
+	//setting names
+	vars.elevatorNames = new List<string>(){
+		{"Afton Elevator"},
+		{"Basement Kitchen Elevator"},
+		{"Bonnie Bowl Elevator"},
+		{"Chica's Greenroom Elevator"},
+		{"Fazerblast Elevator"},
+		{"Freddy's Greenroom Elevator"},
+		{"Lobby Elevators"},
+		{"Monty Golf Elevator"},
+		{"Monty's Greenroom Elevator"},
+		{"Roxy's Greenroom Elevator"},
+		{"West Arcade Elevator"},
+	};
+
+	//print settings
 	settings.CurrentDefaultParent = null;
 	settings.Add("Split Settings", false);
 	settings.Add("In-Game Time Settings", true);
@@ -430,6 +446,7 @@ startup {
 	settings.CurrentDefaultParent = "D_Rockstar Row";
 	settings.Add("Chica Greenroom Deload", false);
 	settings.Add("Curtain Deload", false);
+	settings.Add("Roxy Cutout Deload", false);
 	settings.Add("Tunnel Door Deload", false);
 
 	settings.CurrentDefaultParent = "D_Roxy Raceway";
@@ -817,139 +834,20 @@ startup {
 	settings.Add("Elevator Pauses", true);
 	settings.Add("Stop Timer When Paused", true);
 
-	settings.CurrentDefaultParent = "Elevator Pauses";
-	settings.Add("Afton Elevator", true);
-	settings.Add("Basement Kitchen Elevator", true);
-	settings.Add("Bonnie Bowl Elevator", true);
-	settings.Add("Chica's Greenroom Elevator", true);
-	settings.Add("Fazerblast Elevator", true);
-	settings.Add("Freddy's Greenroom Elevator", true);
-	settings.Add("Lobby Elevators", true);
-	settings.Add("Monty Golf Elevator", true);
-	settings.Add("Monty's Greenroom Elevator", true);
-	settings.Add("Roxy's Greenroom Elevator", true);
-	settings.Add("West Arcade Elevator", true);
+	foreach (var data in vars.elevatorNames){
+		settings.CurrentDefaultParent = "Elevator Pauses";
+		settings.Add(data, true);
 
-	settings.CurrentDefaultParent = "Afton Elevator";
-	settings.Add("AE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("AE_POOU", false, "Pause Only On Use:");
+		settings.CurrentDefaultParent = data;
+		settings.Add(data + "_EUOE", true, "Every Use Of Elevator");
+		settings.Add(data + "_POOU", false, "Pause Only On Use:");
 
-	settings.CurrentDefaultParent = "AE_POOU";
-	settings.Add("AEn1", false, "#1");
-	settings.Add("AEn2", false, "#2");
-	settings.Add("AEn3", false, "#3");
-	settings.Add("AEn4", false, "#4");
-	settings.Add("AEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Basement Kitchen Elevator";
-	settings.Add("KE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("KE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "KE_POOU";
-	settings.Add("KEn1", false, "#1");
-	settings.Add("KEn2", false, "#2");
-	settings.Add("KEn3", false, "#3");
-	settings.Add("KEn4", false, "#4");
-	settings.Add("KEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Bonnie Bowl Elevator";
-	settings.Add("BBE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("BBE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "BBE_POOU";
-	settings.Add("BBEn1", false, "#1");
-	settings.Add("BBEn2", false, "#2");
-	settings.Add("BBEn3", false, "#3");
-	settings.Add("BBEn4", false, "#4");
-	settings.Add("BBEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Chica's Greenroom Elevator";
-	settings.Add("CGE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("CGE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "CGE_POOU";
-	settings.Add("CGEn1", false, "#1");
-	settings.Add("CGEn2", false, "#2");
-	settings.Add("CGEn3", false, "#3");
-	settings.Add("CGEn4", false, "#4");
-	settings.Add("CGEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Fazerblast Elevator";
-	settings.Add("FBE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("FBE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "FBE_POOU";
-	settings.Add("FBEn1", false, "#1");
-	settings.Add("FBEn2", false, "#2");
-	settings.Add("FBEn3", false, "#3");
-	settings.Add("FBEn4", false, "#4");
-	settings.Add("FBEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Freddy's Greenroom Elevator";
-	settings.Add("FGE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("FGE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "FGE_POOU";
-	settings.Add("FGEn1", false, "#1");
-	settings.Add("FGEn2", false, "#2");
-	settings.Add("FGEn3", false, "#3");
-	settings.Add("FGEn4", false, "#4");
-	settings.Add("FGEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Lobby Elevators";
-	settings.Add("LE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("LE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "LE_POOU";
-	settings.Add("LEn1", false, "#1");
-	settings.Add("LEn2", false, "#2");
-	settings.Add("LEn3", false, "#3");
-	settings.Add("LEn4", false, "#4");
-	settings.Add("LEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Monty Golf Elevator";
-	settings.Add("MGolf_EUOE", true, "Every Use Of Elevator");
-	settings.Add("MGolf_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "MGolf_POOU";
-	settings.Add("MGolfn1", false, "#1");
-	settings.Add("MGolfn2", false, "#2");
-	settings.Add("MGolfn3", false, "#3");
-	settings.Add("MGolfn4", false, "#4");
-	settings.Add("MGolfn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Monty's Greenroom Elevator";
-	settings.Add("MGE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("MGE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "MGE_POOU";
-	settings.Add("MGEn1", false, "#1");
-	settings.Add("MGEn2", false, "#2");
-	settings.Add("MGEn3", false, "#3");
-	settings.Add("MGEn4", false, "#4");
-	settings.Add("MGEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "Roxy's Greenroom Elevator";
-	settings.Add("RGE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("RGE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "RGE_POOU";
-	settings.Add("RGEn1", false, "#1");
-	settings.Add("RGEn2", false, "#2");
-	settings.Add("RGEn3", false, "#3");
-	settings.Add("RGEn4", false, "#4");
-	settings.Add("RGEn5", false, "#5");
-
-	settings.CurrentDefaultParent = "West Arcade Elevator";
-	settings.Add("WAE_EUOE", true, "Every Use Of Elevator");
-	settings.Add("WAE_POOU", false, "Pause Only On Use:");
-
-	settings.CurrentDefaultParent = "WAE_POOU";
-	settings.Add("WAEn1", false, "#1");
-	settings.Add("WAEn2", false, "#2");
-	settings.Add("WAEn3", false, "#3");
-	settings.Add("WAEn4", false, "#4");
-	settings.Add("WAEn5", false, "#5");
+		settings.CurrentDefaultParent = data + "_POOU";
+		var maxUse = 5;
+		for (var k = 1; k <= maxUse; k++){
+			settings.Add(data + "_n" + k.ToString(), false, "#" + k.ToString());
+		}
+	}
 
 	settings.CurrentDefaultParent = null;
 	settings.Add("Refresh Rate", true);
@@ -993,34 +891,31 @@ init {
 	print("Version = " + version);
 }
 
+update {
+	//Elevator Pointer List
+	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
+		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[1], current.kitElev, old.kitElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[2], current.bonBElev, old.bonBElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[3], current.chicaElev, old.chicaElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[4], current.fazerElev, old.fazerElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[5], current.freddyElev, old.freddyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy1Elev, old.foy1Elev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy2Elev, old.foy2Elev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[7], current.monGElev, old.monGElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[8], current.montyElev, old.montyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
+	};
+}
+
 start {
-	//Functions
-	vars.checkElevator1 = (Func<string, bool, bool>)((name, checkCurrent) => {
-		if (settings[name]){
-			if (checkCurrent){
-				return true;
-			}
-		}
-		return false;
-	});
-	
-	vars.checkElevator2 = (Func<string, bool, int, bool>)((nameShort, checkOld, checkCount) => {
-		if (settings[nameShort + "_EUOE"]){
-			if (!checkOld){
-				print(nameShort + " :  Every Use");
-			}
-			return true;
-		}
-		if (settings[nameShort + "_POOU"]){
-			if (settings[nameShort + "n" + checkCount]){
-				if (!checkOld){
-					print(nameShort + " : Use #" + checkCount);
-				}
-				return true;
-			}
-		}
-		return false;
-	});
+	//Functions and Dictionaries
+	vars.elevatorUses = new Dictionary<string, int>();
+
+	foreach (var data in vars.elevatorPointers){
+		vars.elevatorUses[data.Item1] = 0;
+	}
 	
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
 		//checks in a sphere (radius 300u)
@@ -1205,6 +1100,7 @@ start {
 		vars.dCounter = true;
 		vars.dChicaRoom = true;
 		vars.dCurtain = true;
+		vars.dRoxyCutout = true;
 		vars.dTunnelDoor = true;
 		vars.dAftonRock = true;
 		vars.dGarageJump = true;
@@ -1334,7 +1230,7 @@ start {
 			}
 		}
 		else if (version == "v1.11"){
-			if (current.freddyThing == 0 && old.freddyThing != 0){
+			if (current.freddyThing && !old.freddyThing){
 				print("Start Timer");
 				return true;
 			}
@@ -1356,100 +1252,25 @@ reset {
 isLoading {
 	if (settings["In-Game Time Settings"]){
 		if (settings["Elevator Pauses"]){
-			if (vars.checkElevator1("Afton Elevator", current.aftonElev)){
-				if (!old.aftonElev){
-					vars.nAElev++;
-				}
-				if (vars.checkElevator2("AE", old.aftonElev, vars.nAElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Basement Kitchen Elevator", current.kitElev)){
-				if (!old.kitElev){
-					vars.nKElev++;
-				}
-				if (vars.checkElevator2("KE", old.kitElev, vars.nKElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Bonnie Bowl Elevator", current.bonBElev)){
-				if (!old.bonBElev){
-					vars.nBBElev++;
-				}
-				if (vars.checkElevator2("BBE", old.bonBElev, vars.nBBElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Chica's Greenroom Elevator", current.chicaElev)){
-				if (!old.chicaElev){
-					vars.nCGElev++;
-				}
-				if (vars.checkElevator2("CGE", old.chicaElev, vars.nCGElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Fazerblast Elevator", current.fazerElev)){
-				if (!old.fazerElev){
-					vars.nFBElev++;
-				}
-				if (vars.checkElevator2("FBE", old.fazerElev, vars.nFBElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Freddy's Greenroom Elevator", current.freddyElev)){
-				if (!old.freddyElev){
-					vars.nFGElev++;
-				}
-				if (vars.checkElevator2("FGE", old.freddyElev, vars.nFGElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Lobby Elevators", current.foy1Elev)){
-				if (!old.foy1Elev){
-					vars.nLElev++;
-				}
-				if (vars.checkElevator2("LE", old.foy1Elev, vars.nLElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Lobby Elevators", current.foy2Elev)){
-				if (!old.foy2Elev){
-					vars.nLElev++;
-				}
-				if (vars.checkElevator2("LE", old.foy2Elev, vars.nLElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Monty Golf Elevator", current.monGElev)){
-				if (!old.monGElev){
-					vars.nMGolflev++;
-				}
-				if (vars.checkElevator2("MGolf", old.monGElev, vars.nMGolflev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Monty's Greenroom Elevator", current.montyElev)){
-				if (!old.montyElev){
-					vars.nMGElev++;
-				}
-				if (vars.checkElevator2("MGE", old.montyElev, vars.nMGElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("Roxy's Greenroom Elevator", current.roxyElev)){
-				if (!old.roxyElev){
-					vars.nRGElev++;
-				}
-				if (vars.checkElevator2("RGE", old.roxyElev, vars.nRGElev)){
-					return true;
-				}
-			}
-			if (vars.checkElevator1("West Arcade Elevator", current.WAElev)){
-				if (!old.WAElev){
-					vars.nWAElev++;
-				}
-				if (vars.checkElevator2("WAE", old.WAElev, vars.nWAElev)){
-					return true;
+			foreach (var data in vars.elevatorPointers){
+				if (settings[data.Item1]){
+					if (data.Item2){
+						if (!data.Item3){
+							vars.elevatorUses[data.Item1]++;
+							print(data.Item1 + ": #" + vars.elevatorUses[data.Item1].ToString());
+						}
+
+						if (settings[data.Item1 + "_EUOE"]){
+							return true;
+						}
+						if (settings[data.Item1 + "_POOU"]){
+							if (data.Item1 != "Foyer Elevators"){
+								if (settings[data.Item1 + "_n" + vars.elevatorUses[data.Item1].ToString()]){
+									return true;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1458,7 +1279,7 @@ isLoading {
 				vars.isLoading = false;
 			}
 			else {
-				if ((current.posY != 0 || (old.pause == 3 && old.posY != 0)) && !vars.isLoading){
+				if ((current.posY != 0 || (old.pause && old.posY != 0)) && !vars.isLoading){
 					print("Stop Timer When Loading");
 					vars.isLoading = true;
 				}
@@ -1466,7 +1287,7 @@ isLoading {
 			if (vars.isLoading){
 				return true;
 			}
-		}
+		}/*
 		else {
 			if (current.blackScreen == vars.loadingConstant){
 				if (old.blackScreen != vars.loadingConstant){
@@ -1474,7 +1295,7 @@ isLoading {
 				}
 				return true;
 			}
-		}
+		}*/
 		if (current.menu){
 			if (current.menu && !old.menu){
 				print("Stop Timer When On Menu");
@@ -1482,8 +1303,8 @@ isLoading {
 			return true;
 		}
 		if (settings["Stop Timer When Paused"]){
-			if (current.pause == 3){
-				if (old.pause != 3){
+			if (current.pause){
+				if (!old.pause){
 					print("Stop Timer When Paused");
 				}
 				return true;
@@ -1823,6 +1644,10 @@ split {
 						vars.dCurtain = false;
 						return true;
 					}
+					if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3800, 44400, 44500, 1877, 1950)){
+						vars.dRoxyCutout = false;
+						return true;
+					}
 					if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
 						vars.dTunnelDoor = false;
 						return true;
@@ -1927,10 +1752,11 @@ split {
 					print("Vanny Cutscene");
 					return true;
 				}
-				print(current.vannyEndButton.ToString());
-				if (settings["V_B"] && !current.vannyEndButton && old.vannyEndButton){
-					if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
-						return true;
+				if (settings["V_B"]){
+					if (!current.vannyEndButton && old.vannyEndButton){
+						if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+							return true;
+						}
 					}
 				}
 			}
