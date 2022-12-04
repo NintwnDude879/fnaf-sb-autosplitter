@@ -1364,19 +1364,19 @@ split {
 			}
 		}
 		else if (vars.arcade == "null"){
-			if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000){
+			if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && 2100 <= current.posZ && 2300 <= current.posZ){
 				vars.arcade = "pq1";
 			}
-			else if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000){
+			else if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && 3200 <= current.posZ && 3400 <= current.posZ){
 				vars.arcade = "pq2";
 			}
-			else if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000){
+			else if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= current.posZ && 2700 <= current.posZ){
 				vars.arcade = "pq3";
 			}
-			else if (-18200 <= old.posX && old.posX <= -17900 && 44100 <= old.posY && old.posY <= 44300){
+			else if (-18200 <= old.posX && old.posX <= -17900 && 44100 <= old.posY && old.posY <= 44300 && 900 <= current.posZ && 1100 <= current.posZ){
 				vars.arcade = "mg";
 			}
-			else if (-17000 <= old.posX && old.posX <= -16500 && 27200 <= old.posY && old.posY <= 27600){
+			else if (-17000 <= old.posX && old.posX <= -16500 && 27200 <= old.posY && old.posY <= 27600 && 2000 <= current.posZ && 2300 <= current.posZ){
 				vars.arcade = "bb";
 			}
 			print("Arcade: " + vars.arcade);
@@ -1775,7 +1775,7 @@ split {
 						return true;
 					}
 					if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
-						if (!vars.onMenu){
+						if (current.worldCheck != 0){
 							print("Car Battery Button");
 							return true;
 						}
@@ -1788,13 +1788,13 @@ split {
 					}
 					if (settings["E_B"]){
 						if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-							if (!vars.onMenu){
+							if (current.worldCheck != 0){
 								print("Escape (East) Button");
 								return true;
 							}
 						}
 						if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-							if (!vars.onMenu){
+							if (current.worldCheck != 0){
 								print("Escape (West) Button");
 								return true;
 							}
@@ -1807,7 +1807,7 @@ split {
 						return true;
 					}
 					if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-						if (!vars.onMenu){
+						if (current.worldCheck != 0){
 							print("Fire Escape Button");
 							return true;
 						}
