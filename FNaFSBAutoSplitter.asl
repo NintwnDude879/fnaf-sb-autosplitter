@@ -2469,7 +2469,7 @@ split {
 						vars.tShowtimeDisk = false;
 						return true;
 					}
-					if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", vars.tAbductionRecharge, 3, 0)){
+					if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", vars.tAbductionRecharge, 3, 1)){
 						vars.tAbductionRecharge = false;
 						return true;
 					}
