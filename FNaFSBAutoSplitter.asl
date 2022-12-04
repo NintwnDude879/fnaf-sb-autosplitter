@@ -304,10 +304,15 @@ startup {
 	settings.Add("Time Splits", false);
 
 	settings.CurrentDefaultParent = "Arcade Splits";
+	settings.Add("BB Arcade", false);
 	settings.Add("Monty Golf", false);
 	settings.Add("Princess Quest", false);
 
+	settings.CurrentDefaultParent = "BB Arcade";
+	settings.Add("bb_start", false, "Start Arcade");
+
 	settings.CurrentDefaultParent = "Monty Golf";
+	settings.Add("mg_start", false, "Start Arcade");
 	settings.Add("Finish Hole 1", false);
 	settings.Add("Finish Hole 2", false);
 	settings.Add("Finish Hole 3", false);
@@ -813,6 +818,8 @@ startup {
 
 	settings.CurrentDefaultParent = "In-Game Time Settings";
 	settings.Add("Elevator Pauses", true);
+	settings.Add("Stop Timer On Menu", true);
+	settings.Add("Stop Timer When Loading", true);
 	settings.Add("Stop Timer When Paused", true);
 
 	foreach (var data in vars.elevatorNames){
@@ -892,12 +899,66 @@ update {
 
 start {
 	//Functions and Dictionaries
-	vars.elevatorUses = new Dictionary<string, int>();
+	vars.useDictionary = new Dictionary<string, int>();
 
 	foreach (var data in vars.elevatorPointers){
-		vars.elevatorUses[data.Item1] = 0;
+		vars.useDictionary[data.Item1] = 0;
 	}
 	
+	vars.printAllPointers = (Action)(() => {
+		if (version != "v1.11"){
+			print("freddyPower: " + old.freddyPower.ToString() + " => " + current.freddyPower.ToString());
+		}
+		else {
+			print("freddyThing: " + old.freddyThing.ToString() + " => " + current.freddyThing.ToString());
+		}
+		print("golfStrokeCount: " + old.golfStrokeCount.ToString() + " => " + current.golfStrokeCount.ToString());
+		print("pq3Attack: " + old.pq3Attack.ToString() + " => " + current.pq3Attack.ToString());
+		print("DGens: " + old.DGens.ToString() + " => " + current.DGens.ToString());
+		print("MGBucket: " + old.MGBucket.ToString() + " => " + current.MGBucket.ToString());
+		print("FBFlags: " + old.FBFlags.ToString() + " => " + current.FBFlags.ToString());
+		print("worldCheck: " + old.worldCheck.ToString() + " => " + current.worldCheck.ToString());
+		print("posX: " + old.posX.ToString() + " => " + current.posX.ToString());
+		print("posY: " + old.posY.ToString() + " => " + current.posY.ToString());
+		print("posZ: " + old.posZ.ToString() + " => " + current.posZ.ToString());
+		print("vannyEndButton: " + old.vannyEndButton.ToString() + " => " + current.vannyEndButton.ToString());
+		print("escapeEndLeaveButtonEast: " + old.escapeEndLeaveButtonEast.ToString() + " => " + current.escapeEndLeaveButtonEast.ToString());
+		print("carEndLeaveButton: " + old.carEndLeaveButton.ToString() + " => " + current.carEndLeaveButton.ToString());
+		print("fireEndLeaveButton: " + old.fireEndLeaveButton.ToString() + " => " + current.fireEndLeaveButton.ToString());
+		print("escapeEndLeaveButtonWest: " + old.escapeEndLeaveButtonWest.ToString() + " => " + current.escapeEndLeaveButtonWest.ToString());
+		print("aftonEnd: " + old.aftonEnd.ToString() + " => " + current.aftonEnd.ToString());
+		print("vannyEnd: " + old.vannyEnd.ToString() + " => " + current.vannyEnd.ToString());
+		print("fireEnd: " + old.fireEnd.ToString() + " => " + current.fireEnd.ToString());
+		print("carEnd: " + old.carEnd.ToString() + " => " + current.carEnd.ToString());
+		print("escapeEnd: " + old.escapeEnd.ToString() + " => " + current.escapeEnd.ToString());
+		print("pqEnd: " + old.pqEnd.ToString() + " => " + current.pqEnd.ToString());
+		print("aftonHealth: " + old.aftonHealth.ToString() + " => " + current.aftonHealth.ToString());
+		print("securityBadgeCount: " + old.securityBadgeCount.ToString() + " => " + current.securityBadgeCount.ToString());
+		print("itemCount: " + old.itemCount.ToString() + " => " + current.itemCount.ToString());
+		print("splashScreen: " + old.splashScreen.ToString() + " => " + current.splashScreen.ToString());
+		print("hourClock: " + old.hourClock.ToString() + " => " + current.hourClock.ToString());
+		print("minuteClock: " + old.minuteClock.ToString() + " => " + current.minuteClock.ToString());
+		print("pause: " + old.pause.ToString() + " => " + current.pause.ToString());
+		if (version == "v1.04"){
+			print("hasLoaded: " + old.hasLoaded.ToString() + " => " + current.hasLoaded.ToString());
+		}
+		else {
+			print("blackScreen: " + old.blackScreen.ToString() + " => " + current.blackScreen.ToString());
+		}
+		print("kitElev: " + old.kitElev.ToString() + " => " + current.kitElev.ToString());
+		print("monGElev: " + old.monGElev.ToString() + " => " + current.monGElev.ToString());
+		print("foy2Elev: " + old.foy2Elev.ToString() + " => " + current.foy2Elev.ToString());
+		print("foy1Elev: " + old.foy1Elev.ToString() + " => " + current.foy1Elev.ToString());
+		print("bonBElev: " + old.bonBElev.ToString() + " => " + current.bonBElev.ToString());
+		print("fazerElev: " + old.fazerElev.ToString() + " => " + current.fazerElev.ToString());
+		print("WAElev: " + old.WAElev.ToString() + " => " + current.WAElev.ToString());
+		print("chicaElev: " + old.chicaElev.ToString() + " => " + current.chicaElev.ToString());
+		print("montyElev: " + old.montyElev.ToString() + " => " + current.montyElev.ToString());
+		print("roxyElev: " + old.roxyElev.ToString() + " => " + current.roxyElev.ToString());
+		print("freddyElev: " + old.freddyElev.ToString() + " => " + current.freddyElev.ToString());
+		print("aftonElev: " + old.aftonElev.ToString() + " => " + current.aftonElev.ToString());
+	});
+
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
 		//checks in a sphere (radius 300u)
 		if (settings[name]){
@@ -1024,7 +1085,11 @@ start {
 		//Used to keep certain splits from repeating (reset)
 	
 		//Arcade Splits
+		vars.arcade = "null";
+		//bb
+		vars.bb_start = true;
 		//monty golf
+		vars.mg_start = true;
 		vars.nHole = 0;
 		//pq1
 		vars.pq1_start = true;
@@ -1135,19 +1200,8 @@ start {
 		vars.tEyeUpgradeNighttime = true;
 		vars.t6am = true;
 
-		//Pausing
-		vars.nAElev = 0;
-		vars.nBBElev = 0;
-		vars.nFBElev = 0;
-		vars.nKElev = 0;
-		vars.nLElev = 0;
-		vars.nMGolflev = 0;
-		vars.nMGElev = 0;
-		vars.nFGElev = 0;
-		vars.nRGElev = 0;
-		vars.nCGElev = 0;
-		vars.nWAElev = 0;
-		vars.freddyThing = 0;
+		vars.isLoading = true;
+		vars.onMenu = true;
 		if (version == "v1.04"){
 			vars.isLoading = false;
 		}
@@ -1237,15 +1291,15 @@ isLoading {
 				if (settings[data.Item1]){
 					if (data.Item2){
 						if (!data.Item3){
-							vars.elevatorUses[data.Item1]++;
-							print(data.Item1 + ": #" + vars.elevatorUses[data.Item1].ToString());
+							vars.useDictionary[data.Item1]++;
+							print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
 						}
 
 						if (settings[data.Item1 + "_EUOE"]){
 							return true;
 						}
 						if (settings[data.Item1 + "_POOU"]){
-							if (settings[data.Item1 + "_n" + vars.elevatorUses[data.Item1].ToString()]){
+							if (settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]){
 								return true;
 							}
 						}
@@ -1253,30 +1307,41 @@ isLoading {
 				}
 			}
 		}
-		if (version == "v1.04"){
-			if (current.hasLoaded){
-				vars.isLoading = false;
-			}
-			else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
-				print("Stop Timer When Loading");
-				vars.isLoading = true;
-			}
+		if (settings["Stop Timer When Loading"]){
+			if (version == "v1.04"){
+				if (current.hasLoaded){
+					vars.isLoading = false;
+				}
+				else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
+					print("Stop Timer When Loading");
+					vars.isLoading = true;
+				}
 
-			if (vars.isLoading){
+				if (vars.isLoading){
+					return true;
+				}
+			}
+			else if (current.blackScreen == vars.loadingConstant){
+				if (old.blackScreen != vars.loadingConstant){
+					print("Stop Timer When Loading");
+				}
 				return true;
 			}
 		}
-		else if (current.blackScreen == vars.loadingConstant){
-			if (old.blackScreen != vars.loadingConstant){
-				print("Stop Timer When Loading");
+		if (settings["Stop Timer On Menu"]){
+			if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
+				vars.onMenu = true;
+				if (!old.menu){
+					print("Stop Timer On Menu");
+				}
 			}
-			return true;
-		}
-		if (current.menu){
-			if (current.menu && !old.menu){
-				print("Stop Timer When On Menu");
+			else if (current.worldCheck != 0 || vars.arcade != "null"){
+				vars.onMenu = false;
 			}
-			return true;
+
+			if (vars.onMenu){
+				return true;
+			}
 		}
 		if (settings["Stop Timer When Paused"]){
 			if (current.pause && current.worldCheck != 0){
@@ -1292,12 +1357,51 @@ isLoading {
 
 split {
 	if (settings["Split Settings"]){
-		if (current.worldCheck == 0 && old.worldCheck != 0 && !current.menu){
+		if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
+			if (vars.arcade != "null"){
+				vars.arcade = "null";
+				print("Arcade: " + vars.arcade);
+			}
+		}
+		else if (vars.arcade == "null"){
+			if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000){
+				vars.arcade = "pq1";
+			}
+			else if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000){
+				vars.arcade = "pq2";
+			}
+			else if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000){
+				vars.arcade = "pq3";
+			}
+			else if (-18200 <= old.posX && old.posX <= -17900 && 44100 <= old.posY && old.posY <= 44300){
+				vars.arcade = "mg";
+			}
+			else if (-17000 <= old.posX && old.posX <= -16500 && 27200 <= old.posY && old.posY <= 27600){
+				vars.arcade = "bb";
+			}
+			print("Arcade: " + vars.arcade);
+		}
+
+		if (vars.arcade != "null"){
 			if (settings["Arcade Splits"]){
-				if (settings["Monty Golf"]){
+				if (settings["BB Arcade"] && vars.arcade == "bb"){
+					if (settings["bb_start"] && vars.bb_start){
+						vars.bb_start = false;
+						print("bb_start");
+						return true;
+					}
+				}
+				if (settings["Monty Golf"] && vars.arcade == "mg"){
+					if (settings["mg_start"] && vars.mg_start){
+						vars.mg_start = false;
+						print("mg_start");
+						return true;
+					}
+
 					if (current.golfStrokeCount == 0){
 						vars.nHole = 0;
 					}
+
 					if (current.golfStrokeCount > old.golfStrokeCount){
 						vars.nHole++;
 						if (settings["Finish Hole " + vars.nHole.ToString()]){
@@ -1307,12 +1411,11 @@ split {
 					}
 				}
 				if (settings["Princess Quest"]){
-					if (settings["Princess Quest 1"]){
-						if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && old.posZ >= 2100){
-							if (vars.checkTime("pq1_start", vars.pq1_start, 0, 0)){
-								vars.pq1_start = false;
-								return true;
-							}
+					if (settings["Princess Quest 1"] && vars.arcade == "pq1"){
+						if (settings["pq1_start"] && vars.pq1_start){
+							print("pq1_start");
+							vars.pq1_start = false;
+							return true;
 						}
 						if (vars.checkPQPosition1(current.posY, current.posX, 785, 1215, -160, 160)){
 							if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
@@ -1376,12 +1479,11 @@ split {
 							}
 						}
 					}
-					if (settings["Princess Quest 2"]){
-						if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000){
-							if (vars.checkTime("pq2_start", vars.pq2_start, 0, 0)){
-								vars.pq2_start = false;
-								return true;
-							}
+					if (settings["Princess Quest 2"] && vars.arcade == "pq2"){
+						if (settings["pq2_start"] && vars.pq2_start){
+							print("pq2_start");
+							vars.pq2_start = false;
+							return true;
 						}
 						if (vars.checkPQPosition1(current.posY, current.posX, 2800, 3250, -1040, -735)){
 							if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
@@ -1454,12 +1556,11 @@ split {
 							}
 						}
 					}
-					if (settings["Princess Quest 3"]){
-						if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= old.posZ && old.posZ <= 2750){
-							if (vars.checkTime("pq3_start", vars.pq3_start, 0, 0)){
-								vars.pq3_start = false;
-								return true;
-							}
+					if (settings["Princess Quest 3"] && vars.arcade == "pq3"){
+						if (settings["pq3_start"] && vars.pq3_start){
+							print("pq3_start");
+							vars.pq3_start = false;
+							return true;
 						}
 						if (vars.checkPQPosition1(current.posY, current.posX, 2195, 2315, -3625, -1965)){
 							if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
@@ -1674,7 +1775,7 @@ split {
 						return true;
 					}
 					if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
-						if (!current.menu){
+						if (!vars.onMenu){
 							print("Car Battery Button");
 							return true;
 						}
@@ -1687,13 +1788,13 @@ split {
 					}
 					if (settings["E_B"]){
 						if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-							if (!current.menu){
+							if (!vars.onMenu){
 								print("Escape (East) Button");
 								return true;
 							}
 						}
 						if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-							if (!current.menu){
+							if (!vars.onMenu){
 								print("Escape (West) Button");
 								return true;
 							}
@@ -1706,7 +1807,7 @@ split {
 						return true;
 					}
 					if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-						if (!current.menu){
+						if (!vars.onMenu){
 							print("Fire Escape Button");
 							return true;
 						}
@@ -2311,7 +2412,7 @@ split {
 					}
 				}
 			}	
-			if (settings["Time Splits"] && current.worldCheck != 0){
+			if (settings["Time Splits"] && !vars.onMenu){
 				if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
 					if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
 						vars.tVents = false;
@@ -2390,10 +2491,10 @@ split {
 					}
 					if (settings["Monty Mix / Mazercise Key (4:30AM)"]){
 						if (current.splashScreen > old.splashScreen){
-							if (vars.checkItem("Monty Mystery Mix (4:30AM)", 15060, 30205, 3425)){
+							if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", 15060, 30205, 3425)){
 								return true;
 							}
-							if (vars.checkItem("Mazercise Control Key (4:30AM)", -17450, 31605, 70)){
+							if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", -17450, 31605, 70)){
 								return true;
 							}
 						}
