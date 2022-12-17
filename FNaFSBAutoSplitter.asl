@@ -1364,19 +1364,19 @@ split {
 			}
 		}
 		else if (vars.arcade == "null"){
-			if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && 2100 <= current.posZ && 2300 <= current.posZ){
+			if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && 2100 <= current.posZ && current.posZ <= 2300){
 				vars.arcade = "pq1";
 			}
-			else if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && 3200 <= current.posZ && 3400 <= current.posZ){
+			else if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && 3200 <= current.posZ && current.posZ <= 3400){
 				vars.arcade = "pq2";
 			}
-			else if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= current.posZ && 2700 <= current.posZ){
+			else if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= current.posZ && current.posZ <= 2700){
 				vars.arcade = "pq3";
 			}
-			else if (-18200 <= old.posX && old.posX <= -17900 && 44100 <= old.posY && old.posY <= 44300 && 900 <= current.posZ && 1100 <= current.posZ){
+			else if (-18200 <= old.posX && old.posX <= -17900 && 44100 <= old.posY && old.posY <= 44300 && 900 <= current.posZ && current.posZ <= 1100){
 				vars.arcade = "mg";
 			}
-			else if (-17000 <= old.posX && old.posX <= -16500 && 27200 <= old.posY && old.posY <= 27600 && 2000 <= current.posZ && 2300 <= current.posZ){
+			else if (-17000 <= old.posX && old.posX <= -16500 && 27200 <= old.posY && old.posY <= 27600 && 2000 <= current.posZ && current.posZ <= 2300){
 				vars.arcade = "bb";
 			}
 			print("Arcade: " + vars.arcade);
