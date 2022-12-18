@@ -1251,6 +1251,7 @@ isLoading {
 		if (!settings[data.Item1]) break;
 		if (!data.Item2) break;
 		if (data.Item3) break;
+
 		vars.useDictionary[data.Item1]++;
 		print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
 	
@@ -1265,6 +1266,7 @@ isLoading {
 		if (version != "v1.04"){
 			if (current.blackScreen != vars.loadingConstant) break;
 			if (old.blackScreen == vars.loadingConstant) break;
+
 			print("Stop Timer When Loading");
 			return true;
 		}
@@ -1285,6 +1287,7 @@ isLoading {
 
 	do {
 		if (!settings["Stop Timer On Menu"]) break;
+
 		if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
 			vars.onMenu = true;
 			if (!old.menu){
@@ -1303,6 +1306,7 @@ isLoading {
 		if (!settings["Stop Timer When Paused"]) break;
 		if (!current.pause) break;
 		if (current.worldCheck == 0) break;
+
 		if (!old.pause){
 			print("Stop Timer When Paused");
 		}
@@ -1344,6 +1348,7 @@ split {
 				if (vars.arcade != "bb") break;
 				if (!settings["bb_start"]) break;
 				if (!vars.bb_start) break;
+
 				vars.bb_start = false;
 				print("bb_start");
 				return true;
@@ -1355,6 +1360,7 @@ split {
 				do {
 					if (!settings["mg_start"]) break;
 					if (!vars.mg_start) break;
+
 					vars.mg_start = false;
 					print("mg_start");
 					return true;
@@ -1365,14 +1371,18 @@ split {
 				}
 
 				if (current.golfStrokeCount <= old.golfStrokeCount) break;
+
 				vars.nHole++;
+
 				if (!settings["Finish Hole " + vars.nHole.ToString()]) break;
+
 				print("Finish Hole " + vars.nHole.ToString());
 				return true;
 			} while (false);
 
 			do {
 				if (!settings["Princess Quest"]) break;
+
 				if (settings["Princess Quest 1"] && vars.arcade == "pq1"){
 					if (settings["pq1_start"] && vars.pq1_start){
 						print("pq1_start");
@@ -1575,7 +1585,7 @@ split {
 						}
 					}
 				}
-			}
+			} while (false);
 		} while (false);
 	} while (false);
 	do {
@@ -1584,6 +1594,7 @@ split {
 			if (current.DGens <= old.DGens) break;
 			if (!settings["Daycare Generators"]) break;
 			if (!settings["D_Generator " + current.DGens]) break;
+
 			print("DGen " + current.DGens);
 			return true;
 		} while (false);
@@ -1592,6 +1603,7 @@ split {
 			if (current.FBFlags <= old.FBFlags) break;
 			if (!settings["Fazerblast Flags"]) break;
 			if (!settings["Flag " + current.FBFlags]) break;
+
 			print("Flag " + current.FBFlags);
 			return true;
 		} while (false);
@@ -1600,6 +1612,7 @@ split {
 			if (current.MGBucket <= old.MGBucket) break;
 			if (!settings["Monty Bucket Count"]) break;
 			if (!settings[current.MGBucket + " Balls"]) break;
+
 			print(current.MGBucket + " Balls");
 			return true;
 		} while (false);
@@ -1654,7 +1667,7 @@ split {
 					vars.dDaycareArcade = false;
 					return true;
 				}
-				if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
+				else if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
 					vars.dDaycareTheatre = false;
 					return true;
 				}
@@ -1682,15 +1695,15 @@ split {
 					vars.dChicaRoom = false;
 					return true;
 				}
-				if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
+				else if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
 					vars.dCurtain = false;
 					return true;
 				}
-				if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3800, 44400, 44500, 1877, 1950)){
+				else if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3800, 44400, 44500, 1877, 1950)){
 					vars.dRoxyCutout = false;
 					return true;
 				}
-				if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
+				else if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
 					vars.dTunnelDoor = false;
 					return true;
 				}
@@ -1700,11 +1713,11 @@ split {
 					vars.dAftonRock = false;
 					return true;
 				}
-				if (vars.checkPosition("Garage Fence Jump", vars.dGarageJump, 18000, 19500, 38800, 39100, 2411.5, 2800)){
+				else if (vars.checkPosition("Garage Fence Jump", vars.dGarageJump, 18000, 19500, 38800, 39100, 2411.5, 2800)){
 					vars.dGarageJump = false;
 					return true;
 				}
-				if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
+				else if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
 					vars.dRoxyEyes = false;
 					return true;
 				}
@@ -1725,12 +1738,15 @@ split {
 	}
 	if (settings["Ending Splits"]){
 		//splits based on ending cutscenes
-		if (settings["Afton Ending"]){
-			if (settings["Button 8 / End"] && current.aftonEnd && !old.aftonEnd){
-				print("Button 8 / End");
-				return true;
-			}
-		}
+		do {
+			if (!settings["Afton Ending"]) break;
+			if (!settings["Button 8 / End"]) break;
+			if (current.aftonEnd && !old.aftonEnd) break;
+			
+			print("Button 8 / End");
+			return true;
+		} while (false);
+
 		if (settings["Car Battery Ending"]){
 			if (settings["CB_C"] && current.carEnd && !old.carEnd){
 				print("Car Battery Cutscene");
@@ -2066,316 +2082,318 @@ split {
 					}
 				}
 			}
-			if (settings["Equipment"]){
-				//Fazerblasters and Daycare Pass don't use splashscreen
+		}
+		if (settings["Equipment"]){
+			//Fazerblasters and Daycare Pass don't use splashscreen
+			if (settings["E_Lobby"]){
+				if (vars.checkPosition("Split Settings", true, 900, 1300, 23300, 23600, 1400, 1600)){
+					if (current.itemCount == old.itemCount - 1){
+						vars.nLobbyItemsUsed++;
+					}
+					if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
+						print("Daycare Pass");
+						return true;
+					}
+				}
+			}
+			if (current.itemCount > old.itemCount){
+				if (settings["E_Fazerblast"]){
+					if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
+						return true;
+					}
+					if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
+						vars.tGoldBlaster = false;
+						return true;
+					}
+				}
+			}
+			if (current.splashScreen > old.splashScreen){
+				//splashscreen items
+				if (settings["E_Backstage"]){
+					if (vars.checkTime("Backstage Pass", vars.tBackstagePass, 2, 30)){
+						vars.tBackstagePass = false;
+						return true;
+					}
+					if (vars.checkItem("B_Flashlight Upgrade", -8470, 53390, 1520)){
+						return true;
+					}
+				}
+				if (settings["E_Basement Kitchen"]){
+					if (vars.checkItem("Freddy Fizzy Faz", 3925, 24245, 480)){
+						return true;
+					}
+				}
+				if (settings["E_Bonnie Bowl"]){
+					if (vars.checkItem("Monty Mystery Mix", 15060, 30205, 3425)){
+						return true;
+					}
+				}
+				if (settings["E_Chica's Bakery"]){
+					if (vars.checkItem("Hoodie", -11300, 48050, 2155)){
+						return true;
+					}
+				}
+				if (settings["E_Daycare"]){
+					if (vars.checkItem("Flashlight", -16415, 33500, 1515)){
+						return true;
+					}
+					if (vars.checkItem("D_Flashlight Upgrade", -17345, 28290, 1810)){
+						return true;
+					}
+					if (vars.checkItem("Mazercise Control Key", -17450, 31605, 70)){
+						return true;
+					}
+				}
+				if (settings["E_El Chips"]){
+					if (vars.checkItem("Monty Fizzy Faz", -10055, 34950, 3310)){
+						return true;
+					}
+				}
+				if (settings["E_Fazerblast"]){
+					if (vars.iBowlingPass){
+						if (vars.checkItem("Bowling Pass", 8845, 32755, 1495)){
+							vars.iBowlingPass = false;
+							return true;
+						}
+					}
+					//Fazerblasters at the start of equipment splits
+				}
 				if (settings["E_Lobby"]){
-					if (900 <= current.posX && current.posX <= 1300 && 23300 <= current.posY && current.posY <= 23600 && 1400 <= current.posZ && current.posZ <= 1600){
-						if (current.itemCount == old.itemCount - 1){
-							vars.nLobbyItemsUsed++;
-						}
-						if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
-							print("Daycare Pass");
-							return true;
-						}
+					if (vars.checkItem("Chica Fizzy Faz", -3185, 22880, 1515)){
+						return true;
+					}
+					//Daycare Pass at start of equipment splits
+					if (vars.checkItem("Entrance Pass", -6235, 22115, 1510)){
+						return true;
+					}
+					if (vars.checkItem("Mr. Hippo Magnet", -3605, 25430, 1515)){
+						return true;
+					}
+					if (vars.checkItem("Screwdriver", 5, 22750, 1515)){
+						return true;
 					}
 				}
-				if (current.itemCount > old.itemCount){
-					if (settings["E_Fazerblast"]){
-						if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
-							return true;
-						}
-						if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
-							vars.tGoldBlaster = false;
-							return true;
-						}
+				if (settings["E_Main Atrium"]){
+					if (vars.checkItem("MA_Freddy Upgrade", 4650, 31285, 1520)){
+						return true;
+					}
+					if (vars.checkPosition("MA_Mapbot's Map", true, -4700, 1260, 28400, 31550, 2100, 2500)){
+						return true;
 					}
 				}
-				if (current.splashScreen > old.splashScreen){
-					//splashscreen items
-					if (settings["E_Backstage"]){
-						if (vars.checkTime("Backstage Pass", vars.tBackstagePass, 2, 30)){
-							vars.tBackstagePass = false;
-							return true;
-						}
-						if (vars.checkItem("B_Flashlight Upgrade", -8470, 53390, 1520)){
+				if (settings["E_Monty Golf"]){
+					if (vars.iFazcam){
+						if (vars.checkItem("Fazcam", -17120, 37515, 1005)){
+							vars.iFazcam = false;
 							return true;
 						}
 					}
-					if (settings["E_Basement Kitchen"]){
-						if (vars.checkItem("Freddy Fizzy Faz", 3925, 24245, 480)){
+					if (vars.checkItem("MG_Flashlight Upgrade", -15195, 38620, 1005)){
+						return true;
+					}
+					if (vars.iMazercisePass){
+						if (vars.checkItem("Mazercise Pass", -17370, 37910, 1005)){
+							vars.iMazercisePass = false;
 							return true;
 						}
 					}
-					if (settings["E_Bonnie Bowl"]){
-						if (vars.checkItem("Monty Mystery Mix", 15060, 30205, 3425)){
-							return true;
-						}
-					}
-					if (settings["E_Chica's Bakery"]){
-						if (vars.checkItem("Hoodie", -11300, 48050, 2155)){
-							return true;
-						}
-					}
-					if (settings["E_Daycare"]){
-						if (vars.checkItem("Flashlight", -16415, 33500, 1515)){
-							return true;
-						}
-						if (vars.checkItem("D_Flashlight Upgrade", -17345, 28290, 1810)){
-							return true;
-						}
-						if (vars.checkItem("Mazercise Control Key", -17450, 31605, 70)){
-							return true;
-						}
-					}
-					if (settings["E_El Chips"]){
-						if (vars.checkItem("Monty Fizzy Faz", -10055, 34950, 3310)){
-							return true;
-						}
-					}
-					if (settings["E_Fazerblast"]){
-						if (vars.iBowlingPass){
-							if (vars.checkItem("Bowling Pass", 8845, 32755, 1495)){
-								vars.iBowlingPass = false;
-								return true;
-							}
-						}
-						//Fazerblasters at the start of equipment splits
-					}
-					if (settings["E_Lobby"]){
-						if (vars.checkItem("Chica Fizzy Faz", -3185, 22880, 1515)){
-							return true;
-						}
-						//Daycare Pass at start of equipment splits
-						if (vars.checkItem("Entrance Pass", -6235, 22115, 1510)){
-							return true;
-						}
-						if (vars.checkItem("Mr. Hippo Magnet", -3605, 25430, 1515)){
-							return true;
-						}
-						if (vars.checkItem("Screwdriver", 5, 22750, 1515)){
-							return true;
-						}
-					}
-					if (settings["E_Main Atrium"]){
-						if (vars.checkItem("MA_Freddy Upgrade", 4650, 31285, 1520)){
-							return true;
-						}
-						if (vars.checkPosition("MA_Mapbot's Map", true, -4700, 1260, 28400, 31550, 2100, 2500)){
-							return true;
-						}
-					}
-					if (settings["E_Monty Golf"]){
-						if (vars.iFazcam){
-							if (vars.checkItem("Fazcam", -17120, 37515, 1005)){
-								vars.iFazcam = false;
-								return true;
-							}
-						}
-						if (vars.checkItem("MG_Flashlight Upgrade", -15195, 38620, 1005)){
-							return true;
-						}
-						if (vars.iMazercisePass){
-							if (vars.checkItem("Mazercise Pass", -17370, 37910, 1005)){
-								vars.iMazercisePass = false;
-								return true;
-							}
-						}
-						if (vars.checkItem("Monty's Claws", -22020, 44050, 1225)){
-							return true;
-						}
-					}
-					if (settings["E_Rockstar Row"]){
-						if (vars.checkItem("Fazwatch", 2010, 51390, 1525)){
-							return true;
-						}
-						if (vars.checkItem("Party Pass", -4205, 51730, 1525)){
-							return true;
-						}
-						if (vars.checkItem("Photo Pass", 4885, 48830, 1525)){
-							return true;
-						}
-					}
-					if (settings["E_Roxy Raceway"]){
-						if (vars.checkTime("Damaged Head", vars.tDamagedHead, 5, 15)){
-							vars.tDamagedHead = false;
-							return true;
-						}
-						if (vars.checkItem("Dance Pass", 17750, 38295, 1545)){
-							return true;
-						}
-						if (vars.checkItem("RR_Freddy Upgrade", 24945, 37950, 1545)){
-							return true;
-						}
-						if (vars.checkItem("Roxy's Eyes", 21010, 50540, 515)){
-							return true;
-						}
-						if (vars.checkItem("Roxy Fizzy Faz", 10840, 43425, 1930)){
-							return true;
-						}
-					}
-					if (settings["E_Roxy Salon"]){
-						if (vars.checkItem("Shoes", 6380, 47470, 2130)){
-							return true;
-						}
-					}
-					if (settings["E_Sewers"]){
-						if (vars.checkItem("Chica's Voicebox", 3655, 22970, -3670)){
-							return true;
-						}
-					}
-					if (settings["E_Utility Tunnels"]){
-						if (vars.checkPosition("UT_Mapbot's Map", true, -4000, -280, 42300, 48000, -1400, -900)){
-							return true;
-						}
-						if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
-							return true;
-						}
-					}
-					if (settings["E_West Arcade"]){
-						if (vars.checkTime("Repaired Head", vars.tRepairedHead, 5, 30)){
-							vars.tRepairedHead = false;
-							return true;
-						}
+					if (vars.checkItem("Monty's Claws", -22020, 44050, 1225)){
+						return true;
 					}
 				}
-			}
-			if (settings["Retro CDs"]){
-				if (current.splashScreen > old.splashScreen){
-					if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
+				if (settings["E_Rockstar Row"]){
+					if (vars.checkItem("Fazwatch", 2010, 51390, 1525)){
 						return true;
 					}
-					if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
+					if (vars.checkItem("Party Pass", -4205, 51730, 1525)){
 						return true;
 					}
-					if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
+					if (vars.checkItem("Photo Pass", 4885, 48830, 1525)){
 						return true;
 					}
-					if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
+				}
+				if (settings["E_Roxy Raceway"]){
+					if (vars.checkTime("Damaged Head", vars.tDamagedHead, 5, 15)){
+						vars.tDamagedHead = false;
 						return true;
 					}
-					if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
+					if (vars.checkItem("Dance Pass", 17750, 38295, 1545)){
 						return true;
 					}
-					if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
+					if (vars.checkItem("RR_Freddy Upgrade", 24945, 37950, 1545)){
 						return true;
 					}
-					if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
+					if (vars.checkItem("Roxy's Eyes", 21010, 50540, 515)){
 						return true;
 					}
-					if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
+					if (vars.checkItem("Roxy Fizzy Faz", 10840, 43425, 1930)){
 						return true;
 					}
-					if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+				}
+				if (settings["E_Roxy Salon"]){
+					if (vars.checkItem("Shoes", 6380, 47470, 2130)){
 						return true;
 					}
-					if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+				}
+				if (settings["E_Sewers"]){
+					if (vars.checkItem("Chica's Voicebox", 3655, 22970, -3670)){
 						return true;
 					}
-					if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
+				}
+				if (settings["E_Utility Tunnels"]){
+					if (vars.checkPosition("UT_Mapbot's Map", true, -4000, -280, 42300, 48000, -1400, -900)){
 						return true;
 					}
-					if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
+					if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
 						return true;
 					}
-					if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
-						return true;
-					}
-					if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
-						return true;
-					}
-					if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
-						return true;
-					}
-					if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
+				}
+				if (settings["E_West Arcade"]){
+					if (vars.checkTime("Repaired Head", vars.tRepairedHead, 5, 30)){
+						vars.tRepairedHead = false;
 						return true;
 					}
 				}
 			}
 		}
-		if (current.securityBadgeCount > old.securityBadgeCount){
-			if (settings["Security Badges"]){
-				if (settings["Security Badge " + current.securityBadgeCount]){
-					print("Security Badge " + current.securityBadgeCount);
+		if (settings["Retro CDs"]){
+			if (current.splashScreen > old.splashScreen){
+				if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
+					return true;
+				}
+				if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
+					return true;
+				}
+				if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
+					return true;
+				}
+				if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
+					return true;
+				}
+				if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
+					return true;
+				}
+				if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
+					return true;
+				}
+				if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
+					return true;
+				}
+				if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
+					return true;
+				}
+				if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+					return true;
+				}
+				if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+					return true;
+				}
+				if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
+					return true;
+				}
+				if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
+					return true;
+				}
+				if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
+					return true;
+				}
+				if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
+					return true;
+				}
+				if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
+					return true;
+				}
+				if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
 					return true;
 				}
 			}
 		}
+		do {
+			if (current.securityBadgeCount <= old.securityBadgeCount) break;
+			if (!settings["Security Badges"]) break;
+			if (!settings["Security Badge " + current.securityBadgeCount]) break;
+			print("Security Badge " + current.securityBadgeCount);
+			return true;
+		} while (false);
 	}
-	if (settings["Positional Splits"]){
-		if (current.posX != old.posX){
-			if (settings["P_Bonnie Bowl"]){
-				if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
-					vars.pEnBonnieBowl = false;
-					return true;
-				}
-			}
-			if (settings["P_Daycare"]){
-				if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
-					vars.tEnDaycare = false;
-					return true;
-				}
-			}
-			if (settings["P_El Chips"]){
-				if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-					vars.pEnElChips = false;
-					return true;
-				}
-			}
-			if (settings["P_Fazerblast"]){
-				if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
-					vars.pFazerStairs = false;
-					return true;
-				}
-			}
-			if (settings["P_Fazerblast Sublobby"]){
-				if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
-					vars.pFazerRail = false;
-					return true;
-				}
-			}
-			if (settings["P_Underground Afton Cave"]){
-				if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-					vars.pAftonElev = false;
-					return true;
-				}
-			}
-			if (settings["P_Utility Tunnels"]){
-				if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
-					vars.pFirstAid = false;
-					return true;
-				}
-				if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
-					vars.pFredRail = false;
-					return true;
-				}
-				if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
-					vars.pMontyChase = false;
-					return true;
-				}
-				if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
-					vars.pSTRATRW = false;
-					return true;
-				}
-				if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
-					vars.pSTRLB = false;
-					return true;
-				}
-			}
-			if (settings["P_West Arcade"]){
-				if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
-					vars.pEnWestArcade = false;
-					vars.pExWestArcade = true;
-					return true;
-				}
-				if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
-					vars.pExWestArcade = false;
-					return true;
-				}
+
+	do {
+		if (!settings["Positional Splits"]) break;
+		if (current.posX == old.posX) break;
+		if (settings["P_Bonnie Bowl"]){
+			if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
+				vars.pEnBonnieBowl = false;
+				return true;
 			}
 		}
-	}
-	if (settings["Time Splits"] && !vars.onMenu){
-		if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
+		if (settings["P_Daycare"]){
+			if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
+				vars.tEnDaycare = false;
+				return true;
+			}
+		}
+		if (settings["P_El Chips"]){
+			if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
+				vars.pEnElChips = false;
+				return true;
+			}
+		}
+		if (settings["P_Fazerblast"]){
+			if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
+				vars.pFazerStairs = false;
+				return true;
+			}
+		}
+		if (settings["P_Fazerblast Sublobby"]){
+			if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
+				vars.pFazerRail = false;
+				return true;
+			}
+		}
+		if (settings["P_Underground Afton Cave"]){
+			if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
+				vars.pAftonElev = false;
+				return true;
+			}
+		}
+		if (settings["P_Utility Tunnels"]){
+			if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
+				vars.pFirstAid = false;
+				return true;
+			}
+			if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
+				vars.pFredRail = false;
+				return true;
+			}
+			if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
+				vars.pMontyChase = false;
+				return true;
+			}
+			if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
+				vars.pSTRATRW = false;
+				return true;
+			}
+			if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
+				vars.pSTRLB = false;
+				return true;
+			}
+		}
+		if (settings["P_West Arcade"]){
+			if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
+				vars.pEnWestArcade = false;
+				vars.pExWestArcade = true;
+				return true;
+			}
+			if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
+				vars.pExWestArcade = false;
+				return true;
+			}
+		}
+	} while (false);
+	do {
+		if (!settings["Time Splits"]) break;
+		if (vars.onMenu) break;
+		if (current.hourClock == old.hourClock || current.minuteClock != old.minuteClock){
 			if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
 				vars.tVents = false;
 				return true;
@@ -2489,5 +2507,5 @@ split {
 				return true;
 			}
 		}
-	}
+	} while (false);
 }
