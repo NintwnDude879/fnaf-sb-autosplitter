@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach | v1.2.1
+//Five Nights at Freddy's: Security Breach | v1.2.5
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
