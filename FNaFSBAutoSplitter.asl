@@ -842,7 +842,7 @@ init {
 	
 	switch (gameSize){
 		default: {
-			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for this inconvenience.", "An Error Has Occured: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
 			version = "Unsupported";
 			return;
 		}
@@ -1282,26 +1282,25 @@ isLoading {
 	do {
 		if (!settings["Stop Timer When Loading"]) break;
 
-		if (version != "v1.04"){
+		if (version == "v1.04"){
+				if (current.hasLoaded){
+					vars.isLoading = false;
+					break;
+				}
+				else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
+					print("Stop Timer When Loading");
+					vars.isLoading = true;
+				}
+
+				if (vars.isLoading){
+					return true;
+				}
+		}
+		else {
 			if (current.blackScreen != vars.loadingConstant) break;
 			if (old.blackScreen == vars.loadingConstant) break;
 			print("Stop Timer When Loading");
 			return true;
-		}
-		else {
-			if (current.hasLoaded) break;
-
-			if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
-				print("Stop Timer When Loading");
-				vars.isLoading = true;
-			}
-			else {
-				vars.isLoading = false;
-			}
-
-			if (vars.isLoading){
-				return true;
-			}
 		}
 	} while (false);
 
@@ -1331,7 +1330,7 @@ isLoading {
 		if (!old.pause){
 			print("Stop Timer When Paused");
 		}
-		
+
 		return true;
 	} while (false);
 
@@ -1348,20 +1347,20 @@ split {
 		}
 	}
 	else if (vars.arcade == "N/A"){
-		if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
-			vars.arcade = "pq1";
-		}
-		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
-			vars.arcade = "pq2";
-		}
-		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
-			vars.arcade = "pq3";
+		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
+			vars.arcade = "BB Arcade";
 		}
 		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100)){
-			vars.arcade = "mg";
+			vars.arcade = "Monty Golf";
 		}
-		else if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
-			vars.arcade = "bb";
+		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
+			vars.arcade = "Princess Quest 1";
+		}
+		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
+			vars.arcade = "Princess Quest 2";
+		}
+		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
+			vars.arcade = "Princess Quest 3";
 		}
 		print("Arcade: " + vars.arcade);
 	}
@@ -1370,240 +1369,252 @@ split {
 	switch (dumbVariable){
 		default: {
 			if (!settings["Arcade Splits"]) break;
+			if (!settings[vars.arcade]) break;
 
-			do {
-				if (!settings["BB Arcade"]) break;
-				if (vars.arcade != "bb") break;
-				if (!settings["bb_start"]) break;
-				if (!vars.bb_start) break;
-				vars.bb_start = false;
-				print("bb_start");
-				return true;
-			} while (false);
+			switch (dumbVariable){
+				case "BB Arcade": {
+					if (!settings["bb_start"]) break;
+					if (!vars.bb_start) break;
 
-			do {
-				if (!settings["Monty Golf"]) break;
-				if (!vars.arcade == "mg") break;
-
-				if (settings["mg_start"] && vars.mg_start){
-					vars.mg_start = false;
-					print("mg_start");
+					vars.bb_start = false;
+					print("bb_start");
 					return true;
 				}
-				if (current.golfStrokeCount == 0){
-					vars.nHole = 0;
-				}
-				if (current.golfStrokeCount > old.golfStrokeCount){
-					vars.nHole++;
-					if (settings["Finish Hole " + vars.nHole.ToString()]){
-						print("Finish Hole " + vars.nHole.ToString());
-						return true;
-					}
-				}
-			} while (false);
 
-			if (settings["Princess Quest"]){
-				if (settings["Princess Quest 1"] && vars.arcade == "pq1"){
-					if (settings["pq1_start"] && vars.pq1_start){
-						print("pq1_start");
-						vars.pq1_start = false;
-						return true;
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 785, 1215, -160, 160)){
-						if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
-							vars.pq1_1 = false;
+				case "Monty Golf": {
+					if (settings["mg_start"]){
+						if (vars.mg_start){
+							vars.mg_start = false;
+							print("mg_start");
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, -160, 160)){
-						if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
-							vars.pq1_2 = false;
+					if (current.golfStrokeCount == 0){
+						vars.nHole = 0;
+					}
+					if (current.golfStrokeCount > old.golfStrokeCount){
+						vars.nHole++;
+						if (settings["Finish Hole " + vars.nHole.ToString()]){
+							print("Finish Hole " + vars.nHole.ToString());
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3055, 3800, -160, 160)){
-						if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
-							vars.pq1_3 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, 600, 1425)){
-						if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
-							vars.pq1_4 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1900, 2340, 1860, 2180)){
-						if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
-							vars.pq1_5 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2860, 4695, 1780, 2810)){
-						if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
-							vars.pq1_6 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5220, 6515, 2150, 2780)){
-						if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
-							vars.pq1_7 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 950, 1380, 1865, 2300)){
-						if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
-							vars.pq1_8 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2020, 2210, 3425, 5125)){
-						if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
-							vars.pq1_9 = false;
-							return true;
-						}
-					}
-					if (settings["pq1_end"] && vars.pq1_end){
-						if (old.pos.X >= 4920 && current.pos.X == 0){
-							vars.pq1_end = false;
-							print("pq1_end");
-							return true;
-						}
-					}
+					break;
 				}
-				if (settings["Princess Quest 2"] && vars.arcade == "pq2"){
-					if (settings["pq2_start"] && vars.pq2_start){
-						print("pq2_start");
-						vars.pq2_start = false;
-						return true;
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2800, 3250, -1040, -735)){
-						if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
-							vars.pq2_1 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4300, 4840, -2800, -2420)){
-						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
-							vars.pq2_2 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2805, 3155, -1340, -1110)){
-						if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
-							vars.pq2_3 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2415, 3290, -3375, -2745)){
-						if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
-							vars.pq2_4 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2955, 3365, 745, 1125)){
-						if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
-							vars.pq2_5 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1070, 2205, 830, 1470)){
-						if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
-							vars.pq2_6 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5, 1975, -185, 190)){
-						if (vars.pq2_7){
-							vars.pq2_8 = true;
-						}
-						if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
-							vars.pq2_7 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2725, 3340, -315, 320)){
-						if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
-							vars.pq2_8 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3920, 4345, 350, 655)){
-						if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
-							vars.pq2_9 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4845, 5045, 725, 925)){
-						if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
-							vars.pq2_10 = false;
-							return true;
-						}
-					}
-					if (settings["pq2_end"] && vars.pq2_end){
-						if (old.pos.Y >= 4845 && current.pos.Y == 0){
-							vars.pq2_end = false;
-							print("pq2_end");
-							return true;
-						}
-					}
-				}
-				if (settings["Princess Quest 3"] && vars.arcade == "pq3"){
-					if (settings["pq3_start"] && vars.pq3_start){
-						print("pq3_start");
-						vars.pq3_start = false;
-						return true;
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2195, 2315, -3625, -1965)){
-						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
-							vars.pq3_1 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1705, 2135, -1340, -895)){
-						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
-							vars.pq3_2 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2445, 5210, -1360, -990)){
-						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
-							vars.pq3_3 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4865, 5490, -210, 365)){
-						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
-							vars.pq3_4 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 500, 1325, -400, 1045)){
-						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
-							vars.pq3_5 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1865, 1980, -1505, -1380)){
-						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
-							vars.pq3_6 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1940, 2055, -260, 0)){
-						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
-							vars.pq3_7 = false;
-							return true;
-						}
-					}
-					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
-						if (current.pq3Attack){
-							if (vars.checkPQPosition2("pq3_endArcade", vars.pq3_end)){
-								vars.pq3_end = false;
+
+				default: {
+					if (!settings["Princess Quest"]) break;
+
+					switch (dumbVariable){
+						case "Princess Quest 1": {
+							if (settings["pq1_start"] && vars.pq1_start){
+								print("pq1_start");
+								vars.pq1_start = false;
 								return true;
 							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 785, 1215, -160, 160)){
+								if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
+									vars.pq1_1 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, -160, 160)){
+								if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
+									vars.pq1_2 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3055, 3800, -160, 160)){
+								if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
+									vars.pq1_3 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, 600, 1425)){
+								if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
+									vars.pq1_4 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1900, 2340, 1860, 2180)){
+								if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
+									vars.pq1_5 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2860, 4695, 1780, 2810)){
+								if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
+									vars.pq1_6 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5220, 6515, 2150, 2780)){
+								if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
+									vars.pq1_7 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 950, 1380, 1865, 2300)){
+								if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
+									vars.pq1_8 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2020, 2210, 3425, 5125)){
+								if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
+									vars.pq1_9 = false;
+									return true;
+								}
+							}
+							if (settings["pq1_end"] && vars.pq1_end){
+								if (old.pos.X >= 4920 && current.pos.X == 0){
+									vars.pq1_end = false;
+									print("pq1_end");
+									return true;
+								}
+							}
+							break;
+						}
+
+						case "Princess Quest 2": {
+							if (settings["pq2_start"] && vars.pq2_start){
+								print("pq2_start");
+								vars.pq2_start = false;
+								return true;
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2800, 3250, -1040, -735)){
+								if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
+									vars.pq2_1 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4300, 4840, -2800, -2420)){
+								if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
+									vars.pq2_2 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2805, 3155, -1340, -1110)){
+								if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
+									vars.pq2_3 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2415, 3290, -3375, -2745)){
+								if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
+									vars.pq2_4 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2955, 3365, 745, 1125)){
+								if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
+									vars.pq2_5 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1070, 2205, 830, 1470)){
+								if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
+									vars.pq2_6 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5, 1975, -185, 190)){
+								if (vars.pq2_7){
+									vars.pq2_8 = true;
+								}
+								if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
+									vars.pq2_7 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2725, 3340, -315, 320)){
+								if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
+									vars.pq2_8 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3920, 4345, 350, 655)){
+								if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
+									vars.pq2_9 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4845, 5045, 725, 925)){
+								if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
+									vars.pq2_10 = false;
+									return true;
+								}
+							}
+							if (settings["pq2_end"] && vars.pq2_end){
+								if (old.pos.Y >= 4845 && current.pos.Y == 0){
+									vars.pq2_end = false;
+									print("pq2_end");
+									return true;
+								}
+							}
+							break;
+						}
+
+						case "Princess Quest 3": {
+							if (settings["pq3_start"] && vars.pq3_start){
+								print("pq3_start");
+								vars.pq3_start = false;
+								return true;
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2195, 2315, -3625, -1965)){
+								if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
+									vars.pq3_1 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1705, 2135, -1340, -895)){
+								if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
+									vars.pq3_2 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2445, 5210, -1360, -990)){
+								if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
+									vars.pq3_3 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4865, 5490, -210, 365)){
+								if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
+									vars.pq3_4 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 500, 1325, -400, 1045)){
+								if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
+									vars.pq3_5 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1865, 1980, -1505, -1380)){
+								if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
+									vars.pq3_6 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1940, 2055, -260, 0)){
+								if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
+									vars.pq3_7 = false;
+									return true;
+								}
+							}
+							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
+								if (current.pq3Attack){
+									if (vars.checkPQPosition2("pq3_endArcade", vars.pq3_end)){
+										vars.pq3_end = false;
+										return true;
+									}
+								}
+							}
+							break;
 						}
 					}
+					break;
 				}
 			}
 			break;
