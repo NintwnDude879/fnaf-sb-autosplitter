@@ -1005,38 +1005,50 @@ start {
 		double xAvg = (x1 + x2) / 2;
 		double yAvg = (y1 + y2) / 2;
 
-		//north
-		if (yB - yAvg >= slope * (xB - xAvg)){
-			if (current.pos.Y - yAvg >= slope * (current.pos.X - xAvg)){
+		do {
+			//north
+			if (yB - yAvg >= slope * (xB - xAvg)){
+				if (current.pos.Y - yAvg < slope * (current.pos.X - xAvg)) break;
+
 				//east
 				if (slope >= 0){
-					if (current.pos.X >= xB && current.pos.Y <= yB){
-						print(name);
-						return true;
-					}
+					if (current.pos.X < xB) break;
+					if (current.pos.Y > yB) break;
+
+					print(name);
+					return true;
 				}
 				//west
-				else if (current.pos.X <= xB && current.pos.Y <= yB){
+				else {
+					if (current.pos.X > xB) break;
+					if (current.pos.Y > yB) break;
+
 					print(name);
 					return true;
 				}
 			}
-		}
-		//south
-		else if (current.pos.Y - yAvg <= slope * (current.pos.X - xAvg)){
-			//west
-			if (slope >= 0){
-				if (current.pos.X <= xB && current.pos.Y >= yB){
+			//south
+			else {
+				if (current.pos.Y - yAvg > slope * (current.pos.X - xAvg)) break;
+
+				//west
+				if (slope >= 0){
+					if (current.pos.X > xB) break;
+					if (current.pos.Y < yB) break;
+					
+					print(name);
+					return true;
+				}
+				//east
+				else {
+					if (current.pos.X < xB) break;
+					if (current.pos.Y < yB) break;
+
 					print(name);
 					return true;
 				}
 			}
-			//east
-			else if (current.pos.X >= xB && current.pos.Y >= yB){
-				print(name);
-				return true;
-			}
-		}
+		} while (false);
 		return false;
 	});
 
@@ -1197,15 +1209,17 @@ start {
 
 		vars.isLoading = true;
 		vars.onMenu = true;
-		if (version == "v1.04"){
-			vars.isLoading = false;
-		}
-		else {
-			if (current.worldCheck != 0 && old.worldCheck == 0){
+		do {
+			if (version == "v1.04"){
+				vars.isLoading = false;
+			}
+			else {
+				if (current.worldCheck == 0) break;
+				if (old.worldCheck != 0) break;
 				vars.loadingConstant = current.blackScreen;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
-		}
+		} while(false);
 	});
 
 	//Resets variables upon stopping timer
@@ -1215,6 +1229,7 @@ start {
 	do {
 		if (current.hourClock != -1) break; 
 		if (current.minuteClock != 0) break;
+
 		if (version == "v1.11"){
 			if (!current.freddyThing) break;
 			if (old.freddyThing) break;
@@ -1245,6 +1260,7 @@ isLoading {
 		do {
 			if (!settings[data.Item1]) break;
 			if (!data.Item2) break;
+
 			if (!data.Item3){
 				vars.useDictionary[data.Item1]++;
 				print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
@@ -1255,31 +1271,34 @@ isLoading {
 				return true;
 			}
 			else if (settings[data.Item1 + "_POOU"]){
-				if (settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]){
-					print("OnlyOnUse#");
-					return true;
-				}
+				if (!settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]) break;
+
+				print("OnlyOnUse#");
+				return true;
 			}
 		} while (false);
 	}
 	
 	do {
 		if (!settings["Stop Timer When Loading"]) break;
+
 		if (version != "v1.04"){
 			if (current.blackScreen != vars.loadingConstant) break;
 			if (old.blackScreen == vars.loadingConstant) break;
 			print("Stop Timer When Loading");
 			return true;
 		}
-		else if (!current.hasLoaded){
+		else {
+			if (current.hasLoaded) break;
+
 			if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
 				print("Stop Timer When Loading");
 				vars.isLoading = true;
 			}
-			
 			else {
 				vars.isLoading = false;
 			}
+
 			if (vars.isLoading){
 				return true;
 			}
@@ -1288,6 +1307,7 @@ isLoading {
 
 	do {
 		if (!settings["Stop Timer On Menu"]) break;
+
 		if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
 			vars.onMenu = true;
 			if (!old.menu){
@@ -1307,9 +1327,11 @@ isLoading {
 		if (!settings["Stop Timer When Paused"]) break;
 		if (!current.pause) break;
 		if (current.worldCheck == 0) break;
+
 		if (!old.pause){
 			print("Stop Timer When Paused");
 		}
+		
 		return true;
 	} while (false);
 
