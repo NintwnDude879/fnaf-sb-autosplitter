@@ -15,7 +15,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x0441FCB0, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x0441C570, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+	bool pq3Attack: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
 	int DGens: 0x0441FCB0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
@@ -24,9 +24,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Player information
 	float worldCheck: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posY: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -52,8 +49,8 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int splashScreen: 0x0441FCB0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//In-Game Clock
-	int hourClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x258;
-	int minuteClock: 0x04409AF0, 0x30, 0x670, 0x230, 0x25C;
+	int hourClock: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
  	bool pause: 0x0441C5F0, 0x8B8;
@@ -81,7 +78,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x04420F40, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x0441D800, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+	int pq3Attack: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
 	int FBFlags: 0x04420F40, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
@@ -90,9 +87,6 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 
 	//Player information
 	float worldCheck: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posZ: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x04420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -118,8 +112,8 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int securityBadgeCount: 0x0441C9C8, 0x8, 0x10, 0x38, 0xC0;
 
 	//In-Game Clock
-	int hourClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA34;
-	int minuteClock: 0x440AD80, 0x30, 0x678, 0x230, 0xA38;
+	int hourClock: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	bool pause: 0x0441D880, 0x8B8;
@@ -147,18 +141,15 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x04421080, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x0441D940, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+	int pq3Attack: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
-	//CounteposYr pointers
+	//Countepos.Yr pointers
 	int DGens: 0x441D998, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
 	int MGBucket: 0x04421080, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
 	int FBFlags: 0x04421080, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 
 	//Positions
 	float worldCheck: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posY: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x04421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -184,8 +175,8 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int splashScreen: 0x444C6B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//In-Game Clock
-	int hourClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA34;
-	int minuteClock: 0x0440AEC0, 0x30, 0x678, 0x230, 0xA38;
+	int hourClock: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Menus
  	bool pause: 0x0441D9C0, 0x8B8;
@@ -213,7 +204,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x044288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x04425170, 0x8, 0x8, 0x200, 0x200, 0x38, 0x120, 0x3F9;
+	int pq3Attack: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
 	int DGens: 0x044288B0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
@@ -222,9 +213,6 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 
 	//Player information
 	float worldCheck: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posY: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x044288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
@@ -250,8 +238,8 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int splashScreen: 0x044288B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
 
 	//In-Game Clock
-	int hourClock: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x10;
-	int minuteClock: 0x044126F0, 0x30, 0x50, 0x680, 0x230, 0x14;
+	int hourClock: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	bool pause: 0x044251F0, 0x8B8;
@@ -838,15 +826,6 @@ startup {
 	}
 
 	settings.CurrentDefaultParent = null;
-	settings.Add("Refresh Rate", true);
-
-	settings.CurrentDefaultParent = "Refresh Rate";
-	settings.Add("120Hz", false);
-	settings.Add("60Hz", true);
-	settings.Add("30Hz", false);
-	settings.Add("15Hz", false);
-
-	settings.CurrentDefaultParent = null;
 	settings.Add("Reset Settings", false);
 
 	settings.CurrentDefaultParent = "Reset Settings";
@@ -855,31 +834,58 @@ startup {
 
 init {
 	//Sets the version of the game upon startup
-	vars.versionSize = modules.First().ModuleMemorySize;
-	print("Size = " + vars.versionSize.ToString());
+	int gameSize = modules.First().ModuleMemorySize;
+
+	print("Size = " + gameSize.ToString());
 
 	//1.04: 76210176
 	//1.05: 76214272
 	//1.07: 76218368
 	//1.11: 76251136
 
-	if (vars.versionSize == 76210176){
-		version = "v1.04";
-	}
-	else if (vars.versionSize == 76214272){
-		version = "v1.05";
-	}
-	else if (vars.versionSize == 76218368){
-		version = "v1.07";
-	}
-	else if (vars.versionSize == 76251136){
-		version = "v1.11";
+	int posBase = 0;
+	
+	switch (gameSize){
+		default: {
+			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for this inconvenience.", "An Error Has Occured: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+			version = "Unsupported";
+			return;
+		}
+
+		case 76210176: {
+			version = "v1.04";
+			posBase = 0x441C5F0;
+			break;
+		}
+		
+		case 76214272: {
+			version = "v1.05"; 
+			posBase = 0x441D880;
+			break;
+		}
+
+		case 76218368: {
+			version = "v1.07"; 
+			posBase = 0x441D9C0;
+			break;
+		}
+
+		case 76251136: {
+			version = "v1.11"; 
+			posBase = 0x44251F0;
+			break;
+		}
 	}
 
 	print("Version = " + version);
+	print("posBase = " + posBase);
+
+	vars.posWatcher = new MemoryWatcher<Vector3f>(new DeepPointer(posBase, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0));
 }
 
 update {
+	if (version == "Unsupported") return false;
+
 	//Elevator Pointer List
 	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
 		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
@@ -895,6 +901,10 @@ update {
 		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
 		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
 	};
+
+	vars.posWatcher.Update(game);
+	current.pos = vars.posWatcher.Current;
+	old.pos = vars.posWatcher.Old;
 }
 
 start {
@@ -918,9 +928,9 @@ start {
 		print("MGBucket: " + old.MGBucket.ToString() + " => " + current.MGBucket.ToString());
 		print("FBFlags: " + old.FBFlags.ToString() + " => " + current.FBFlags.ToString());
 		print("worldCheck: " + old.worldCheck.ToString() + " => " + current.worldCheck.ToString());
-		print("posX: " + old.posX.ToString() + " => " + current.posX.ToString());
-		print("posY: " + old.posY.ToString() + " => " + current.posY.ToString());
-		print("posZ: " + old.posZ.ToString() + " => " + current.posZ.ToString());
+		print("pos.X: " + old.pos.X.ToString() + " => " + current.pos.X.ToString());
+		print("pos.Y: " + old.pos.Y.ToString() + " => " + current.pos.Y.ToString());
+		print("pos.Z: " + old.pos.Z.ToString() + " => " + current.pos.Z.ToString());
 		print("vannyEndButton: " + old.vannyEndButton.ToString() + " => " + current.vannyEndButton.ToString());
 		print("escapeEndLeaveButtonEast: " + old.escapeEndLeaveButtonEast.ToString() + " => " + current.escapeEndLeaveButtonEast.ToString());
 		print("carEndLeaveButton: " + old.carEndLeaveButton.ToString() + " => " + current.carEndLeaveButton.ToString());
@@ -961,131 +971,121 @@ start {
 
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
 		//checks in a sphere (radius 300u)
-		if (settings[name]){
-			if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(300, 2)){
-				print(name);
-				return true;
-			}
-		}
-		return false;
+		if (!settings[name]) return false;
+		if (Math.Pow(current.pos.X - x, 2) + Math.Pow(current.pos.Y - y, 2) + Math.Pow(current.pos.Z - z, 2) > Math.Pow(300, 2)) return false;
+		print(name);
+		return true;
 	});
 
 	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (settings[name]){
-			if (check){
-				if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+		if (!settings[name]) return false;
+		if (!check) return false;
+		if (xLB > current.pos.X) return false;
+		if (current.pos.X > xUB) return false;
+		if (yLB > current.pos.Y) return false;
+		if (current.pos.Y > yUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
+		print(name);
+		return true;
+	});
+
+	vars.checkArcadePosition = (Func<double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB) => {
+		if (xLB > old.pos.X) return false;
+		if (old.pos.X > xUB) return false;
+		if (yLB > old.pos.Y) return false;
+		if (old.pos.Y > yUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
+		return true;
+	});
+
+	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
+		if (!settings[name]) return false;
+		if (!check) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
+	
+		double slope = (y1 - y2) / (x1 - x2);
+		double xAvg = (x1 + x2) / 2;
+		double yAvg = (y1 + y2) / 2;
+
+		//north
+		if (yB - yAvg >= slope * (xB - xAvg)){
+			if (current.pos.Y - yAvg >= slope * (current.pos.X - xAvg)){
+				//east
+				if (slope >= 0){
+					if (current.pos.X >= xB && current.pos.Y <= yB){
+						print(name);
+						return true;
+					}
+				}
+				//west
+				else if (current.pos.X <= xB && current.pos.Y <= yB){
 					print(name);
 					return true;
 				}
 			}
 		}
-		return false;
-	});
-
-	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
-		if (settings[name]){
-			if (check){
-				if (zLB <= current.posZ && current.posZ <= zUB){
-				
-					double slope = (y1 - y2) / (x1 - x2);
-					double xAvg = (x1 + x2) / 2;
-					double yAvg = (y1 + y2) / 2;
-
-					//north
-					if (yB - yAvg >= slope * (xB - xAvg)){
-						if (current.posY - yAvg >= slope * (current.posX - xAvg)){
-							//east
-							if (slope >= 0){
-								if (current.posX >= xB && current.posY <= yB){
-									print(name);
-									return true;
-								}
-							}
-							//west
-							if (slope < 0){
-								if (current.posX <= xB && current.posY <= yB){
-									print(name);
-									return true;
-								}
-							}
-						}
-					}
-					//south
-					if (yB - yAvg < slope * (xB - xAvg)){
-						if (current.posY - yAvg < slope * (current.posX - xAvg)){
-							//west
-							if (slope >= 0){
-								if (current.posX <= xB && current.posY >= yB){
-									print(name);
-									return true;
-								}
-							}
-							//east
-							if (slope < 0){
-								if (current.posX >= xB && current.posY >= yB){
-									print(name);
-									return true;
-								}
-							}
-						}
-					}
+		//south
+		else if (current.pos.Y - yAvg <= slope * (current.pos.X - xAvg)){
+			//west
+			if (slope >= 0){
+				if (current.pos.X <= xB && current.pos.Y >= yB){
+					print(name);
+					return true;
 				}
+			}
+			//east
+			else if (current.pos.X >= xB && current.pos.Y >= yB){
+				print(name);
+				return true;
 			}
 		}
 		return false;
 	});
 
 	vars.checkPQPosition1 = (Func<double, double, double, double, double, double, bool>)((currentX, currentY, xLB, xUB, yLB, yUB) => {
-		if (xLB <= currentX && currentX <= xUB && yLB <= currentY && currentY <= yUB){
-			return true;
-		}
-		return false;
+		if (xLB > currentX) return false;
+		if (currentX > xUB) return false;
+		if (yLB > currentY) return false;
+		if (currentY > yUB) return false;
+		return true;
 	});
 
 	vars.checkPQPosition2 = (Func<string, bool, bool>)((name, check) => {
-		if (settings[name]){
-			if (check){
-				print(name);
-				return true;
-			}
-		}
-		return false;
+		if (!settings[name]) return false;
+		if (!check) return false;
+		print(name);
+		return true;
 	});
 
 	vars.checkGen = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, x, y, zLB, zUB, oldPositionX, oldPositionY) => {
 		//checks in a circle (radius 200)
-		if (settings[name]){
-			if (check){
-				if (zLB <= current.posZ && current.posZ <= zUB){
-					if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) <= Math.Pow(200, 2)){
-						if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) > Math.Pow(200, 2)){
-							print(name);
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
+		if (!settings[name]) return false;
+		if (!check) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
+		if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) > Math.Pow(200, 2)) return false;
+		if (Math.Pow(current.pos.X - x, 2) + Math.Pow(current.pos.Y - y, 2) <= Math.Pow(200, 2)) return false;
+		print(name);
+		return true;
 	});
 
 	vars.checkTime = (Func<string, bool, int, int, bool>)((name, check, hour, minute) => {
-		if (settings[name]){
-			if (check){
-				if (current.hourClock == hour && current.minuteClock == minute){
-					print(name);
-					return true;
-				}
-			}
-		}
-		return false;
+		if (!settings[name]) return false;
+		if (!check) return false;
+		if (current.hourClock != hour) return false;
+		if (current.minuteClock != minute) return false;
+		print(name);
+		return true;
 	});
 
 	vars.resetVariables = (Action)(() => {
 		//Used to keep certain splits from repeating (reset)
 	
 		//Arcade Splits
-		vars.arcade = "null";
+		vars.arcade = "N/A";
 		//bb
 		vars.bb_start = true;
 		//monty golf
@@ -1213,410 +1213,386 @@ start {
 		}
 	});
 
-	//Updates refreshRate
-	if (settings["Refresh Rate"]){
-		if (settings["120Hz"]){
-			if (refreshRate != 120){
-				print("Refresh Rate = 120Hz");
-				refreshRate = 120;
-			}
-		}
-		else if (settings["60Hz"]){
-			if (refreshRate != 60){
-				print("Refresh Rate = 60Hz");
-				refreshRate = 60;
-			}
-		}
-		else if (settings["30Hz"]){
-			if (refreshRate != 30){
-				print("Refresh Rate = 30Hz");
-				refreshRate = 30;
-			}
-		}
-		else if (settings["15Hz"]){
-			if (refreshRate != 15){
-				print("Refresh Rate = 15Hz");
-				refreshRate = 15;
-			}
-		}
-		else {
-			if (refreshRate != 60){
-				print("Default Refresh Rate = 60Hz");
-				refreshRate = 60;
-			}
-		}
-	}
-	else {
-		if (refreshRate != 60){
-			print("Default Refresh Rate = 60Hz");
-			refreshRate = 60;
-		}
-	}
-
 	//Resets variables upon stopping timer
 	vars.resetVariables();
 
 	//Start conditions (time, Freddy power, freddyThing)
-	if (current.hourClock == -1 && current.minuteClock == 0){
-		if (version != "v1.11"){
-			if (current.freddyPower < old.freddyPower){
-				print("Start Timer");
-				return true;
-			}
+	do {
+		if (current.hourClock != -1) break; 
+		if (current.minuteClock != 0) break;
+		if (version == "v1.11"){
+			if (!current.freddyThing) break;
+			if (old.freddyThing) break;
+			print("Start Timer");
+			return true;
 		}
-		else if (version == "v1.11"){
-			if (current.freddyThing && !old.freddyThing){
-				print("Start Timer");
-				return true;
-			}
+		else {
+			if (current.freddyPower >= old.freddyPower) break;
+			print("Start Timer");
+			return true;
 		}
-    }
+		
+	} while (false);
 }
 
 reset {
 	//Resets timer upon starting new game
-	if (settings["Reset Settings"]){
-		if (old.hourClock != -1){
-			if (vars.checkTime("Reset On New Game", true, -1, 0)){
-				return true;
-			}
-		}
-	}
+	if (!settings["Reset Settings"]) return false;
+	if (old.hourClock == -1) return false;
+	if (!vars.checkTime("Reset On New Game", true, -1, 0)) return false;
+	return true;
 }
 
 isLoading {
-	if (settings["In-Game Time Settings"]){
-		if (settings["Elevator Pauses"]){
-			foreach (var data in vars.elevatorPointers){
-				if (settings[data.Item1]){
-					if (data.Item2){
-						if (!data.Item3){
-							vars.useDictionary[data.Item1]++;
-							print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
-						}
+	if (!settings["In-Game Time Settings"]) return false;
 
-						if (settings[data.Item1 + "_EUOE"]){
-							return true;
-						}
-						if (settings[data.Item1 + "_POOU"]){
-							if (settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]){
-								return true;
-							}
-						}
-					}
-				}
+	foreach (var data in vars.elevatorPointers){
+		do {
+			if (!settings[data.Item1]) break;
+			if (!data.Item2) break;
+			if (!data.Item3){
+				vars.useDictionary[data.Item1]++;
+				print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
 			}
-		}
-		if (settings["Stop Timer When Loading"]){
-			if (version == "v1.04"){
-				if (current.hasLoaded){
-					vars.isLoading = false;
-				}
-				else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
-					print("Stop Timer When Loading");
-					vars.isLoading = true;
-				}
 
-				if (vars.isLoading){
+			if (settings[data.Item1 + "_EUOE"]){
+				print("EveryUse");
+				return true;
+			}
+			else if (settings[data.Item1 + "_POOU"]){
+				if (settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]){
+					print("OnlyOnUse#");
 					return true;
 				}
 			}
-			else if (current.blackScreen == vars.loadingConstant){
-				if (old.blackScreen != vars.loadingConstant){
-					print("Stop Timer When Loading");
-				}
-				return true;
-			}
-		}
-		if (settings["Stop Timer On Menu"]){
-			if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
-				vars.onMenu = true;
-				if (!old.menu){
-					print("Stop Timer On Menu");
-				}
-			}
-			else if (current.worldCheck != 0 || vars.arcade != "null"){
-				vars.onMenu = false;
-			}
-
-			if (vars.onMenu){
-				return true;
-			}
-		}
-		if (settings["Stop Timer When Paused"]){
-			if (current.pause && current.worldCheck != 0){
-				if (!old.pause){
-					print("Stop Timer When Paused");
-				}
-				return true;
-			}
-		}
+		} while (false);
 	}
+	
+	do {
+		if (!settings["Stop Timer When Loading"]) break;
+		if (version != "v1.04"){
+			if (current.blackScreen != vars.loadingConstant) break;
+			if (old.blackScreen == vars.loadingConstant) break;
+			print("Stop Timer When Loading");
+			return true;
+		}
+		else if (!current.hasLoaded){
+			if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
+				print("Stop Timer When Loading");
+				vars.isLoading = true;
+			}
+			
+			else {
+				vars.isLoading = false;
+			}
+			if (vars.isLoading){
+				return true;
+			}
+		}
+	} while (false);
+
+	do {
+		if (!settings["Stop Timer On Menu"]) break;
+		if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
+			vars.onMenu = true;
+			if (!old.menu){
+				print("Stop Timer On Menu");
+			}
+		}
+		else if (current.worldCheck != 0 || vars.arcade != "N/A"){
+			vars.onMenu = false;
+		}
+
+		if (vars.onMenu){
+			return true;
+		}
+	} while (false);
+
+	do {
+		if (!settings["Stop Timer When Paused"]) break;
+		if (!current.pause) break;
+		if (current.worldCheck == 0) break;
+		if (!old.pause){
+			print("Stop Timer When Paused");
+		}
+		return true;
+	} while (false);
+
 	return false;
 }
 
 split {
-	if (settings["Split Settings"]){
-		if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-			if (vars.arcade != "null"){
-				vars.arcade = "null";
-				print("Arcade: " + vars.arcade);
-			}
-		}
-		else if (vars.arcade == "null"){
-			if (7000 <= old.posX && old.posX <= 8500 && 46500 <= old.posY && old.posY <= 48000 && 2100 <= current.posZ && 2300 <= current.posZ){
-				vars.arcade = "pq1";
-			}
-			else if (7500 <= old.posX && old.posX <= 9000 && 20500 <= old.posY && old.posY <= 21000 && 3200 <= current.posZ && 3400 <= current.posZ){
-				vars.arcade = "pq2";
-			}
-			else if (17750 <= old.posX && old.posX <= 18000 && 28775 <= old.posY && old.posY <= 29000 && 2500 <= current.posZ && 2700 <= current.posZ){
-				vars.arcade = "pq3";
-			}
-			else if (-18200 <= old.posX && old.posX <= -17900 && 44100 <= old.posY && old.posY <= 44300 && 900 <= current.posZ && 1100 <= current.posZ){
-				vars.arcade = "mg";
-			}
-			else if (-17000 <= old.posX && old.posX <= -16500 && 27200 <= old.posY && old.posY <= 27600 && 2000 <= current.posZ && 2300 <= current.posZ){
-				vars.arcade = "bb";
-			}
+	if (!settings["Split Settings"]) return false;
+
+	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
+		if (vars.arcade != "N/A"){
+			vars.arcade = "N/A";
 			print("Arcade: " + vars.arcade);
 		}
+	}
+	else if (vars.arcade == "N/A"){
+		if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
+			vars.arcade = "pq1";
+		}
+		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
+			vars.arcade = "pq2";
+		}
+		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
+			vars.arcade = "pq3";
+		}
+		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100)){
+			vars.arcade = "mg";
+		}
+		else if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
+			vars.arcade = "bb";
+		}
+		print("Arcade: " + vars.arcade);
+	}
 
-		if (vars.arcade != "null"){
-			if (settings["Arcade Splits"]){
-				if (settings["BB Arcade"] && vars.arcade == "bb"){
-					if (settings["bb_start"] && vars.bb_start){
-						vars.bb_start = false;
-						print("bb_start");
+	string dumbVariable = vars.arcade;
+	switch (dumbVariable){
+		default: {
+			if (!settings["Arcade Splits"]) break;
+
+			do {
+				if (!settings["BB Arcade"]) break;
+				if (vars.arcade != "bb") break;
+				if (!settings["bb_start"]) break;
+				if (!vars.bb_start) break;
+				vars.bb_start = false;
+				print("bb_start");
+				return true;
+			} while (false);
+
+			do {
+				if (!settings["Monty Golf"]) break;
+				if (!vars.arcade == "mg") break;
+
+				if (settings["mg_start"] && vars.mg_start){
+					vars.mg_start = false;
+					print("mg_start");
+					return true;
+				}
+				if (current.golfStrokeCount == 0){
+					vars.nHole = 0;
+				}
+				if (current.golfStrokeCount > old.golfStrokeCount){
+					vars.nHole++;
+					if (settings["Finish Hole " + vars.nHole.ToString()]){
+						print("Finish Hole " + vars.nHole.ToString());
 						return true;
 					}
 				}
-				if (settings["Monty Golf"] && vars.arcade == "mg"){
-					if (settings["mg_start"] && vars.mg_start){
-						vars.mg_start = false;
-						print("mg_start");
+			} while (false);
+
+			if (settings["Princess Quest"]){
+				if (settings["Princess Quest 1"] && vars.arcade == "pq1"){
+					if (settings["pq1_start"] && vars.pq1_start){
+						print("pq1_start");
+						vars.pq1_start = false;
 						return true;
 					}
-
-					if (current.golfStrokeCount == 0){
-						vars.nHole = 0;
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 785, 1215, -160, 160)){
+						if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
+							vars.pq1_1 = false;
+							return true;
+						}
 					}
-
-					if (current.golfStrokeCount > old.golfStrokeCount){
-						vars.nHole++;
-						if (settings["Finish Hole " + vars.nHole.ToString()]){
-							print("Finish Hole " + vars.nHole.ToString());
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, -160, 160)){
+						if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
+							vars.pq1_2 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3055, 3800, -160, 160)){
+						if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
+							vars.pq1_3 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, 600, 1425)){
+						if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
+							vars.pq1_4 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1900, 2340, 1860, 2180)){
+						if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
+							vars.pq1_5 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2860, 4695, 1780, 2810)){
+						if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
+							vars.pq1_6 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5220, 6515, 2150, 2780)){
+						if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
+							vars.pq1_7 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 950, 1380, 1865, 2300)){
+						if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
+							vars.pq1_8 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2020, 2210, 3425, 5125)){
+						if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
+							vars.pq1_9 = false;
+							return true;
+						}
+					}
+					if (settings["pq1_end"] && vars.pq1_end){
+						if (old.pos.X >= 4920 && current.pos.X == 0){
+							vars.pq1_end = false;
+							print("pq1_end");
 							return true;
 						}
 					}
 				}
-				if (settings["Princess Quest"]){
-					if (settings["Princess Quest 1"] && vars.arcade == "pq1"){
-						if (settings["pq1_start"] && vars.pq1_start){
-							print("pq1_start");
-							vars.pq1_start = false;
+				if (settings["Princess Quest 2"] && vars.arcade == "pq2"){
+					if (settings["pq2_start"] && vars.pq2_start){
+						print("pq2_start");
+						vars.pq2_start = false;
+						return true;
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2800, 3250, -1040, -735)){
+						if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
+							vars.pq2_1 = false;
 							return true;
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 785, 1215, -160, 160)){
-							if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
-								vars.pq1_1 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1715, 2530, -160, 160)){
-							if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
-								vars.pq1_2 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 3055, 3800, -160, 160)){
-							if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
-								vars.pq1_3 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1715, 2530, 600, 1425)){
-							if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
-								vars.pq1_4 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1900, 2340, 1860, 2180)){
-							if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
-								vars.pq1_5 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2860, 4695, 1780, 2810)){
-							if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
-								vars.pq1_6 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 5220, 6515, 2150, 2780)){
-							if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
-								vars.pq1_7 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 950, 1380, 1865, 2300)){
-							if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
-								vars.pq1_8 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2020, 2210, 3425, 5125)){
-							if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
-								vars.pq1_9 = false;
-								return true;
-							}
-						}
-						if (settings["pq1_end"] && vars.pq1_end){
-							if (old.posX >= 4920 && current.posX == 0){
-								vars.pq1_end = false;
-								print("pq1_end");
-								return true;
-							}
 						}
 					}
-					if (settings["Princess Quest 2"] && vars.arcade == "pq2"){
-						if (settings["pq2_start"] && vars.pq2_start){
-							print("pq2_start");
-							vars.pq2_start = false;
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4300, 4840, -2800, -2420)){
+						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
+							vars.pq2_2 = false;
 							return true;
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2800, 3250, -1040, -735)){
-							if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
-								vars.pq2_1 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 4300, 4840, -2800, -2420)){
-							if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
-								vars.pq2_2 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2805, 3155, -1340, -1110)){
-							if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
-								vars.pq2_3 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2415, 3290, -3375, -2745)){
-							if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
-								vars.pq2_4 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2955, 3365, 745, 1125)){
-							if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
-								vars.pq2_5 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1070, 2205, 830, 1470)){
-							if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
-								vars.pq2_6 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 5, 1975, -185, 190)){
-							if (vars.pq2_7){
-								vars.pq2_8 = true;
-							}
-							if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
-								vars.pq2_7 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2725, 3340, -315, 320)){
-							if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
-								vars.pq2_8 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 3920, 4345, 350, 655)){
-							if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
-								vars.pq2_9 = false;
-								return true;
-							}
-						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 4845, 5045, 725, 925)){
-							if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
-								vars.pq2_10 = false;
-								return true;
-							}
-						}
-						if (settings["pq2_end"] && vars.pq2_end){
-							if (old.posY >= 4845 && current.posY == 0){
-								vars.pq2_end = false;
-								print("pq2_end");
-								return true;
-							}
 						}
 					}
-					if (settings["Princess Quest 3"] && vars.arcade == "pq3"){
-						if (settings["pq3_start"] && vars.pq3_start){
-							print("pq3_start");
-							vars.pq3_start = false;
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2805, 3155, -1340, -1110)){
+						if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
+							vars.pq2_3 = false;
 							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2195, 2315, -3625, -1965)){
-							if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
-								vars.pq3_1 = false;
-								return true;
-							}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2415, 3290, -3375, -2745)){
+						if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
+							vars.pq2_4 = false;
+							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1705, 2135, -1340, -895)){
-							if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
-								vars.pq3_2 = false;
-								return true;
-							}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2955, 3365, 745, 1125)){
+						if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
+							vars.pq2_5 = false;
+							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 2445, 5210, -1360, -990)){
-							if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
-								vars.pq3_3 = false;
-								return true;
-							}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1070, 2205, 830, 1470)){
+						if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
+							vars.pq2_6 = false;
+							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 4865, 5490, -210, 365)){
-							if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
-								vars.pq3_4 = false;
-								return true;
-							}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5, 1975, -185, 190)){
+						if (vars.pq2_7){
+							vars.pq2_8 = true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 500, 1325, -400, 1045)){
-							if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
-								vars.pq3_5 = false;
-								return true;
-							}
+						if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
+							vars.pq2_7 = false;
+							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1865, 1980, -1505, -1380)){
-							if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
-								vars.pq3_6 = false;
-								return true;
-							}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2725, 3340, -315, 320)){
+						if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
+							vars.pq2_8 = false;
+							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1940, 2055, -260, 0)){
-							if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
-								vars.pq3_7 = false;
-								return true;
-							}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3920, 4345, 350, 655)){
+						if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
+							vars.pq2_9 = false;
+							return true;
 						}
-						if (vars.checkPQPosition1(current.posY, current.posX, 1800, 2200, 1635.34, 1700)){
-							if (current.pq3Attack > old.pq3Attack){
-								if (vars.checkPQPosition2("pq3_endArcade", vars.pq3_end)){
-									vars.pq3_end = false;
-									return true;
-								}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4845, 5045, 725, 925)){
+						if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
+							vars.pq2_10 = false;
+							return true;
+						}
+					}
+					if (settings["pq2_end"] && vars.pq2_end){
+						if (old.pos.Y >= 4845 && current.pos.Y == 0){
+							vars.pq2_end = false;
+							print("pq2_end");
+							return true;
+						}
+					}
+				}
+				if (settings["Princess Quest 3"] && vars.arcade == "pq3"){
+					if (settings["pq3_start"] && vars.pq3_start){
+						print("pq3_start");
+						vars.pq3_start = false;
+						return true;
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2195, 2315, -3625, -1965)){
+						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
+							vars.pq3_1 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1705, 2135, -1340, -895)){
+						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
+							vars.pq3_2 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2445, 5210, -1360, -990)){
+						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
+							vars.pq3_3 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4865, 5490, -210, 365)){
+						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
+							vars.pq3_4 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 500, 1325, -400, 1045)){
+						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
+							vars.pq3_5 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1865, 1980, -1505, -1380)){
+						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
+							vars.pq3_6 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1940, 2055, -260, 0)){
+						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
+							vars.pq3_7 = false;
+							return true;
+						}
+					}
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
+						if (current.pq3Attack){
+							if (vars.checkPQPosition2("pq3_endArcade", vars.pq3_end)){
+								vars.pq3_end = false;
+								return true;
 							}
 						}
 					}
 				}
 			}
+			break;
 		}
-		else {
+
+		case "N/A": {
 			if (settings["Counting Splits"]){
 				if (current.DGens > old.DGens){
 					if (settings["Daycare Generators"]){
@@ -1643,44 +1619,44 @@ split {
 					}
 				}
 				if (settings["Sewer Generators"]){
-					if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.posX, old.posY)){
+					if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.pos.X, old.pos.Y)){
 						vars.cSewerGen1 = false;
 						return true;
 					}
-					if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.posX, old.posY)){
+					if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.pos.X, old.pos.Y)){
 						vars.cSewerGen2 = false;
 						return true;
 					}
-					if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.posX, old.posY)){
+					if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.pos.X, old.pos.Y)){
 						vars.cSewerGen3 = false;
 						return true;
 					}
 				}
 				if (settings["West Arcade Generators"]){
-					if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.posX, old.posY)){
+					if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.pos.X, old.pos.Y)){
 						vars.cWAGen1 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.posX, old.posY)){
+					if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.pos.X, old.pos.Y)){
 						vars.cWAGen2 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.posX, old.posY)){
+					if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.pos.X, old.pos.Y)){
 						vars.cWAGen3 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.posX, old.posY)){
+					if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.pos.X, old.pos.Y)){
 						vars.cWAGen4 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, old.posX, old.posY)){
+					if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, old.pos.X, old.pos.Y)){
 						vars.cWAGen5 = false;
 						return true;
 					}
 				}
 			}
 			if (settings["Deload Splits"]){
-				if (current.posX != old.posX || current.posY != old.posY || current.posZ != old.posZ){
+				if (current.pos.X != old.pos.X || current.pos.Y != old.pos.Y || current.pos.Z != old.pos.Z){
 					if (settings["D_Backstage"]){
 						if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -5310, 52780, -5500, 523050, -5300, 53235, 1780, 2000)){
 							vars.dFoxyCutout = false;
@@ -1814,7 +1790,7 @@ split {
 					}
 				}
 				if (settings["Princess Quest Ending"]){
-					if (vars.checkPQPosition1(current.posY, current.posX, 1800, 2200, 1635.34, 1700)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
 						if (current.pq3Attack > old.pq3Attack){
 							if (vars.checkPQPosition2("pq3_endEndings", vars.pq3_end)){
 								vars.pq3_end = false;
@@ -2107,7 +2083,7 @@ split {
 					if (settings["Equipment"]){
 						//Fazerblasters and Daycare Pass don't use splashscreen
 						if (settings["E_Lobby"]){
-							if (900 <= current.posX && current.posX <= 1300 && 23300 <= current.posY && current.posY <= 23600 && 1400 <= current.posZ && current.posZ <= 1600){
+							if (900 <= current.pos.X && current.pos.X <= 1300 && 23300 <= current.pos.Y && current.pos.Y <= 23600 && 1400 <= current.pos.Z && current.pos.Z <= 1600){
 								if (current.itemCount == old.itemCount - 1){
 									vars.nLobbyItemsUsed++;
 								}
@@ -2340,7 +2316,7 @@ split {
 				}
 			}
 			if (settings["Positional Splits"]){
-				if (current.posX != old.posX){
+				if (current.pos.X != old.pos.X){
 					if (settings["P_Bonnie Bowl"]){
 						if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
 							vars.pEnBonnieBowl = false;
@@ -2411,7 +2387,7 @@ split {
 						}
 					}
 				}
-			}	
+			}
 			if (settings["Time Splits"] && !vars.onMenu){
 				if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
 					if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
@@ -2422,24 +2398,23 @@ split {
 						vars.tUtilityRecharge = false;
 						return true;
 					}
-					if (current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
+					if (current.pos.X >= 250 && 10 <= current.pos.Y && current.pos.Y <= 23100){
 						if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
 							print("12AM (no split)");
 							if (vars.checkPosition("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 500, 2500, 19500, 23000, 1450, 2000)){
 								print("12AM (split)");
 								vars.tFrontEntrance = false;
 								return true;
-
 							}
 						}
-					}
-					if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
-						vars.tEnDaycare = false;
-						return true;
-					}
-					if (vars.checkTime("Daycare Nighttime (12:55AM)", vars.tDaycareNighttime, 0, 55)){
-						vars.tDaycareNighttime = false;
-						return true;
+						if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
+							vars.tEnDaycare = false;
+							return true;
+						}
+						if (vars.checkTime("Daycare Nighttime (12:55AM)", vars.tDaycareNighttime, 0, 55)){
+							vars.tDaycareNighttime = false;
+							return true;
+						}
 					}
 					if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", vars.tDaycareRecharge, 1, 0)){
 						vars.tDaycareRecharge = false;
@@ -2529,6 +2504,7 @@ split {
 					}
 				}
 			}
+			break;
 		}
 	}
 }
