@@ -838,11 +838,6 @@ init {
 
 	print("Size = " + gameSize.ToString());
 
-	//1.04: 76210176
-	//1.05: 76214272
-	//1.07: 76218368
-	//1.11: 76251136
-
 	int posBase = 0;
 	
 	switch (gameSize){
