@@ -24,9 +24,6 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 
 	//Player information
 	float worldCheck: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posY: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -90,9 +87,6 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 
 	//Player information
 	float worldCheck: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posZ: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x04420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -149,16 +143,13 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int golfStrokeCount: 0x04421080, 0x128, 0x378, 0x270, 0x230, 0x40;
 	int pq3Attack: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
-	//CounteposYr pointers
+	//Countepos.Yr pointers
 	int DGens: 0x441D998, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
 	int MGBucket: 0x04421080, 0x98, 0x70, 0x128, 0x98, 0x490, 0x228, 0x158;
 	int FBFlags: 0x04421080, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 
 	//Positions
 	float worldCheck: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posY: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x04421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -222,9 +213,6 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 
 	//Player information
 	float worldCheck: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-	float posX: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0;
-	float posY: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D4;
-	float posZ: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D8;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x044288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
@@ -838,15 +826,6 @@ startup {
 	}
 
 	settings.CurrentDefaultParent = null;
-	settings.Add("Refresh Rate", true);
-
-	settings.CurrentDefaultParent = "Refresh Rate";
-	settings.Add("120Hz", false);
-	settings.Add("60Hz", true);
-	settings.Add("30Hz", false);
-	settings.Add("15Hz", false);
-
-	settings.CurrentDefaultParent = null;
 	settings.Add("Reset Settings", false);
 
 	settings.CurrentDefaultParent = "Reset Settings";
@@ -855,36 +834,42 @@ startup {
 
 init {
 	//Sets the version of the game upon startup
+	int gameSize = modules.First().ModuleMemorySize;
 
-	print("Size = " + modules.First().ModuleMemorySize.ToString());
-
-	//1.04: 76210176
-	//1.05: 76214272
-	//1.07: 76218368
-	//1.11: 76251136
+	print("Size = " + gameSize.ToString());
 
 	int posBase = 0;
+	
+	switch (gameSize){
+		default: {
+			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for this inconvenience.", "An Error Has Occured: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+			version = "Unsupported";
+			return;
+		}
 
-	switch (modules.First().ModuleMemorySize){
-		case 76210176:
-		version = "v1.04";
-		posBase = 0x441C5F0;
-		break;
+		case 76210176: {
+			version = "v1.04";
+			posBase = 0x441C5F0;
+			break;
+		}
+		
+		case 76214272: {
+			version = "v1.05"; 
+			posBase = 0x441D880;
+			break;
+		}
 
-		case 76214272:
-		version = "v1.05"; 
-		posBase = 0x441D880;
-		break;
+		case 76218368: {
+			version = "v1.07"; 
+			posBase = 0x441D9C0;
+			break;
+		}
 
-		case 76218368:
-		version = "v1.07"; 
-		posBase = 0x441D9C0;
-		break;
-
-		case 76251136:
-		version = "v1.11"; 
-		posBase = 0x44251F0;
-		break;
+		case 76251136: {
+			version = "v1.11"; 
+			posBase = 0x44251F0;
+			break;
+		}
 	}
 
 	print("Version = " + version);
@@ -894,6 +879,8 @@ init {
 }
 
 update {
+	if (version == "Unsupported") return false;
+
 	//Elevator Pointer List
 	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
 		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
@@ -909,6 +896,10 @@ update {
 		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
 		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
 	};
+
+	vars.posWatcher.Update(game);
+	current.pos = vars.posWatcher.Current;
+	old.pos = vars.posWatcher.Old;
 }
 
 start {
@@ -932,9 +923,9 @@ start {
 		print("MGBucket: " + old.MGBucket.ToString() + " => " + current.MGBucket.ToString());
 		print("FBFlags: " + old.FBFlags.ToString() + " => " + current.FBFlags.ToString());
 		print("worldCheck: " + old.worldCheck.ToString() + " => " + current.worldCheck.ToString());
-		print("posX: " + old.posX.ToString() + " => " + current.posX.ToString());
-		print("posY: " + old.posY.ToString() + " => " + current.posY.ToString());
-		print("posZ: " + old.posZ.ToString() + " => " + current.posZ.ToString());
+		print("pos.X: " + old.pos.X.ToString() + " => " + current.pos.X.ToString());
+		print("pos.Y: " + old.pos.Y.ToString() + " => " + current.pos.Y.ToString());
+		print("pos.Z: " + old.pos.Z.ToString() + " => " + current.pos.Z.ToString());
 		print("vannyEndButton: " + old.vannyEndButton.ToString() + " => " + current.vannyEndButton.ToString());
 		print("escapeEndLeaveButtonEast: " + old.escapeEndLeaveButtonEast.ToString() + " => " + current.escapeEndLeaveButtonEast.ToString());
 		print("carEndLeaveButton: " + old.carEndLeaveButton.ToString() + " => " + current.carEndLeaveButton.ToString());
@@ -976,7 +967,7 @@ start {
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
 		//checks in a sphere (radius 300u)
 		if (!settings[name]) return false;
-		if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) > Math.Pow(300, 2)) return false;
+		if (Math.Pow(current.pos.X - x, 2) + Math.Pow(current.pos.Y - y, 2) + Math.Pow(current.pos.Z - z, 2) > Math.Pow(300, 2)) return false;
 		print(name);
 		return true;
 	});
@@ -984,68 +975,80 @@ start {
 	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
 		if (!settings[name]) return false;
 		if (!check) return false;
-		if (xLB > current.posX) return false;
-		if (current.posX > xUB) return false;
-		if (yLB > current.posY) return false;
-		if (current.posY > yUB) return false;
-		if (zLB > current.posZ) return false;
-		if (current.posZ > zUB) return false;
+		if (xLB > current.pos.X) return false;
+		if (current.pos.X > xUB) return false;
+		if (yLB > current.pos.Y) return false;
+		if (current.pos.Y > yUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
 		print(name);
 		return true;
 	});
 
 	vars.checkArcadePosition = (Func<double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (xLB > old.posX) return false;
-		if (old.posX > xUB) return false;
-		if (yLB > old.posY) return false;
-		if (old.posY > yUB) return false;
-		if (zLB > current.posZ) return false;
-		if (current.posZ > zUB) return false;
+		if (xLB > old.pos.X) return false;
+		if (old.pos.X > xUB) return false;
+		if (yLB > old.pos.Y) return false;
+		if (old.pos.Y > yUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
 		return true;
 	});
 
 	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
 		if (!settings[name]) return false;
 		if (!check) return false;
-		if (zLB > current.posZ) return false;
-		if (current.posZ > zUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
 	
 		double slope = (y1 - y2) / (x1 - x2);
 		double xAvg = (x1 + x2) / 2;
 		double yAvg = (y1 + y2) / 2;
 
-		//north
-		if (yB - yAvg >= slope * (xB - xAvg)){
-			if (current.posY - yAvg >= slope * (current.posX - xAvg)){
+		do {
+			//north
+			if (yB - yAvg >= slope * (xB - xAvg)){
+				if (current.pos.Y - yAvg < slope * (current.pos.X - xAvg)) break;
+
 				//east
 				if (slope >= 0){
-					if (current.posX >= xB && current.posY <= yB){
-						print(name);
-						return true;
-					}
+					if (current.pos.X < xB) break;
+					if (current.pos.Y > yB) break;
+
+					print(name);
+					return true;
 				}
 				//west
-				else if (current.posX <= xB && current.posY <= yB){
+				else {
+					if (current.pos.X > xB) break;
+					if (current.pos.Y > yB) break;
+
 					print(name);
 					return true;
 				}
 			}
-		}
-		//south
-		else if (current.posY - yAvg <= slope * (current.posX - xAvg)){
-			//west
-			if (slope >= 0){
-				if (current.posX <= xB && current.posY >= yB){
+			//south
+			else {
+				if (current.pos.Y - yAvg > slope * (current.pos.X - xAvg)) break;
+
+				//west
+				if (slope >= 0){
+					if (current.pos.X > xB) break;
+					if (current.pos.Y < yB) break;
+					
+					print(name);
+					return true;
+				}
+				//east
+				else {
+					if (current.pos.X < xB) break;
+					if (current.pos.Y < yB) break;
+
 					print(name);
 					return true;
 				}
 			}
-			//east
-			else if (current.posX >= xB && current.posY >= yB){
-				print(name);
-				return true;
-			}
-		}
+		} while (false);
 		return false;
 	});
 
@@ -1068,10 +1071,10 @@ start {
 		//checks in a circle (radius 200)
 		if (!settings[name]) return false;
 		if (!check) return false;
-		if (zLB > current.posZ) return false;
-		if (current.posZ > zUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
 		if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) > Math.Pow(200, 2)) return false;
-		if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) <= Math.Pow(200, 2)) return false;
+		if (Math.Pow(current.pos.X - x, 2) + Math.Pow(current.pos.Y - y, 2) <= Math.Pow(200, 2)) return false;
 		print(name);
 		return true;
 	});
@@ -1089,7 +1092,7 @@ start {
 		//Used to keep certain splits from repeating (reset)
 	
 		//Arcade Splits
-		vars.arcade = "null";
+		vars.arcade = "N/A";
 		//bb
 		vars.bb_start = true;
 		//monty golf
@@ -1206,34 +1209,40 @@ start {
 
 		vars.isLoading = true;
 		vars.onMenu = true;
-		if (version == "v1.04"){
-			vars.isLoading = false;
-		}
-		else {
-			if (current.worldCheck != 0 && old.worldCheck == 0){
+		do {
+			if (version == "v1.04"){
+				vars.isLoading = false;
+			}
+			else {
+				if (current.worldCheck == 0) break;
+				if (old.worldCheck != 0) break;
 				vars.loadingConstant = current.blackScreen;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
-		}
+		} while(false);
 	});
 
 	//Resets variables upon stopping timer
 	vars.resetVariables();
 
 	//Start conditions (time, Freddy power, freddyThing)
-	if (current.hourClock != -1) return false; 
-	if (current.minuteClock != 0) return false;
-	if (version == "v1.11"){
-		if (!current.freddyThing) return false;
-		if (old.freddyThing) return false;
-		print("Start Timer");
-		return true;
-	}
-	else {
-		if (current.freddyPower >= old.freddyPower) return false;
-		print("Start Timer");
-		return true;
-	}
+	do {
+		if (current.hourClock != -1) break; 
+		if (current.minuteClock != 0) break;
+
+		if (version == "v1.11"){
+			if (!current.freddyThing) break;
+			if (old.freddyThing) break;
+			print("Start Timer");
+			return true;
+		}
+		else {
+			if (current.freddyPower >= old.freddyPower) break;
+			print("Start Timer");
+			return true;
+		}
+		
+	} while (false);
 }
 
 reset {
@@ -1246,39 +1255,50 @@ reset {
 
 isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
-	if (!settings["Elevator Pauses"] && !settings["Stop Timer When Loading"] && !settings["Stop Timer On Menu"] && !settings["Stop Timer When Paused"]) return false;
-	foreach (var data in vars.elevatorPointers){
-		if (!settings[data.Item1]) break;
-		if (!data.Item2) break;
-		if (data.Item3) break;
 
-		vars.useDictionary[data.Item1]++;
-		print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
-	
-		if (!settings[data.Item1 + "_EUOE"]) return false;
-		if (!settings[data.Item1 + "_POOU"]) return false;
-		if (!settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]) return false;
-		return true;
+	foreach (var data in vars.elevatorPointers){
+		do {
+			if (!settings[data.Item1]) break;
+			if (!data.Item2) break;
+
+			if (!data.Item3){
+				vars.useDictionary[data.Item1]++;
+				print(data.Item1 + ": #" + vars.useDictionary[data.Item1].ToString());
+			}
+
+			if (settings[data.Item1 + "_EUOE"]){
+				print("EveryUse");
+				return true;
+			}
+			else if (settings[data.Item1 + "_POOU"]){
+				if (!settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]) break;
+
+				print("OnlyOnUse#");
+				return true;
+			}
+		} while (false);
 	}
 	
 	do {
 		if (!settings["Stop Timer When Loading"]) break;
+
 		if (version != "v1.04"){
 			if (current.blackScreen != vars.loadingConstant) break;
 			if (old.blackScreen == vars.loadingConstant) break;
-
 			print("Stop Timer When Loading");
 			return true;
 		}
-		else if (!current.hasLoaded){
+		else {
+			if (current.hasLoaded) break;
+
 			if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
 				print("Stop Timer When Loading");
 				vars.isLoading = true;
 			}
-			
 			else {
 				vars.isLoading = false;
 			}
+
 			if (vars.isLoading){
 				return true;
 			}
@@ -1294,7 +1314,7 @@ isLoading {
 				print("Stop Timer On Menu");
 			}
 		}
-		else if (current.worldCheck != 0 || vars.arcade != "null"){
+		else if (current.worldCheck != 0 || vars.arcade != "N/A"){
 			vars.onMenu = false;
 		}
 
@@ -1302,6 +1322,7 @@ isLoading {
 			return true;
 		}
 	} while (false);
+
 	do {
 		if (!settings["Stop Timer When Paused"]) break;
 		if (!current.pause) break;
@@ -1310,19 +1331,23 @@ isLoading {
 		if (!old.pause){
 			print("Stop Timer When Paused");
 		}
+		
 		return true;
 	} while (false);
+
+	return false;
 }
 
 split {
 	if (!settings["Split Settings"]) return false;
+
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (vars.arcade != "null"){
-			vars.arcade = "null";
+		if (vars.arcade != "N/A"){
+			vars.arcade = "N/A";
 			print("Arcade: " + vars.arcade);
 		}
 	}
-	else if (vars.arcade == "null"){
+	else if (vars.arcade == "N/A"){
 		if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
 			vars.arcade = "pq1";
 		}
@@ -1341,14 +1366,16 @@ split {
 		print("Arcade: " + vars.arcade);
 	}
 
-	if (vars.arcade == "null"){
-		if (settings["Arcade Splits"]){
+	string dumbVariable = vars.arcade;
+	switch (dumbVariable){
+		default: {
+			if (!settings["Arcade Splits"]) break;
+
 			do {
 				if (!settings["BB Arcade"]) break;
 				if (vars.arcade != "bb") break;
 				if (!settings["bb_start"]) break;
 				if (!vars.bb_start) break;
-
 				vars.bb_start = false;
 				print("bb_start");
 				return true;
@@ -1356,30 +1383,25 @@ split {
 
 			do {
 				if (!settings["Monty Golf"]) break;
-				if (vars.arcade != "mg") break;
-				do {
-					if (!settings["mg_start"]) break;
-					if (!vars.mg_start) break;
+				if (!vars.arcade == "mg") break;
 
+				if (settings["mg_start"] && vars.mg_start){
 					vars.mg_start = false;
 					print("mg_start");
 					return true;
-				} while (false);
-
+				}
 				if (current.golfStrokeCount == 0){
 					vars.nHole = 0;
 				}
-
-				if (current.golfStrokeCount <= old.golfStrokeCount) break;
-
-				vars.nHole++;
-
-				if (!settings["Finish Hole " + vars.nHole.ToString()]) break;
-
-				print("Finish Hole " + vars.nHole.ToString());
-				return true;
+				if (current.golfStrokeCount > old.golfStrokeCount){
+					vars.nHole++;
+					if (settings["Finish Hole " + vars.nHole.ToString()]){
+						print("Finish Hole " + vars.nHole.ToString());
+						return true;
+					}
+				}
 			} while (false);
-			
+
 			if (settings["Princess Quest"]){
 				if (settings["Princess Quest 1"] && vars.arcade == "pq1"){
 					if (settings["pq1_start"] && vars.pq1_start){
@@ -1387,62 +1409,62 @@ split {
 						vars.pq1_start = false;
 						return true;
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 785, 1215, -160, 160)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 785, 1215, -160, 160)){
 						if (vars.checkPQPosition2("pq1_1", vars.pq1_1)){
 							vars.pq1_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1715, 2530, -160, 160)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, -160, 160)){
 						if (vars.checkPQPosition2("pq1_2", vars.pq1_2)){
 							vars.pq1_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 3055, 3800, -160, 160)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3055, 3800, -160, 160)){
 						if (vars.checkPQPosition2("pq1_3", vars.pq1_3)){
 							vars.pq1_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1715, 2530, 600, 1425)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1715, 2530, 600, 1425)){
 						if (vars.checkPQPosition2("pq1_4", vars.pq1_4)){
 							vars.pq1_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1900, 2340, 1860, 2180)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1900, 2340, 1860, 2180)){
 						if (vars.checkPQPosition2("pq1_5", vars.pq1_5)){
 							vars.pq1_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2860, 4695, 1780, 2810)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2860, 4695, 1780, 2810)){
 						if (vars.checkPQPosition2("pq1_6", vars.pq1_6)){
 							vars.pq1_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 5220, 6515, 2150, 2780)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5220, 6515, 2150, 2780)){
 						if (vars.checkPQPosition2("pq1_7", vars.pq1_7)){
 							vars.pq1_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 950, 1380, 1865, 2300)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 950, 1380, 1865, 2300)){
 						if (vars.checkPQPosition2("pq1_8", vars.pq1_8)){
 							vars.pq1_8 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2020, 2210, 3425, 5125)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2020, 2210, 3425, 5125)){
 						if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
 							vars.pq1_9 = false;
 							return true;
 						}
 					}
 					if (settings["pq1_end"] && vars.pq1_end){
-						if (old.posX >= 4920 && current.posX == 0){
+						if (old.pos.X >= 4920 && current.pos.X == 0){
 							vars.pq1_end = false;
 							print("pq1_end");
 							return true;
@@ -1455,43 +1477,43 @@ split {
 						vars.pq2_start = false;
 						return true;
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2800, 3250, -1040, -735)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2800, 3250, -1040, -735)){
 						if (vars.checkPQPosition2("pq2_1", vars.pq2_1)){
 							vars.pq2_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 4300, 4840, -2800, -2420)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4300, 4840, -2800, -2420)){
 						if (vars.checkPQPosition2("pq2_2", vars.pq2_2)){
 							vars.pq2_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2805, 3155, -1340, -1110)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2805, 3155, -1340, -1110)){
 						if (vars.checkPQPosition2("pq2_3", vars.pq2_3)){
 							vars.pq2_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2415, 3290, -3375, -2745)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2415, 3290, -3375, -2745)){
 						if (vars.checkPQPosition2("pq2_4", vars.pq2_4)){
 							vars.pq2_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2955, 3365, 745, 1125)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2955, 3365, 745, 1125)){
 						if (vars.checkPQPosition2("pq2_5", vars.pq2_5)){
 							vars.pq2_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1070, 2205, 830, 1470)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1070, 2205, 830, 1470)){
 						if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
 							vars.pq2_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 5, 1975, -185, 190)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5, 1975, -185, 190)){
 						if (vars.pq2_7){
 							vars.pq2_8 = true;
 						}
@@ -1500,26 +1522,26 @@ split {
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2725, 3340, -315, 320)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2725, 3340, -315, 320)){
 						if (vars.checkPQPosition2("pq2_8", vars.pq2_8)){
 							vars.pq2_8 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 3920, 4345, 350, 655)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 3920, 4345, 350, 655)){
 						if (vars.checkPQPosition2("pq2_9", vars.pq2_9)){
 							vars.pq2_9 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 4845, 5045, 725, 925)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4845, 5045, 725, 925)){
 						if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
 							vars.pq2_10 = false;
 							return true;
 						}
 					}
 					if (settings["pq2_end"] && vars.pq2_end){
-						if (old.posY >= 4845 && current.posY == 0){
+						if (old.pos.Y >= 4845 && current.pos.Y == 0){
 							vars.pq2_end = false;
 							print("pq2_end");
 							return true;
@@ -1532,49 +1554,49 @@ split {
 						vars.pq3_start = false;
 						return true;
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2195, 2315, -3625, -1965)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2195, 2315, -3625, -1965)){
 						if (vars.checkPQPosition2("pq3_1", vars.pq3_1)){
 							vars.pq3_1 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1705, 2135, -1340, -895)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1705, 2135, -1340, -895)){
 						if (vars.checkPQPosition2("pq3_2", vars.pq3_2)){
 							vars.pq3_2 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 2445, 5210, -1360, -990)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2445, 5210, -1360, -990)){
 						if (vars.checkPQPosition2("pq3_3", vars.pq3_3)){
 							vars.pq3_3 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 4865, 5490, -210, 365)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4865, 5490, -210, 365)){
 						if (vars.checkPQPosition2("pq3_4", vars.pq3_4)){
 							vars.pq3_4 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 500, 1325, -400, 1045)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 500, 1325, -400, 1045)){
 						if (vars.checkPQPosition2("pq3_5", vars.pq3_5)){
 							vars.pq3_5 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1865, 1980, -1505, -1380)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1865, 1980, -1505, -1380)){
 						if (vars.checkPQPosition2("pq3_6", vars.pq3_6)){
 							vars.pq3_6 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1940, 2055, -260, 0)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1940, 2055, -260, 0)){
 						if (vars.checkPQPosition2("pq3_7", vars.pq3_7)){
 							vars.pq3_7 = false;
 							return true;
 						}
 					}
-					if (vars.checkPQPosition1(current.posY, current.posX, 1800, 2200, 1635.34, 1700)){
+					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
 						if (current.pq3Attack){
 							if (vars.checkPQPosition2("pq3_endArcade", vars.pq3_end)){
 								vars.pq3_end = false;
@@ -1592,9 +1614,9 @@ split {
 			if (current.DGens <= old.DGens) break;
 			if (!settings["Daycare Generators"]) break;
 			if (!settings["D_Generator " + current.DGens]) break;
-
 			print("DGen " + current.DGens);
 			return true;
+			break;
 		} while (false);
 
 		do {
