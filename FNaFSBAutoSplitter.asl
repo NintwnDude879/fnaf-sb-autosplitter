@@ -1618,6 +1618,7 @@ split {
 				}
 			}
 		}
+		break;
 	}
 	do {
 		if (!settings["Counting Splits"]) break;
@@ -1627,7 +1628,6 @@ split {
 			if (!settings["D_Generator " + current.DGens]) break;
 			print("DGen " + current.DGens);
 			return true;
-			break;
 		} while (false);
 
 		do {
