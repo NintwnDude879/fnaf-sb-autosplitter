@@ -1877,27 +1877,32 @@ split {
 									if (!settings["El Chip Piñata"]) break;
 									print("El Chip Piñata");
 									return true;
+									break;
 								}
 								case -0xB9: {
 									if (!settings["Freddy Icon Shirt"]) break;
 									print("Freddy Icon Shirt");
 									return true;
+									break;
 								}
 								case 0x70000013D: {
 									if (!settings["Glam Chica Figure"]) break;
 									print("Glam Chica Figure");
 									return true;
+									break;
 								}
 								//Equipment
 								case -0x2B2A97: {
 									if (!settings["Backstage Pass"]) break;
 									print("Backstage Pass");
 									return true;
+									break;
 								}
 								case 0x300000015: {
 									if (!settings["B_Flashlight Upgrade"]) break;
 									print("B_Flashlight Upgrade");
 									return true;
+									break;
 								}
 							//Basement Kitchen
 								//Collectables
@@ -1905,17 +1910,20 @@ split {
 									if (!settings["Freddy Magnet"]) break;
 									print("Freddy Magnet");
 									return true;
+									break;
 								}
 								case -0x189: {
 									if (!settings["Golden Chica"]) break;
 									print("Golden Chica");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x300000032: {
 									if (!settings["Freddy Fizzy Faz"]) break;
 									print("Freddy Fizzy Faz");
 									return true;
+									break;
 								}
 							//Bonnie Bowl
 								//Collectables
@@ -1923,17 +1931,20 @@ split {
 									if (!settings["Bonnie Plush"]) break;
 									print("Bonnie Plush");
 									return true;
+									break;
 								}
 								case -0x178: {
 									if (!settings["Golden Monty"]) break;
 									print("Golden Monty");
 									return true;
+									break;
 								}
 								//Equipment
 								case -0x2B2195: {
 									if (!settings["Monty Mystery Mix"]) break;
 									print("Monty Mystery Mix");
 									return true;
+									break;
 								}
 							//Chica's Bakery
 								//Collectables
@@ -1942,23 +1953,27 @@ split {
 										if (!settings["CB_Chica Magnet"]) break;
 										print("CB_Chica Magnet");
 										return true;
+										break;
 									}
 									else {
 										if (!settings["WA_Chica Magnet"]) break;
 										print("WA_Chica Magnet");
 										return true;
+										break;
 									}
 								}
 								case -0x129: {
 									if (!settings["Monty Magnet"]) break;
 									print("Monty Magnet");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x3E: {
 									if (!settings["Hoodie"]) break;
 									print("Hoodie");
 									return true;
+									break;
 								}
 							//Daycare
 								//Collectables
@@ -1966,47 +1981,56 @@ split {
 									if (!settings["Freddy Mask"]) break;
 									print("Freddy Mask");
 									return true;
+									break;
 								}
 								case 0x3FFFFFFBE: {
 									if (!settings["Frozen Chica Treat"]) break;
 									print("Frozen Chica Treat");
 									return true;
+									break;
 								}
 								case 0x60000013D: {
 									if (!settings["Glam Freddy Figure"]) break;
 									print("Glam Freddy Figure");
 									return true;
+									break;
 								}
 								case -0x170: {
 									if (!settings["Golden Moon"]) break;
 									print("Golden Moon");
 									return true;
+									break;
 								}
 								case -0xE2: {
 									if (!settings["D_Old Poster"]) break;
 									print("D_Old Poster");
 									return true;
+									break;
 								}
 								case -0x100: {
 									if (!settings["Plush Baby"]) break;
 									print("Plush Baby");
 									return true;
+									break;
 								}
 								//Equipment
 								case -0x384BB1: {
 									if (!settings["Flashlight"]) break;
 									print("Flashlight");
 									return true;
+									break;
 								}
 								case 0x200000015: {
 									if (!settings["D_Flashlight Upgrade"]) break;
 									print("D_Flashlight Upgrade");
 									return true;
+									break;
 								}
 								case -0x2B23DE: {
 									if (!settings["Mazercise Control Key"]) break;
 									print("Mazercise Control Key");
 									return true;
+									break;
 								}
 							//El Chips
 								//Collectables
@@ -2014,12 +2038,14 @@ split {
 									if (!settings["Chica Balloon"]) break;
 									print("Chica Balloon");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x400000032: {
 									if (!settings["Monty Fizzy Faz"]) break;
 									print("Monty Fizzy Faz");
 									return true;
+									break;
 								}
 							//Fazerblast
 								//Collectables
@@ -2027,27 +2053,32 @@ split {
 									if (!settings["Freddy Balloon"]) break;
 									print("Freddy Balloon");
 									return true;
+									break;
 								}
 								case -0xD0: {
 									if (!settings["F_Old Poster"]) break;
 									print("F_Old Poster");
 									return true;
+									break;
 								}
 								case -0x159: {
 									if (!settings["Space Chica Keychain"]) break;
 									print("Space Chica Keychain");
 									return true;
+									break;
 								}
 								case -0x141: {
 									if (!settings["Space Roxy Keychain"]) break;
 									print("Space Roxy Keychain");
 									return true;
+									break;
 								}
 								//Equipment
 								case -0x2B29BB: {
 									if (!settings["Bowling Pass"]) break;
 									print("Bowling Pass");
 									return true;
+									break;
 								}
 							//Fazerblast Sublobby
 								//Collectables
@@ -2055,11 +2086,13 @@ split {
 									if (!settings["Freddy Piñata"]) break;
 									print("Freddy Piñata");
 									return true;
+									break;
 								}
 								case -0x151: {
 									if (!settings["Space Freddy Keychain"]) break;
 									print("Space Freddy Keychain");
 									return true;
+									break;
 								}
 							//Kids Cove Sublobby
 								//Collectables
@@ -2067,11 +2100,13 @@ split {
 									if (!settings["Golden Sun"]) break;
 									print("Golden Sun");
 									return true;
+									break;
 								}
 								case 0x50000013D: {
 									if (!settings["Moon Plush"]) break;
 									print("Moon Plush");
 									return true;
+									break;
 								}
 							//Laundry
 								//Collectables
@@ -2079,16 +2114,19 @@ split {
 									if (!settings["Glam Roxy Plush"]) break;
 									print("Glam Roxy Plush");
 									return true;
+									break;
 								}
 								case -0xDC: {
 									if (!settings["L_Old Poster"]) break;
 									print("L_Old Poster");
 									return true;
+									break;
 								}
 								case -0xAF: {
 									if (!settings["Star Shirt"]) break;
 									print("Star Shirt");
 									return true;
+									break;
 								}
 							//Lobby
 								//Collectables
@@ -2096,47 +2134,56 @@ split {
 									if (!settings["Chica Name Shirt"]) break;
 									print("Chica Name Shirt");
 									return true;
+									break;
 								}
 								case 0x11FFFFFFBE: {
 									if (!settings["Cupcake Piñata"]) break;
 									print("Cupcake Piñata");
 									return true;
+									break;
 								}
 								case 0x5FFFFFFBE: {
 									if (!settings["Freddy Name Shirt"]) break;
 									print("Freddy Name Shirt");
 									return true;
+									break;
 								}
 								case 0x20000013D: {
 									if (!settings["Glam Chica Plush"]) break;
 									print("Glam Chica Plush");
 									return true;
+									break;
 								}
 								case 0xFFFFFFBE: {
 									if (!settings["Sun Plush"]) break;
 									print("Sun Plush");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x200000032: {
 									if (!settings["Chica Fizzy Faz"]) break;
 									print("Chica Fizzy Faz");
 									return true;
+									break;
 								}
 								case -0x38: {
 									if (!settings["Entrance Pass"]) break;
 									print("Entrance Pass");
 									return true;
+									break;
 								}
 								case -0x2B214F: {
 									if (!settings["Mr. Hippo Magnet"]) break;
 									print("Mr. Hippo Magnet");
 									return true;
+									break;
 								}
 								case 0xB3: {
 									if (!settings["Screwdriver"]) break;
 									print("Screwdriver");
 									return true;
+									break;
 								}
 							//Main Atrium
 								//Collectables
@@ -2144,22 +2191,26 @@ split {
 									if (!settings["Monty Piñata"]) break;
 									print("Monty Piñata");
 									return true;
+									break;
 								}
 								case 0x8FFFFFFBE: {
 									if (!settings["Roxy Name Shirt"]) break;
 									print("Roxy Name Shirt");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x10000001F: {
 									if (!settings["MA_Freddy Upgrade"]) break;
 									print("MA_Freddy Upgrade");
 									return true;
+									break;
 								}
 								case -0x391FF3: {
 									if (!settings["MA_Mapbot's Map"]) break;
 									print("MA_Mapbot's Map");
 									return true;
+									break;
 								}
 							//Monty Golf
 								//Collectables
@@ -2167,32 +2218,38 @@ split {
 									if (!settings["Go Kart"]) break;
 									print("Go Kart");
 									return true;
+									break;
 								}
 								case -0x111: {
 									if (!settings["Tragedy Mask"]) break;
 									print("Tragedy Mask");
 									return true;
+									break;
 								}
 								//Equipment
 								case -0x384BC0: {
 									if (!settings["Fazcam"]) break;
 									print("Fazcam");
 									return true;
+									break;
 								}
 								case 0x100000015: {
 									if (!settings["MG_Flashlight Upgrade"]) break;
 									print("MG_Flashlight Upgrade");
 									return true;
+									break;
 								}
 								case 0x54: {
 									if (!settings["Mazercise Pass"]) break;
 									print("Mazercise Pass");
 									return true;
+									break;
 								}
 								case 0x5D: {
 									if (!settings["Monty's Claws"]) break;
 									print("Monty's Claws");
 									return true;
+									break;
 								}
 							//Monty Golf Sublobby
 								//Collectables
@@ -2200,11 +2257,13 @@ split {
 									if (!settings["Frozen Monty Treat"]) break;
 									print("Frozen Monty Treat");
 									return true;
+									break;
 								}
 								case 0x80000013D: {
 									if (!settings["Glam Monty Figure"]) break;
 									print("Glam Monty Figure");
 									return true;
+									break;
 								}
 							//Parts & Service
 								//Collectables
@@ -2212,6 +2271,7 @@ split {
 									if (!settings["Glam Roxy Figure"]) break;
 									print("Glam Roxy Figure");
 									return true;
+									break;
 								}
 							//Prize Counter
 								//Collectables
@@ -2219,11 +2279,13 @@ split {
 									if (!settings["Frozen Freddy Treat"]) break;
 									print("Frozen Freddy Treat");
 									return true;
+									break;
 								}
 								case 0x40000009B: {
 									if (!settings["Monty Mask"]) break;
 									print("Monty Mask");
 									return true;
+									break;
 								}
 							//Rockstar Row
 								//Collectables
@@ -2231,42 +2293,50 @@ split {
 									if (!settings["Chica Mask"]) break;
 									print("Chica Mask");
 									return true;
+									break;
 								}
 								case -0xCA: {
 									if (!settings["Four Block Shirt"]) break;
 									print("Four Block Shirt");
 									return true;
+									break;
 								}
 								case -0x181: {
 									if (!settings["Golden Freddy"]) break;
 									print("Golden Freddy");
 									return true;
+									break;
 								}
 								case 0xBFFFFFFBE: {
 									if (!settings["Monty Name Shirt"]) break;
 									print("Monty Name Shirt");
 									return true;
+									break;
 								}
 								case 0x6FFFFFFBE: {
 									if (!settings["Pizzaplex Logo Shirt"]) break;
 									print("Pizzaplex Logo Shirt");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x0: {
 									if (!settings["Fazwatch"]) break;
 									print("Fazwatch");
 									return true;
+									break;
 								}
 								case 0x71: {
 									if (!settings["Party Pass"]) break;
 									print("Party Pass");
 									return true;
+									break;
 								}
 								case 0x95: {
 									if (!settings["Photo Pass"]) break;
 									print("Photo Pass");
 									return true;
+									break;
 								}
 							//Roxy Raceway
 								//Collectables
@@ -2274,37 +2344,44 @@ split {
 									if (!settings["Monty Balloon"]) break;
 									print("Monty Balloon");
 									return true;
+									break;
 								}
 								case -0x149: {
 									if (!settings["Space Monty Keychain"]) break;
 									print("Space Monty Keychain");
 									return true;
+									break;
 								}
 								//Equipment
 								case -0x25: {
 									if (!settings["Damaged Head"]) break;
 									print("Damaged Head");
 									return true;
+									break;
 								}
 								case -0x1E: {
 									if (!settings["Dance Pass"]) break;
 									print("Dance Pass");
 									return true;
+									break;
 								}
 								case 0x20000001F: {
 									if (!settings["RR_Freddy Upgrade"]) break;
 									print("RR_Freddy Upgrade");
 									return true;
+									break;
 								}
 								case 0xAE: {
 									if (!settings["Roxy's Eyes"]) break;
 									print("Roxy's Eyes");
 									return true;
+									break;
 								}
 								case 0x100000032: {
 									if (!settings["Roxy Fizzy Faz"]) break;
 									print("Roxy Fizzy Faz");
 									return true;
+									break;
 								}
 							//Roxy Raceway Sublobby
 								//Collectables
@@ -2312,16 +2389,19 @@ split {
 									if (!settings["Frozen Roxy Treat"]) break;
 									print("Frozen Roxy Treat");
 									return true;
+									break;
 								}
 								case 0x10FFFFFFBE: {
 									if (!settings["Roxy Balloon"]) break;
 									print("Roxy Balloon");
 									return true;
+									break;
 								}
 								case 0x30000009B: {
 									if (!settings["Roxy Mask"]) break;
 									print("Roxy Mask");
 									return true;
+									break;
 								}
 							//Roxy Salon
 								//Collectables
@@ -2329,17 +2409,20 @@ split {
 									if (!settings["Roxy Magnet"]) break;
 									print("Roxy Magnet");
 									return true;
+									break;
 								}
 								case 0xAFFFFFFBE: {
 									if (!settings["Roxy Piñata"]) break;
 									print("Roxy Piñata");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x27: {
 									if (!settings["Shoes"]) break;
 									print("Shoes");
 									return true;
+									break;
 								}
 							//Salads & Sides
 								//Collectables
@@ -2347,11 +2430,13 @@ split {
 									if (!settings["Freddy Face Shirt"]) break;
 									print("Freddy Face Shirt");
 									return true;
+									break;
 								}
 								case -0x109: {
 									if (!settings["Piñata"]) break;
 									print("Piñata");
 									return true;
+									break;
 								}
 							//Sewers
 								//Collectables
@@ -2359,12 +2444,14 @@ split {
 									if (!settings["S_Old Poster"]) break;
 									print("S_Old Poster");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x39226FFFC6DD54: {
 									if (!settings["Chica's Voicebox"]) break;
 									print("Chica's Voicebox");
 									return true;
+									break;
 								}
 							//Utility Tunnels
 								//Collectables
@@ -2372,42 +2459,50 @@ split {
 									if (!settings["Chica Piñata"]) break;
 									print("Chica Piñata");
 									return true;
+									break;
 								}
 								case -0x119: {
 									if (!settings["Comedy Mask"]) break;
 									print("Comedy Mask");
 									return true;
+									break;
 								}
 								case -0xF1: {
 									if (!settings["Foxy Plush"]) break;
 									print("Foxy Plush");
 									return true;
+									break;
 								}
 								case 0x30000013D: {
 									if (!settings["Glam Freddy Plush"]) break;
 									print("Glam Freddy Plush");
 									return true;
+									break;
 								}
 								case -0x168: {
 									if (!settings["Golden Roxy"]) break;
 									print("Golden Roxy");
 									return true;
+									break;
 								}
 								case 0xB0000013D: {
 									if (!settings["Moon Figure"]) break;
 									print("Moon Figure");
 									return true;
+									break;
 								}
 								case 0xA0000013D: {
 									if (!settings["Sun Figure"]) break;
 									print("Sun Figure");
 									return true;
+									break;
 								}
 								//Equipment
 								case 0x148: {
 									if (!settings["UT_Mapbot's Map"]) break;
 									print("UT_Mapbot's Map");
 									return true;
+									break;
 								}
 							//Warehouse
 								//Collectables
@@ -2415,6 +2510,7 @@ split {
 									if (!settings["Nightmare Plush"]) break;
 									print("Nightmare Plush");
 									return true;
+									break;
 								}
 							//West Arcade
 								//Collectables
@@ -2423,6 +2519,7 @@ split {
 									if (!settings["Glam Monty Plush"]) break;
 									print("Glam Monty Plush");
 									return true;
+									break;
 								}
 							//DEFAULT
 								default: break;
