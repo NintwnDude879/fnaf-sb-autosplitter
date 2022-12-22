@@ -1844,8 +1844,9 @@ split {
 				//other ending splits
 				if (settings["Afton Ending"]){
 					if (current.aftonHealth < old.aftonHealth){
-						if (settings["Button " + ((750 - current.aftonHealth) / 100)]){
-							print("Button " + ((750 - current.aftonHealth) / 100));
+						var currentButton = ((750 - current.aftonHealth) / 100);
+						if (settings["Button " + currentButton]){
+							print("Button " + currentButton);
 							return true;
 						}
 					}
@@ -1867,7 +1868,7 @@ split {
 					//Repaired Head
 					//CDS
 					if (current.splashScreen > old.splashScreen){
-						vars.fazwatchName = 0x3921BE;
+						//vars.fazwatchName = 0x3921BE;
 						print(Convert.ToString(old.interactionName + 250,16));
 						long dumbVariable2 = old.interactionName - vars.fazwatchName;
 						switch (dumbVariable2){
