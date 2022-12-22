@@ -1867,8 +1867,8 @@ split {
 					//Repaired Head
 					//CDS
 					if (current.splashScreen > old.splashScreen){
-						vars.fazwatchName = 0x3921BE;
-						print(Convert.ToString(old.interactionName + 250,16));
+						vars.fazwatchName = 0x3922B8;
+						print(Convert.ToString(old.interactionName,16));
 						long dumbVariable2 = old.interactionName - vars.fazwatchName;
 						switch (dumbVariable2){
 							//Backstage 
