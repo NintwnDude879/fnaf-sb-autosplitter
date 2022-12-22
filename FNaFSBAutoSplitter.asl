@@ -393,7 +393,7 @@ startup {
 	settings.CurrentDefaultParent = "Deload Splits";
 	settings.Add("D_Backstage", false, "Backstage");
 	settings.Add("D_Daycare", false, "Daycare");
-	settings.Add("D_Kids Cove Sublobby", false, "Kids Cove Sublobby");
+	settings.Add("D_Kid's Cove Sublobby", false, "Kid's Cove Sublobby");
 	settings.Add("D_Monty Golf Sublobby", false, "Monty Golf Sublobby");
 	settings.Add("D_Prize Counter", false, "Prize Counter");
 	settings.Add("D_Rockstar Row", false, "Rockstar Row");
@@ -408,7 +408,7 @@ startup {
 	settings.Add("Arcade Deload", false);
 	settings.Add("Theatre Deload", false);
 
-	settings.CurrentDefaultParent = "D_Kids Cove Sublobby";
+	settings.CurrentDefaultParent = "D_Kid's Cove Sublobby";
 	settings.Add("KCD_Fence Deload", false, "Fence Deload");
 
 	settings.CurrentDefaultParent = "D_Monty Golf Sublobby";
@@ -479,6 +479,7 @@ startup {
 	settings.CurrentDefaultParent = "Item List";
 	settings.Add("Collectables", false);
 	settings.Add("Equipment", false);
+	settings.Add("Message Bags", false);
 	settings.Add("Retro CDs", false);
 
 	settings.CurrentDefaultParent = "Collectables";
@@ -490,7 +491,7 @@ startup {
 	settings.Add("C_El Chips", false, "El Chips");
 	settings.Add("C_Fazerblast", false, "Fazerblast");
 	settings.Add("C_Fazerblast Sublobby", false, "Fazerblast Sublobby");
-	settings.Add("C_Kids Cove Sublobby", false, "Kids Cove Sublobby");
+	settings.Add("C_Kid's Cove Sublobby", false, "Kid's Cove Sublobby");
 	settings.Add("C_Laundry", false, "Laundry");
 	settings.Add("C_Lobby", false, "Lobby");
 	settings.Add("C_Main Atrium", false, "Main Atrium");
@@ -546,7 +547,7 @@ startup {
 	settings.Add("Freddy Piñata", false);
 	settings.Add("Space Freddy Keychain", false);
 
-	settings.CurrentDefaultParent = "C_Kids Cove Sublobby";
+	settings.CurrentDefaultParent = "C_Kid's Cove Sublobby";
 	settings.Add("Golden Sun", false);
 	settings.Add("Moon Plush", false);
 
@@ -709,19 +710,22 @@ startup {
 
 	settings.CurrentDefaultParent = "E_West Arcade";
 	settings.Add("Repaired Head", false);
+	
+	settings.CurrentDefaultParent = "Message Bags";
+	settings.Add("MB_Salads & Sides", false);
 
 	settings.CurrentDefaultParent = "Retro CDs";
 	settings.Add("CD_Backstage Podium", false, "Backstage");
 	settings.Add("CD_Bonnie Bowl", false, "Bonnie Bowl");
 	settings.Add("CD_Chica's Bakery", false, "Chica's Bakery");
-	settings.Add("CD_East Atrium Stage", false, "East Atrium");
+	settings.Add("CD_East Atrium Stage", false, "East Atrium Stage");
 	settings.Add("CD_Fazerblast", false, "Fazerblast");
-	settings.Add("CD_Kids Cove", false, "Kids Cove");
+	settings.Add("CD_Kid's Cove", false, "Kid's Cove");
 	settings.Add("CD_Main Atrium", false, "Main Atrium");
 	settings.Add("CD_Mazercise", false, "Mazercise");
 	settings.Add("CD_Monty Golf", false, "Monty Golf");
-	settings.Add("CD_Rockstar Row Foxy", false, "Roxkstar Row Foxy");
-	settings.Add("CD_Rockstar Row Helpy", false, "Roxkstar Row Helpy");
+	settings.Add("CD_Rockstar Row Foxy", false, "Rockstar Row Foxy");
+	settings.Add("CD_Rockstar Row Helpy", false, "Rockstar Row Helpy");
 	settings.Add("CD_Roxy Raceway", false, "Roxy Raceway");
 	settings.Add("CD_Roxy Salon", false, "Roxy Salon");
 	settings.Add("CD_Utility Tunnels Couch", false, "Utility Tunnels Couch");
@@ -1365,7 +1369,6 @@ split {
 	string dumbVariable = vars.arcade;
 	switch (dumbVariable){
 		default: {
-			if (!settings["Arcade Splits"]) break;
 			if (!settings[vars.arcade]) break;
 
 			switch (dumbVariable){
@@ -1698,7 +1701,7 @@ split {
 							return true;
 						}
 					}
-					if (settings["D_Kids Cove Sublobby"]){
+					if (settings["D_Kid's Cove Sublobby"]){
 						if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
 							vars.dKCFence = false;
 							return true;
@@ -1866,11 +1869,13 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					//CDS
-					if (current.splashScreen > old.splashScreen){
-						//vars.fazwatchName = 0x3921BE;
-						print(Convert.ToString(old.interactionName + 250,16));
-						long dumbVariable2 = old.interactionName - vars.fazwatchName;
+					vars.fazwatchName = 0x3921BE;
+					long dumbVariable2 = old.interactionName - vars.fazwatchName;
+					if (current.interactionName != old.interactionName){
+						print(Convert.ToString(dumbVariable2, 16));
+					}
+					if (current.interactionName == 0){
+						//Collectables, Equipment, CDs, Message Bags
 						switch (dumbVariable2){
 							//Backstage 
 								//Collectables
@@ -1900,6 +1905,12 @@ split {
 									print("B_Flashlight Upgrade");
 									return true;
 								}
+								//CDs
+								case -0x9000000A4: {
+									if (!settings["CD_Backstage Podium"]) break;
+									print("CD_Backstage Podium");
+									return true;
+								}
 							//Basement Kitchen
 								//Collectables
 								case -0x132: {
@@ -1918,6 +1929,35 @@ split {
 									print("Freddy Fizzy Faz");
 									return true;
 								}
+								//Messages
+								case 0x272: {
+									//All Staff Meeting
+									return true;
+								}
+								case 0x1C7: {
+									//COMPACTOR INSTRUCTIONS
+									return true;
+								}
+								case 0x296: {
+									//MARKED FOR DELETION
+									return true;
+								}
+								case 0x201: {
+									//Food Storage
+									return true;
+								}
+								case 0x267: {
+									//PINK SLIP
+									return true;
+								}
+								case 0x26B: {
+									//QUESTION
+									return true;
+								}
+								case 0x279: {
+									//Drink Fizzy Faz!
+									return true;
+								}
 							//Bonnie Bowl
 								//Collectables
 								case -0xF9: {
@@ -1934,6 +1974,21 @@ split {
 								case -0x2B2195: {
 									if (!settings["Monty Mystery Mix"]) break;
 									print("Monty Mystery Mix");
+									return true;
+								}
+								//CDs
+								case -0x8000000A4: {
+									if (!settings["CD_Bonnie Bowl"]) break;
+									print("CD_Bonnie Bowl");
+									return true;
+								}
+								//Messages
+								case 0x176: {
+									//PQ1 MAINT LOG
+									return true;
+								}
+								case 0x1C1: {
+									//SAFETY CHECK
 									return true;
 								}
 							//Chica's Bakery
@@ -1959,6 +2014,21 @@ split {
 								case 0x3E: {
 									if (!settings["Hoodie"]) break;
 									print("Hoodie");
+									return true;
+								}
+								//CDs
+								case -0x3000000A4: {
+									if (!settings["CD_Chica's Bakery"]) break;
+									print("CD_Chica's Bakery");
+									return true;
+								}
+								//Messages
+								case 0x16D: {
+									//AR-CADE MAINT LOG
+									return true;
+								}
+								case 0x164: {
+									//CFF MAINT LOG
 									return true;
 								}
 							//Daycare
@@ -2009,6 +2079,31 @@ split {
 									print("Mazercise Control Key");
 									return true;
 								}
+								//Messages
+								case 0x19A: {
+									//ARCADE CONSPIRACY
+									return true;
+								}
+								case 0x15B: {
+									//BBW MAINT LOG
+									return true;
+								}
+								case 0x218: {
+									//THE ANSWER
+									return true;
+								}
+								case 0x236: {
+									//Night Terrors
+									return true;
+								}
+								case 0x188: {
+									//OUT OF ORDER
+									return true;
+								}
+								case 0x1DB: {
+									//RECYCLED PIZZA?
+									return true;
+								}
 							//El Chips
 								//Collectables
 								case 0xDFFFFFFBE: {
@@ -2050,6 +2145,12 @@ split {
 									print("Bowling Pass");
 									return true;
 								}
+								//CDs
+								case -0x7000000A4: {
+									if (!settings["CD_Fazerblast"]) break;
+									print("CD_Fazerblast");
+									return true;
+								}
 							//Fazerblast Sublobby
 								//Collectables
 								case 0x9FFFFFFBE: {
@@ -2062,7 +2163,7 @@ split {
 									print("Space Freddy Keychain");
 									return true;
 								}
-							//Kids Cove Sublobby
+							//Kid's Cove Sublobby
 								//Collectables
 								case -0x160: {
 									if (!settings["Golden Sun"]) break;
@@ -2072,6 +2173,21 @@ split {
 								case 0x50000013D: {
 									if (!settings["Moon Plush"]) break;
 									print("Moon Plush");
+									return true;
+								}
+								//CDs
+								case -0x4000000A4: {
+									if (!settings["CD_Kid's Cove"]) break;
+									print("CD_Kid's Cove");
+									return true;
+								}
+								//Messages
+								case 0x1BB: {
+									//Hide the Mix
+									return true;
+								}
+								case 0x291: {
+									//NO QUESTIONS ASKED
 									return true;
 								}
 							//Laundry
@@ -2139,6 +2255,23 @@ split {
 									print("Screwdriver");
 									return true;
 								}
+								//Messages
+								case 0x288: {
+									//EASY MONEY
+									return true;
+								}
+								case 0x1E1: {
+									//HI DAVE
+									return true;
+								}
+								case 0x20A: {
+									//AC Inspection
+									return true;
+								}
+								case 0x156: {
+									//False Alarm
+									return true;
+								}
 							//Main Atrium
 								//Collectables
 								case 0x13FFFFFFBE: {
@@ -2160,6 +2293,24 @@ split {
 								case -0x391FF3: {
 									if (!settings["MA_Mapbot's Map"]) break;
 									print("MA_Mapbot's Map");
+									return true;
+								}
+								//CDs
+								case -0xF000000A4: {
+									if (!settings["CD_East Atrium Stage"]) break;
+									print("CD_East Atrium Stage");
+									return true;
+								}
+								case -0xA000000A4: {
+									if (!settings["CD_Main Atrium"]) break;
+									print("CD_Main Atrium");
+									return true;
+								}
+							//Mazercise
+								//CDs
+								case -0xE000000A4: {
+									if (!settings["CD_Mazercise"]) break;
+									print("CD_Mazercise");
 									return true;
 								}
 							//Monty Golf
@@ -2195,6 +2346,21 @@ split {
 									print("Monty's Claws");
 									return true;
 								}
+								//CDs
+								case -0xD000000A4: {
+									if (!settings["CD_Monty Golf"]) break;
+									print("CD_Monty Golf");
+									return true;
+								}
+								//Messages
+								case 0x21E: {
+									//BEHIND THE MAZE
+									return true;
+								}
+								case 0x1F0: {
+									//No Flash Photography
+									return true;
+								}
 							//Monty Golf Sublobby
 								//Collectables
 								case 0x1FFFFFFBE: {
@@ -2214,6 +2380,19 @@ split {
 									print("Glam Roxy Figure");
 									return true;
 								}
+								//Messages
+								case 0x1D3: {
+									//CHICA UPGRADE
+									return true;
+								}/*
+								case 0xAE: {
+									//ROXY UPGRADE
+									return true;
+								}
+								case 0x5D: {
+									//MONTY UPGRADE
+									return true;
+								}*/
 							//Prize Counter
 								//Collectables
 								case 0x2FFFFFFBE: {
@@ -2269,6 +2448,30 @@ split {
 									print("Photo Pass");
 									return true;
 								}
+								//CDs
+								case -0x1000000A4: {
+									if (!settings["CD_Rockstar Row Foxy"]) break;
+									print("CD_Rockstar Row Foxy");
+									return true;
+								}
+								case -0xB000000A4: {
+									if (!settings["CD_Rockstar Row Helpy"]) break;
+									print("CD_Rockstar Row Helpy");
+									return true;
+								}
+								//Messages
+								case 0x1CD: {
+									//CHICA REPORT
+									return true;
+								}
+								case 0x1F5: {
+									//Party Foul
+									return true;
+								}
+								case 0x22A: {
+									//Monty Mischief
+									return true;
+								}
 							//Roxy Raceway
 								//Collectables
 								case 0xFFFFFFFBE: {
@@ -2307,6 +2510,12 @@ split {
 									print("Roxy Fizzy Faz");
 									return true;
 								}
+								//CDs
+								case -0xC000000A4: {
+									if (!settings["CD_Roxy Raceway"]) break;
+									print("CD_Roxy Raceway");
+									return true;
+								}
 							//Roxy Raceway Sublobby
 								//Collectables
 								case 0x4FFFFFFBE: {
@@ -2342,6 +2551,17 @@ split {
 									print("Shoes");
 									return true;
 								}
+								//CDs
+								case -0x5000000A4: {
+									if (!settings["CD_Roxy Salon"]) break;
+									print("CD_Roxy Salon");
+									return true;
+								}
+								//Messages
+								case 0x191: {
+									//RED FLAG
+									return true;
+								}
 							//Salads & Sides
 								//Collectables
 								case -0xC3: {
@@ -2352,6 +2572,13 @@ split {
 								case -0x109: {
 									if (!settings["Piñata"]) break;
 									print("Piñata");
+									return true;
+								}
+								//Messages
+								case 0x23D: {
+									//BETTER EMPLOYEES
+									if (!settings["MB_Salads & Sides"]) break;
+									print("MB_Salads & Sides");
 									return true;
 								}
 							//Sewers
@@ -2410,6 +2637,26 @@ split {
 									print("UT_Mapbot's Map");
 									return true;
 								}
+								//CDs
+								case -0x2000000A4: {
+									if (!settings["CD_Utility Tunnels Couch"]) break;
+									print("CD_Utility Tunnels Couch");
+									return true;
+								}
+								case -0x6000000A4: {
+									if (!settings["CD_Utility Tunnels Foxy Plush"]) break;
+									print("CD_Utility Tunnels Foxy Plush");
+									return true;
+								}
+								//Messages
+								case 0x1B3: {
+									//MISSING
+									return true;
+								}
+								case 0x224: {
+									//Job Security
+									return true;
+								}
 							//Warehouse
 								//Collectables
 								case -0xEA: {
@@ -2425,6 +2672,12 @@ split {
 									print("Glam Monty Plush");
 									return true;
 								}
+								//CDs
+								case -0x10000000A4: {
+									if (!settings["CD_West Arcade"]) break;
+									print("CD_West Arcade");
+									return true;
+								}
 							//DEFAULT
 								default: break;
 						}
@@ -2435,7 +2688,6 @@ split {
 					//Cameras
 					//Repaired Head
 					//Badges
-					//CDS
 					if (settings["Equipment"]){
 						if (current.itemCount > old.itemCount){
 							if (settings["E_Fazerblast"]){
@@ -2475,58 +2727,6 @@ split {
 						if (current.securityBadgeCount > old.securityBadgeCount){
 							if (settings["Security Badge " + current.securityBadgeCount]){
 								print("Security Badge " + current.securityBadgeCount);
-								return true;
-							}
-						}
-					}
-					if (settings["Retro CDs"]){
-						if (current.splashScreen > old.splashScreen){
-							if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
-								return true;
-							}
-							if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
-								return true;
-							}
-							if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
-								return true;
-							}
-							if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
-								return true;
-							}
-							if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
-								return true;
-							}
-							if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
-								return true;
-							}
-							if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
-								return true;
-							}
-							if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
-								return true;
-							}
-							if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
-								return true;
-							}
-							if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
-								return true;
-							}
-							if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
-								return true;
-							}
-							if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
-								return true;
-							}
-							if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
-								return true;
-							}
-							if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
-								return true;
-							}
-							if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
-								return true;
-							}
-							if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
 								return true;
 							}
 						}
