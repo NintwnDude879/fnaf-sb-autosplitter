@@ -46,7 +46,8 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int securityBadgeCount: 0x0441B738, 0x8, 0x10, 0x38, 0xC0;
 	int itemCount: 0x0441B738, 0x8, 0x10, 0x38, 0x138;
 	int splashScreen: 0x0441FCB0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
-	long interactionName: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C;
+	long interactionName: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x25C;
+	float windUp: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0;
 
 	//In-Game Clock
 	int hourClock: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
@@ -1303,6 +1304,34 @@ reset {
 }
 
 isLoading {
+	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
+		if (vars.arcade != "N/A"){
+			vars.arcade = "N/A";
+			print("Arcade: " + vars.arcade);
+		}
+	}
+	else if (vars.arcade == "N/A"){
+		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
+			vars.arcade = "BB Arcade";
+		}
+		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100)){
+			vars.arcade = "Monty Golf";
+		}
+		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
+			vars.arcade = "Princess Quest 1";
+		}
+		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
+			vars.arcade = "Princess Quest 2";
+		}
+		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
+			vars.arcade = "Princess Quest 3";
+		}
+		
+		if (vars.arcade != "N/A"){
+			print("Arcade: " + vars.arcade);
+		}
+	}
+
 	if (!settings["In-Game Time Settings"]) return false;
 
 	foreach (var data in vars.elevatorPointers){
@@ -1356,7 +1385,7 @@ isLoading {
 	do {
 		if (!settings["Stop Timer On Menu"]) break;
 
-		if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
+		if (current.worldCheck == 0 && vars.arcade == "N/A"){
 			vars.onMenu = true;
 			if (!old.menu){
 				print("Stop Timer On Menu");
@@ -1388,31 +1417,6 @@ isLoading {
 
 split {
 	if (!settings["Split Settings"]) return false;
-
-	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (vars.arcade != "N/A"){
-			vars.arcade = "N/A";
-			print("Arcade: " + vars.arcade);
-		}
-	}
-	else if (vars.arcade == "N/A"){
-		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
-			vars.arcade = "BB Arcade";
-		}
-		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100)){
-			vars.arcade = "Monty Golf";
-		}
-		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
-			vars.arcade = "Princess Quest 1";
-		}
-		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
-			vars.arcade = "Princess Quest 2";
-		}
-		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
-			vars.arcade = "Princess Quest 3";
-		}
-		print("Arcade: " + vars.arcade);
-	}
 
 	string dumbVariable = vars.arcade;
 	switch (dumbVariable){
@@ -1907,7 +1911,7 @@ split {
 				if (settings["Item List"]){
 					//sets the local fazwatch name
 					if (current.itemCount == 0){
-						if (current.splashScreen > old.splashScreen){
+						if (old.windUp >= 1){
 							vars.fazwatchName = old.interactionName;
 						}
 					}
@@ -1917,12 +1921,9 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					//vars.fazwatchName = 0x3921BE;
+					vars.fazwatchName = 0x3921BE;
 					long dumbVariable2 = old.interactionName - vars.fazwatchName;
-					if (current.interactionName != old.interactionName){
-						print(Convert.ToString(dumbVariable2, 16));
-					}
-					if (current.interactionName == 0){
+					if (current.windUp < 1 && old.windUp >= 1){
 						//Collectables, Equipment, CDs, Message Bags
 						switch (dumbVariable2){
 							//Default (unaccounted items)
