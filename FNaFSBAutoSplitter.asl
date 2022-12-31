@@ -1921,7 +1921,7 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					vars.fazwatchName = 0x3921BE;
+					//vars.fazwatchName = 0x3921BE;
 					long dumbVariable2 = old.interactionName - vars.fazwatchName;
 					if (current.windUp < 1 && old.windUp >= 1){
 						//Collectables, Equipment, CDs, Message Bags
