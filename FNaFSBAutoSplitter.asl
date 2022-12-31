@@ -1162,7 +1162,7 @@ start {
 		vars.pq1_7 = true;
 		vars.pq1_8 = true;
 		vars.pq1_9 = true;
-		vars.pq1_end = true;
+		vars.pq1_end = false;
 		//pq2
 		vars.pq2_start = true;
 		vars.pq2_1 = true;
@@ -1175,7 +1175,7 @@ start {
 		vars.pq2_8 = false;
 		vars.pq2_9 = true;
 		vars.pq2_10 = true;
-		vars.pq2_end = true;
+		vars.pq2_end = false;
 		//pq3
 		vars.pq3_start = true;
 		vars.pq3_1 = true;
@@ -1304,6 +1304,8 @@ reset {
 }
 
 isLoading {
+	if (!settings["In-Game Time Settings"]) return false;
+
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
 		if (vars.arcade != "N/A"){
 			vars.arcade = "N/A";
@@ -1332,8 +1334,6 @@ isLoading {
 		}
 	}
 
-	if (!settings["In-Game Time Settings"]) return false;
-
 	foreach (var data in vars.elevatorPointers){
 		do {
 			if (!settings[data.Item1]) break;
@@ -1345,13 +1345,16 @@ isLoading {
 			}
 
 			if (settings[data.Item1 + "_EUOE"]){
-				print("EveryUse");
+				if (!data.Item3){
+					print("EveryUse");
+				}
 				return true;
 			}
 			else if (settings[data.Item1 + "_POOU"]){
 				if (!settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]) break;
-
-				print("OnlyOnUse#");
+				if (!data.Item3){
+					print("OnlyOnUse#");
+				}
 				return true;
 			}
 		} while (false);
@@ -1386,10 +1389,10 @@ isLoading {
 		if (!settings["Stop Timer On Menu"]) break;
 
 		if (current.worldCheck == 0 && vars.arcade == "N/A"){
-			vars.onMenu = true;
-			if (!old.menu){
+			if (!vars.onMenu){
 				print("Stop Timer On Menu");
 			}
+			vars.onMenu = true;
 		}
 		else if (current.worldCheck != 0 || vars.arcade != "N/A"){
 			vars.onMenu = false;
@@ -1515,6 +1518,7 @@ split {
 							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2020, 2210, 3425, 5125)){
 								if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
 									vars.pq1_9 = false;
+									vars.pq1_end = true;
 									return true;
 								}
 							}
@@ -1594,6 +1598,7 @@ split {
 							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4845, 5045, 725, 925)){
 								if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
 									vars.pq2_10 = false;
+									vars.pq2_end = true;
 									return true;
 								}
 							}
@@ -1738,7 +1743,7 @@ split {
 			if (settings["Deload Splits"]){
 				if (current.pos.X != old.pos.X || current.pos.Y != old.pos.Y || current.pos.Z != old.pos.Z){
 					if (settings["D_Backstage"]){
-						if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -5310, 52780, -5500, 523050, -5300, 53235, 1780, 2000)){
+						if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4450, 53050, -5320, 52750, -5300, 53235, 1780, 2000)){
 							vars.dFoxyCutout = false;
 							return true;
 						}
@@ -2287,6 +2292,7 @@ split {
 							case -0x25: {
 								if (!settings["Damaged Head"]) break;
 								print("Damaged Head");
+								vars.tDamagedHead = false;
 								return true;
 							}
 							case -0x1E: {
@@ -2784,8 +2790,10 @@ split {
 							}
 						}
 						if (settings["E_Utility Tunnels"]){
-							if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
-								return true;
+							if (current.itemCount > old.itemCount){
+								if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
+									return true;
+								}
 							}
 						}
 						if (settings["E_West Arcade"]){
