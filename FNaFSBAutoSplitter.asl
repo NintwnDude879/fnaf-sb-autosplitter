@@ -22,7 +22,7 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int FBFlags: 0x0441FCB0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 
 	//Player information
-	float worldCheck: 0x0441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
+	int worldCheck: 0x441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x0;
 
 	//Buttons that start cutscenes (pressed = 0)
 	bool vannyEndButton: 0x0441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
@@ -79,7 +79,7 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x04420F40, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
+	bool pq3Attack: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
 	int FBFlags: 0x04420F40, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
@@ -142,7 +142,7 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x04421080, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
+	bool pq3Attack: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Countepos.Yr pointers
 	int DGens: 0x441D998, 0x50, 0x98, 0x40, 0x128, 0xA8, 0x58, 0x54C;
@@ -205,7 +205,7 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 
 	//Arcade pointers
 	int golfStrokeCount: 0x044288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
-	int pq3Attack: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
+	bool pq3Attack: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
 	int DGens: 0x044288B0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
@@ -888,6 +888,7 @@ startup {
 init {
 	//Sets the version of the game upon startup
 	int gameSize = modules.First().ModuleMemorySize;
+	refreshRate = 60;
 
 	print("Size = " + gameSize.ToString());
 
@@ -1038,13 +1039,13 @@ start {
 		return true;
 	});
 
-	vars.checkArcadePosition = (Func<double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (xLB > old.pos.X) return false;
-		if (old.pos.X > xUB) return false;
-		if (yLB > old.pos.Y) return false;
-		if (old.pos.Y > yUB) return false;
-		if (zLB > current.pos.Z) return false;
-		if (current.pos.Z > zUB) return false;
+	vars.checkArcadePosition = (Func<double, double, double, double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB, oldX, oldY, oldZ) => {
+		if (xLB > oldX) return false;
+		if (oldX > xUB) return false;
+		if (yLB > oldY) return false;
+		if (oldY > yUB) return false;
+		if (zLB > oldZ) return false;
+		if (oldZ > zUB) return false;
 		return true;
 	});
 
@@ -1313,19 +1314,19 @@ isLoading {
 		}
 	}
 	else if (vars.arcade == "N/A"){
-		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
+		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "BB Arcade";
 		}
-		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100)){
+		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Monty Golf";
 		}
-		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
+		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Princess Quest 1";
 		}
-		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
+		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Princess Quest 2";
 		}
-		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
+		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Princess Quest 3";
 		}
 		
@@ -1420,6 +1421,17 @@ isLoading {
 
 split {
 	if (!settings["Split Settings"]) return false;
+
+	if (vars.pq1_end && vars.arcade == "N/A"){
+		print("pq1_end");
+		vars.pq1_end = false;
+		return true;
+	}
+	if (vars.pq2_end && vars.arcade == "N/A"){
+		print("pq2_end");
+		vars.pq2_end = false;
+		return true;
+	}
 
 	string dumbVariable = vars.arcade;
 	switch (dumbVariable){
@@ -1522,13 +1534,6 @@ split {
 									return true;
 								}
 							}
-							if (settings["pq1_end"] && vars.pq1_end){
-								if (old.pos.X >= 4920 && current.pos.X == 0){
-									vars.pq1_end = false;
-									print("pq1_end");
-									return true;
-								}
-							}
 							break;
 						}
 
@@ -1599,13 +1604,6 @@ split {
 								if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
 									vars.pq2_10 = false;
 									vars.pq2_end = true;
-									return true;
-								}
-							}
-							if (settings["pq2_end"] && vars.pq2_end){
-								if (old.pos.Y >= 4845 && current.pos.Y == 0){
-									vars.pq2_end = false;
-									print("pq2_end");
 									return true;
 								}
 							}
@@ -1815,7 +1813,7 @@ split {
 						}
 					}
 					if (settings["D_Roxy Salon"]){
-						if (vars.checkPosition("Plant Deload", vars.dPlant, 9500, 10100, 41800, 42000, 2708, 3000)){
+						if (vars.checkPosition("Plant Deload", vars.dPlant, 9000, 10500, 41800, 42000, 2708, 3000)){
 							vars.dPlant = false;
 							return true;
 						}
@@ -1876,7 +1874,7 @@ split {
 				}
 				if (settings["Princess Quest Ending"]){
 					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
-						if (current.pq3Attack > old.pq3Attack){
+						if (current.pq3Attack && !old.pq3Attack){
 							if (vars.checkPQPosition2("pq3_endEndings", vars.pq3_end)){
 								vars.pq3_end = false;
 								return true;
@@ -1916,7 +1914,7 @@ split {
 				if (settings["Item List"]){
 					//sets the local fazwatch name
 					if (current.itemCount == 0){
-						if (old.windUp >= 1){
+						if (old.windUp >= 0.99){
 							vars.fazwatchName = old.interactionName;
 						}
 					}
@@ -1926,13 +1924,19 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					//vars.fazwatchName = 0x3921BE;
+					vars.fazwatchName = 0x3921BE;
 					long dumbVariable2 = old.interactionName - vars.fazwatchName;
-					if (current.windUp < 1 && old.windUp >= 1){
+					if (current.windUp == 0 && old.windUp >= 0.99){
 						//Collectables, Equipment, CDs, Message Bags
 						switch (dumbVariable2){
 							//Default (unaccounted items)
 							default: {
+								if (dumbVariable2 >= 0){
+									print("0x" + Convert.ToString(dumbVariable2, 16));
+								}
+								else {
+									print("-0x" + Convert.ToString(Math.Abs(dumbVariable2), 16));
+								}
 								break;
 							}
 							//Collectables
@@ -2290,7 +2294,7 @@ split {
 								return true;
 							}
 							case -0x25: {
-								if (!settings["Damaged Head"]) break;
+								if (!settings["Damaged Head"] || !vars.tDamagedHead) break;
 								print("Damaged Head");
 								vars.tDamagedHead = false;
 								return true;
@@ -2397,7 +2401,7 @@ split {
 									return true;
 								}
 							}
-							case -0x2B214F: {
+							case -0x2B20B7: {
 								if (!settings["Mr. Hippo Magnet"]) break;
 								print("Mr. Hippo Magnet");
 								return true;
