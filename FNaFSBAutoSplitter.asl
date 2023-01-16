@@ -1308,7 +1308,7 @@ isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (version != "v1.11" || current.blackScreen == vars.loadingConstant){
+		if (version == "v1.04" || current.blackScreen == vars.loadingConstant){
 			if (vars.arcade != "N/A"){
 				vars.arcade = "N/A";
 				print("Arcade: " + vars.arcade);
