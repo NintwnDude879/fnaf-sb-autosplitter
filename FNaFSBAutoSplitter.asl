@@ -1,19 +1,27 @@
-//Five Nights at Freddy's: Security Breach | v1.3.0
+//Five Nights at Freddy's: Security Breach | v1.2.5
 //Autosplitter created by Daltone#2617 and NintenDude#0447
-
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping us understand how to use Cheat Engine
+
+//Todo:
+//Piturrete suggestion- add message bags
 
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
 	int freddyPower: 0x441FCB0, 0x188, 0xE0, 0x38, 0xB8;
+	int freddyPower: 0x441FCB0, 0x188, 0xE0, 0x38, 0xB8;
 
 	//Arcade pointers
 	int golfStrokeCount: 0x441FCB0, 0x128, 0x378, 0x270, 0x230, 0x40;
 	bool pq3Attack: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
+	int golfStrokeCount: 0x441FCB0, 0x128, 0x378, 0x270, 0x230, 0x40;
+	bool pq3Attack: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
+	int DGens: 0x441FCB0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
+	int MGBucket: 0x441FCB0, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158;
+	int FBFlags: 0x441FCB0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 	int DGens: 0x441FCB0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
 	int MGBucket: 0x441FCB0, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158;
 	int FBFlags: 0x441FCB0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
@@ -27,8 +35,19 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	int escapeEndLeaveButtonEast: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268;
 	int carEndLeaveButton: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268;
 	int fireEndLeaveButton: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268;
+	bool vannyEndButton: 0x441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int escapeEndLeaveButtonWest: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268;
+	int escapeEndLeaveButtonEast: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268;
+	int carEndLeaveButton: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268;
+	int fireEndLeaveButton: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
+	bool aftonEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x260, 0xD8;
+	bool vannyEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x2D8, 0xD8;
+	bool fireEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x318, 0xD8;
+	bool carEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x358, 0xD8;
+	bool escapeEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x398, 0xD8;
+	bool pqEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x3D8, 0xD8;
 	bool aftonEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x260, 0xD8;
 	bool vannyEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x2D8, 0xD8;
 	bool fireEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x318, 0xD8;
@@ -48,8 +67,13 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	//In-Game Clock
 	int hourClock: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
 	int minuteClock: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
+	int hourClock: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
+ 	bool pause: 0x441C5F0, 0x8B8;
+	bool menu: 0x441FCB0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
+	bool hasLoaded: 0x441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
  	bool pause: 0x441C5F0, 0x8B8;
 	bool menu: 0x441FCB0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	bool hasLoaded: 0x441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
@@ -67,10 +91,23 @@ state("fnaf9-Win64-Shipping", "v1.04"){
 	bool roxyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
 	bool freddyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
 	bool aftonElev: 0x441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool kitElev: 0x441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool monGElev: 0x441FCB0, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8;
+	bool foy2Elev: 0x441FCB0, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8;
+	bool foy1Elev: 0x441FCB0, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool bonBElev: 0x441FCB0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
+	bool fazerElev: 0x441FCB0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
+	bool WAElev: 0x441FCB0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
+	bool chicaElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
+	bool montyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
+	bool roxyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
+	bool freddyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
+	bool aftonElev: 0x441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
 }
 //base address change: 1290
 state("fnaf9-Win64-Shipping", "v1.05"){
 	//Keeps track of Freddy's power
+	int freddyPower: 0x4420F40, 0x188, 0xE0, 0x38, 0xB8;
 	int freddyPower: 0x4420F40, 0x188, 0xE0, 0x38, 0xB8;
 
 	//Arcade pointers
@@ -78,6 +115,9 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int pq3Attack: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
+	int FBFlags: 0x4420F40, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
+	int DGens: 0x4420F40, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
+	int MGBucket: 0x4420F40, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158;
 	int FBFlags: 0x4420F40, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 	int DGens: 0x4420F40, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
 	int MGBucket: 0x4420F40, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158;
@@ -91,6 +131,11 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	int escapeEndLeaveButtonEast: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268;
 	int carEndLeaveButton: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268;
 	int fireEndLeaveButton: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
+	bool vannyEndButton: 0x4420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int escapeEndLeaveButtonWest: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
+	int escapeEndLeaveButtonEast: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268;
+	int carEndLeaveButton: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268;
+	int fireEndLeaveButton: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
 	bool aftonEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
@@ -99,8 +144,15 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	bool carEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
 	bool escapeEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
 	bool pqEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
+	bool aftonEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
+	bool vannyEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
+	bool fireEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
+	bool carEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
+	bool escapeEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
+	bool pqEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
+	float aftonHealth: 0x4420F40, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 	float aftonHealth: 0x4420F40, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 
 	//Keeps track of items (splashScreen = 4)
@@ -112,8 +164,13 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	//In-Game Clock
 	int hourClock: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
 	int minuteClock: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
+	int hourClock: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0)
+ 	bool pause: 0x441D880, 0x8B8;
+	bool menu: 0x4420F40, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
+	int blackScreen: 0x444C568, 0x184;
  	bool pause: 0x441D880, 0x8B8;
 	bool menu: 0x4420F40, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x444C568, 0x184;
@@ -131,10 +188,23 @@ state("fnaf9-Win64-Shipping", "v1.05"){
 	bool roxyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
 	bool freddyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
 	bool aftonElev: 0x4420F40, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool kitElev: 0x4420F40, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool monGElev: 0x4420F40, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8;
+	bool foy2Elev: 0x4420F40, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8;
+	bool foy1Elev: 0x4420F40, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool bonBElev: 0x4420F40, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
+	bool fazerElev: 0x4420F40, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
+	bool WAElev: 0x4420F40, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
+	bool chicaElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
+	bool montyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
+	bool roxyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
+	bool freddyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
+	bool aftonElev: 0x4420F40, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
 }
 //base address change: 13D0
 state("fnaf9-Win64-Shipping", "v1.07"){
 	//Keeps track of Freddy's power
+	int freddyPower: 0x4421080, 0x188, 0xE0, 0x38, 0xB8;
 	int freddyPower: 0x4421080, 0x188, 0xE0, 0x38, 0xB8;
 
 	//Arcade pointers
@@ -145,11 +215,20 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	int DGens: 0x4421080, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
 	int MGBucket: 0x4421080, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158;
 	int FBFlags: 0x4421080, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
+	int DGens: 0x4421080, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
+	int MGBucket: 0x4421080, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158;
+	int FBFlags: 0x4421080, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
 
 	//Positions
 	float worldCheck: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
+	float worldCheck: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
 
 	//Buttons that start cutscenes (pressed = 0)
+	bool vannyEndButton: 0x4421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
+	int escapeEndLeaveButtonWest: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
+	int escapeEndLeaveButtonEast: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268;
+	int carEndLeaveButton: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
+	int fireEndLeaveButton: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268;
 	bool vannyEndButton: 0x4421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
 	int escapeEndLeaveButtonWest: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
 	int escapeEndLeaveButtonEast: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268;
@@ -163,11 +242,19 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	bool carEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
 	bool escapeEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
 	bool pqEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
+	bool aftonEnd: 0x441D9C0, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
+	bool vannyEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
+	bool fireEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
+	bool carEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
+	bool escapeEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
+	bool pqEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
 
 	//Afton's health (starts at 750, -100 per button)
 	float aftonHealth: 0x4421080, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
 
 	//Keeps track of items
+	int securityBadgeCount: 0x4421080, 0x188, 0xE0, 0x38, 0xC0;
+	int itemCount: 0x4421080, 0x188, 0xE0, 0x38, 0x138;
 	int securityBadgeCount: 0x4421080, 0x188, 0xE0, 0x38, 0xC0;
 	int itemCount: 0x4421080, 0x188, 0xE0, 0x38, 0x138;
 	int splashScreen: 0x444C6B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
@@ -176,8 +263,12 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	//In-Game Clock
 	int hourClock: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
 	int minuteClock: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
+	int hourClock: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Menus
+ 	bool pause: 0x441D9C0, 0x8B8;
+	bool menu: 0x4421080, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
  	bool pause: 0x441D9C0, 0x8B8;
 	bool menu: 0x4421080, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x444C6B0, 0x184;
@@ -195,10 +286,23 @@ state("fnaf9-Win64-Shipping", "v1.07"){
 	bool roxyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
 	bool freddyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
 	bool aftonElev: 0x4421080, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool kitElev: 0x4421080, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool monGElev: 0x4421080, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8;
+	bool foy2Elev: 0x4421080, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8;
+	bool foy1Elev: 0x4421080, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool bonBElev: 0x4421080, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
+	bool fazerElev: 0x4421080, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
+	bool WAElev: 0x4421080, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
+	bool chicaElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
+	bool montyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
+	bool roxyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
+	bool freddyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
+	bool aftonElev: 0x4421080, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
 }
 //base address change: 8C00
 state("fnaf9-Win64-Shipping", "v1.11"){
 	//Keeps track of Freddy's battery popup
+	bool freddyThing: 0x44288B0, 0x128, 0x310, 0x120, 0x18C;
 	bool freddyThing: 0x44288B0, 0x128, 0x310, 0x120, 0x18C;
 
 	//Arcade pointers
@@ -206,6 +310,9 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int pq3Attack: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
 
 	//Counter pointers
+	int DGens: 0x44288B0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
+	int MGBucket: 0x44288B0, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158;
+	int FBFlags: 0x44288B0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290;
 	int DGens: 0x44288B0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
 	int MGBucket: 0x44288B0, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158;
 	int FBFlags: 0x44288B0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290;
@@ -219,8 +326,19 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	int escapeEndLeaveButtonEast: 0x44288B0, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270;
 	int carEndLeaveButton: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270;
 	int fireEndLeaveButton: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270;
+	bool vannyEndButton: 0x44288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
+	int escapeEndLeaveButtonWest: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270;
+	int escapeEndLeaveButtonEast: 0x44288B0, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270;
+	int carEndLeaveButton: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270;
+	int fireEndLeaveButton: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270;
 
 	//Keeps track of when an ending cutscene has started playing (end = 1)
+	bool aftonEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
+	bool vannyEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
+	bool fireEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
+	bool carEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
+	bool escapeEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
+	bool pqEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
 	bool aftonEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
 	bool vannyEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
 	bool fireEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
@@ -240,13 +358,30 @@ state("fnaf9-Win64-Shipping", "v1.11"){
 	//In-Game Clock
 	int hourClock: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
 	int minuteClock: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
+	int hourClock: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
+	int minuteClock: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
 
 	//Used to pause the timer (pause = 3, menu = 0)
  	bool pause: 0x44251F0, 0x8B8;
 	bool menu: 0x44288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
 	int blackScreen: 0x4453ED8, 0x184;
+ 	bool pause: 0x44251F0, 0x8B8;
+	bool menu: 0x44288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
+	int blackScreen: 0x4453ED8, 0x184;
 
 	//Elevator pointers (elevator in motion = 1)
+	bool kitElev: 0x44288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool monGElev: 0x44288B0, 0x98, 0x808, 0x128, 0xA8, 0xA0, 0x2E8;
+	bool foy2Elev: 0x44288B0, 0x98, 0x818, 0x128, 0xA8, 0xA8, 0x2E8;
+	bool foy1Elev: 0x44288B0, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
+	bool bonBElev: 0x44288B0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
+	bool fazerElev: 0x44288B0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
+	bool WAElev: 0x44288B0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
+	bool chicaElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x300, 0x2E8;
+	bool montyElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x2C0, 0x2E8;
+	bool roxyElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x2E0, 0x2E8;
+	bool freddyElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x2D0, 0x2E8;
+	bool aftonElev: 0x44288B0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
 	bool kitElev: 0x44288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
 	bool monGElev: 0x44288B0, 0x98, 0x808, 0x128, 0xA8, 0xA0, 0x2E8;
 	bool foy2Elev: 0x44288B0, 0x98, 0x818, 0x128, 0xA8, 0xA8, 0x2E8;
@@ -878,6 +1013,15 @@ startup {
 	}
 
 	settings.CurrentDefaultParent = null;
+	settings.Add("Refresh Rate", true);
+
+	settings.CurrentDefaultParent = "Refresh Rate";
+	settings.Add("120Hz", false);
+	settings.Add("60Hz", true);
+	settings.Add("30Hz", false);
+	settings.Add("15Hz", false);
+
+	settings.CurrentDefaultParent = null;
 	settings.Add("Reset Settings", false);
 
 	settings.CurrentDefaultParent = "Reset Settings";
@@ -887,53 +1031,29 @@ startup {
 init {
 	//Sets the version of the game upon startup
 	int gameSize = modules.First().ModuleMemorySize;
-	refreshRate = 60;
 
-	print("Size = " + gameSize.ToString());
+	//1.04: 76210176
+	//1.05: 76214272
+	//1.07: 76218368
+	//1.11: 76251136
 
-	int posBase = 0;
-	
-	switch (gameSize){
-		default: {
-			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
-			version = "Unsupported";
-			return;
-		}
-
-		case 76210176: {
-			version = "v1.04";
-			posBase = 0x441C5F0;
-			break;
-		}
-		
-		case 76214272: {
-			version = "v1.05"; 
-			posBase = 0x441D880;
-			break;
-		}
-
-		case 76218368: {
-			version = "v1.07"; 
-			posBase = 0x441D9C0;
-			break;
-		}
-
-		case 76251136: {
-			version = "v1.11"; 
-			posBase = 0x44251F0;
-			break;
-		}
+	if (vars.versionSize == 76210176){
+		version = "v1.04";
+	}
+	else if (vars.versionSize == 76214272){
+		version = "v1.05";
+	}
+	else if (vars.versionSize == 76218368){
+		version = "v1.07";
+	}
+	else if (vars.versionSize == 76251136){
+		version = "v1.11";
 	}
 
 	print("Version = " + version);
-	print("posBase = " + posBase);
-
-	vars.posWatcher = new MemoryWatcher<Vector3f>(new DeepPointer(posBase, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0));
 }
 
 update {
-	if (version == "Unsupported") return false;
-
 	//Elevator Pointer List
 	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
 		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
@@ -949,10 +1069,6 @@ update {
 		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
 		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
 	};
-
-	vars.posWatcher.Update(game);
-	current.pos = vars.posWatcher.Current;
-	old.pos = vars.posWatcher.Old;
 }
 
 start {
@@ -976,9 +1092,9 @@ start {
 		print("MGBucket: " + old.MGBucket.ToString() + " => " + current.MGBucket.ToString());
 		print("FBFlags: " + old.FBFlags.ToString() + " => " + current.FBFlags.ToString());
 		print("worldCheck: " + old.worldCheck.ToString() + " => " + current.worldCheck.ToString());
-		print("pos.X: " + old.pos.X.ToString() + " => " + current.pos.X.ToString());
-		print("pos.Y: " + old.pos.Y.ToString() + " => " + current.pos.Y.ToString());
-		print("pos.Z: " + old.pos.Z.ToString() + " => " + current.pos.Z.ToString());
+		print("posX: " + old.posX.ToString() + " => " + current.posX.ToString());
+		print("posY: " + old.posY.ToString() + " => " + current.posY.ToString());
+		print("posZ: " + old.posZ.ToString() + " => " + current.posZ.ToString());
 		print("vannyEndButton: " + old.vannyEndButton.ToString() + " => " + current.vannyEndButton.ToString());
 		print("escapeEndLeaveButtonEast: " + old.escapeEndLeaveButtonEast.ToString() + " => " + current.escapeEndLeaveButtonEast.ToString());
 		print("carEndLeaveButton: " + old.carEndLeaveButton.ToString() + " => " + current.carEndLeaveButton.ToString());
@@ -1019,133 +1135,141 @@ start {
 
 	vars.checkItem = (Func<string, double, double, double, bool>)((name, x, y, z) => {
 		//checks in a sphere (radius 300u)
-		if (!settings[name]) return false;
-		if (Math.Pow(current.pos.X - x, 2) + Math.Pow(current.pos.Y - y, 2) + Math.Pow(current.pos.Z - z, 2) > Math.Pow(300, 2)) return false;
-		print(name);
-		return true;
+		if (settings[name]){
+			if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) + Math.Pow(current.posZ - z, 2) <= Math.Pow(300, 2)){
+				print(name);
+				return true;
+			}
+		}
+		return false;
 	});
 
 	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (!settings[name]) return false;
-		if (!check) return false;
-		if (xLB > current.pos.X) return false;
-		if (current.pos.X > xUB) return false;
-		if (yLB > current.pos.Y) return false;
-		if (current.pos.Y > yUB) return false;
-		if (zLB > current.pos.Z) return false;
-		if (current.pos.Z > zUB) return false;
-		print(name);
-		return true;
+		if (settings[name]){
+			if (check){
+				if (xLB <= current.posX && current.posX <= xUB && yLB <= current.posY && current.posY <= yUB && zLB <= current.posZ && current.posZ <= zUB){
+					print(name);
+					return true;
+				}
+			}
+		}
+		return false;
 	});
 
-	vars.checkArcadePosition = (Func<double, double, double, double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB, oldX, oldY, oldZ) => {
-		if (xLB > oldX) return false;
-		if (oldX > xUB) return false;
-		if (yLB > oldY) return false;
-		if (oldY > yUB) return false;
-		if (zLB > oldZ) return false;
-		if (oldZ > zUB) return false;
+	vars.checkArcadePosition = (Func<double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB) => {
+		if (xLB > old.pos.X) return false;
+		if (old.pos.X > xUB) return false;
+		if (yLB > old.pos.Y) return false;
+		if (old.pos.Y > yUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
 		return true;
 	});
 
 	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
-		if (!settings[name]) return false;
-		if (!check) return false;
-		if (zLB > current.pos.Z) return false;
-		if (current.pos.Z > zUB) return false;
-	
-		double slope = (y1 - y2) / (x1 - x2);
-		double xAvg = (x1 + x2) / 2;
-		double yAvg = (y1 + y2) / 2;
+		if (settings[name]){
+			if (check){
+				if (zLB <= current.posZ && current.posZ <= zUB){
+				
+					double slope = (y1 - y2) / (x1 - x2);
+					double xAvg = (x1 + x2) / 2;
+					double yAvg = (y1 + y2) / 2;
 
-		do {
-			//north
-			if (yB - yAvg >= slope * (xB - xAvg)){
-				if (current.pos.Y - yAvg < slope * (current.pos.X - xAvg)) break;
-
-				//east
-				if (slope >= 0){
-					if (current.pos.X < xB) break;
-					if (current.pos.Y > yB) break;
-
-					print(name);
-					return true;
-				}
-				//west
-				else {
-					if (current.pos.X > xB) break;
-					if (current.pos.Y > yB) break;
-
-					print(name);
-					return true;
-				}
-			}
-			//south
-			else {
-				if (current.pos.Y - yAvg > slope * (current.pos.X - xAvg)) break;
-
-				//west
-				if (slope >= 0){
-					if (current.pos.X > xB) break;
-					if (current.pos.Y < yB) break;
-					
-					print(name);
-					return true;
-				}
-				//east
-				else {
-					if (current.pos.X < xB) break;
-					if (current.pos.Y < yB) break;
-
-					print(name);
-					return true;
+					//north
+					if (yB - yAvg >= slope * (xB - xAvg)){
+						if (current.posY - yAvg >= slope * (current.posX - xAvg)){
+							//east
+							if (slope >= 0){
+								if (current.posX >= xB && current.posY <= yB){
+									print(name);
+									return true;
+								}
+							}
+							//west
+							if (slope < 0){
+								if (current.posX <= xB && current.posY <= yB){
+									print(name);
+									return true;
+								}
+							}
+						}
+					}
+					//south
+					if (yB - yAvg < slope * (xB - xAvg)){
+						if (current.posY - yAvg < slope * (current.posX - xAvg)){
+							//west
+							if (slope >= 0){
+								if (current.posX <= xB && current.posY >= yB){
+									print(name);
+									return true;
+								}
+							}
+							//east
+							if (slope < 0){
+								if (current.posX >= xB && current.posY >= yB){
+									print(name);
+									return true;
+								}
+							}
+						}
+					}
 				}
 			}
-		} while (false);
+		}
 		return false;
 	});
 
 	vars.checkPQPosition1 = (Func<double, double, double, double, double, double, bool>)((currentX, currentY, xLB, xUB, yLB, yUB) => {
-		if (xLB > currentX) return false;
-		if (currentX > xUB) return false;
-		if (yLB > currentY) return false;
-		if (currentY > yUB) return false;
-		return true;
+		if (xLB <= currentX && currentX <= xUB && yLB <= currentY && currentY <= yUB){
+			return true;
+		}
+		return false;
 	});
 
 	vars.checkPQPosition2 = (Func<string, bool, bool>)((name, check) => {
-		if (!settings[name]) return false;
-		if (!check) return false;
-		print(name);
-		return true;
+		if (settings[name]){
+			if (check){
+				print(name);
+				return true;
+			}
+		}
+		return false;
 	});
 
 	vars.checkGen = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, x, y, zLB, zUB, oldPositionX, oldPositionY) => {
 		//checks in a circle (radius 200)
-		if (!settings[name]) return false;
-		if (!check) return false;
-		if (zLB > current.pos.Z) return false;
-		if (current.pos.Z > zUB) return false;
-		if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) > Math.Pow(200, 2)) return false;
-		if (Math.Pow(current.pos.X - x, 2) + Math.Pow(current.pos.Y - y, 2) <= Math.Pow(200, 2)) return false;
-		print(name);
-		return true;
+		if (settings[name]){
+			if (check){
+				if (zLB <= current.posZ && current.posZ <= zUB){
+					if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) <= Math.Pow(200, 2)){
+						if (Math.Pow(current.posX - x, 2) + Math.Pow(current.posY - y, 2) > Math.Pow(200, 2)){
+							print(name);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	});
 
 	vars.checkTime = (Func<string, bool, int, int, bool>)((name, check, hour, minute) => {
-		if (!settings[name]) return false;
-		if (!check) return false;
-		if (current.hourClock != hour) return false;
-		if (current.minuteClock != minute) return false;
-		print(name);
-		return true;
+		if (settings[name]){
+			if (check){
+				if (current.hourClock == hour && current.minuteClock == minute){
+					print(name);
+					return true;
+				}
+			}
+		}
+		return false;
 	});
 
 	vars.resetVariables = (Action)(() => {
 		//Used to keep certain splits from repeating (reset)
 	
 		//Arcade Splits
-		vars.arcade = "N/A";
+		vars.arcade = "null";
 		//bb
 		vars.bb_start = true;
 		//monty golf
@@ -1215,7 +1339,10 @@ start {
 		vars.dPlant = true;
 
 		//Item Splits
+		vars.iBowlingPass = true;
 		vars.nLobbyItemsUsed = 0;
+		vars.iFazcam = true;
+		vars.iMazercisePass = true;
 
 		//Positional Splits
 		vars.pEnBonnieBowl = true;
@@ -1259,80 +1386,90 @@ start {
 
 		vars.isLoading = true;
 		vars.onMenu = true;
-		do {
-			if (version == "v1.04"){
-				vars.isLoading = false;
-			}
-			else {
-				if (current.worldCheck == 0) break;
-				if (old.worldCheck != 0) break;
+		if (version == "v1.04"){
+			vars.isLoading = false;
+		}
+		else {
+			if (current.worldCheck != 0 && old.worldCheck == 0){
 				vars.loadingConstant = current.blackScreen;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
-		} while(false);
+		}
 	});
+
+	//Updates refreshRate
+	if (settings["Refresh Rate"]){
+		if (settings["120Hz"]){
+			if (refreshRate != 120){
+				print("Refresh Rate = 120Hz");
+				refreshRate = 120;
+			}
+		}
+		else if (settings["60Hz"]){
+			if (refreshRate != 60){
+				print("Refresh Rate = 60Hz");
+				refreshRate = 60;
+			}
+		}
+		else if (settings["30Hz"]){
+			if (refreshRate != 30){
+				print("Refresh Rate = 30Hz");
+				refreshRate = 30;
+			}
+		}
+		else if (settings["15Hz"]){
+			if (refreshRate != 15){
+				print("Refresh Rate = 15Hz");
+				refreshRate = 15;
+			}
+		}
+		else {
+			if (refreshRate != 60){
+				print("Default Refresh Rate = 60Hz");
+				refreshRate = 60;
+			}
+		}
+	}
+	else {
+		if (refreshRate != 60){
+			print("Default Refresh Rate = 60Hz");
+			refreshRate = 60;
+		}
+	}
 
 	//Resets variables upon stopping timer
 	vars.resetVariables();
 
 	//Start conditions (time, Freddy power, freddyThing)
-	do {
-		if (current.hourClock != -1) break; 
-		if (current.minuteClock != 0) break;
-
-		if (version == "v1.11"){
-			if (!current.freddyThing) break;
-			if (old.freddyThing) break;
-			print("Start Timer");
-			return true;
+	if (current.hourClock == -1 && current.minuteClock == 0){
+		if (version != "v1.11"){
+			if (current.freddyPower < old.freddyPower){
+				print("Start Timer");
+				return true;
+			}
 		}
-		else {
-			if (current.freddyPower >= old.freddyPower) break;
-			print("Start Timer");
-			return true;
+		else if (version == "v1.11"){
+			if (current.freddyThing && !old.freddyThing){
+				print("Start Timer");
+				return true;
+			}
 		}
-		
-	} while (false);
+    }
 }
 
 reset {
 	//Resets timer upon starting new game
-	if (!settings["Reset Settings"]) return false;
-	if (old.hourClock == -1) return false;
-	if (!vars.checkTime("Reset On New Game", true, -1, 0)) return false;
-	return true;
+	if (settings["Reset Settings"]){
+		if (old.hourClock != -1){
+			if (vars.checkTime("Reset On New Game", true, -1, 0)){
+				return true;
+			}
+		}
+	}
 }
 
 isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
-
-	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (vars.arcade != "N/A"){
-			vars.arcade = "N/A";
-			print("Arcade: " + vars.arcade);
-		}
-	}
-	else if (vars.arcade == "N/A"){
-		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300, old.pos.X, old.pos.Y, old.pos.Z)){
-			vars.arcade = "BB Arcade";
-		}
-		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100, old.pos.X, old.pos.Y, old.pos.Z)){
-			vars.arcade = "Monty Golf";
-		}
-		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300, old.pos.X, old.pos.Y, old.pos.Z)){
-			vars.arcade = "Princess Quest 1";
-		}
-		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400, old.pos.X, old.pos.Y, old.pos.Z)){
-			vars.arcade = "Princess Quest 2";
-		}
-		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700, old.pos.X, old.pos.Y, old.pos.Z)){
-			vars.arcade = "Princess Quest 3";
-		}
-		
-		if (vars.arcade != "N/A"){
-			print("Arcade: " + vars.arcade);
-		}
-	}
 
 	foreach (var data in vars.elevatorPointers){
 		do {
@@ -1345,16 +1482,13 @@ isLoading {
 			}
 
 			if (settings[data.Item1 + "_EUOE"]){
-				if (!data.Item3){
-					print("EveryUse");
-				}
+				print("EveryUse");
 				return true;
 			}
 			else if (settings[data.Item1 + "_POOU"]){
 				if (!settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]) break;
-				if (!data.Item3){
-					print("OnlyOnUse#");
-				}
+
+				print("OnlyOnUse#");
 				return true;
 			}
 		} while (false);
@@ -1366,7 +1500,6 @@ isLoading {
 		if (version == "v1.04"){
 				if (current.hasLoaded){
 					vars.isLoading = false;
-					break;
 				}
 				else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
 					print("Stop Timer When Loading");
@@ -1388,53 +1521,64 @@ isLoading {
 	do {
 		if (!settings["Stop Timer On Menu"]) break;
 
-		if (current.worldCheck == 0 && vars.arcade == "N/A"){
-			if (!vars.onMenu){
+		if ((current.worldCheck == 0 && (old.worldCheck != 0 && old.pause)) || current.menu){
+			vars.onMenu = true;
+			if (!old.menu){
 				print("Stop Timer On Menu");
 			}
-			vars.onMenu = true;
 		}
 		else if (current.worldCheck != 0 || vars.arcade != "N/A"){
 			vars.onMenu = false;
 		}
 
-		if (vars.onMenu){
-			return true;
+			if (vars.onMenu){
+				return true;
+			}
 		}
-	} while (false);
-
-	do {
-		if (!settings["Stop Timer When Paused"]) break;
-		if (!current.pause) break;
-		if (current.worldCheck == 0) break;
-
-		if (!old.pause){
-			print("Stop Timer When Paused");
+		if (settings["Stop Timer When Paused"]){
+			if (current.pause && current.worldCheck != 0){
+				if (!old.pause){
+					print("Stop Timer When Paused");
+				}
+				return true;
+			}
 		}
-
-		return true;
-	} while (false);
-
+	}
 	return false;
 }
 
 split {
 	if (!settings["Split Settings"]) return false;
 
-	if (vars.pq1_end && vars.arcade == "N/A"){
-		print("pq1_end");
-		vars.pq1_end = false;
-		return true;
+	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
+		if (vars.arcade != "N/A"){
+			vars.arcade = "N/A";
+			print("Arcade: " + vars.arcade);
+		}
 	}
-	if (vars.pq2_end && vars.arcade == "N/A"){
-		print("pq2_end");
-		vars.pq2_end = false;
-		return true;
+	else if (vars.arcade == "N/A"){
+		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300)){
+			vars.arcade = "BB Arcade";
+		}
+		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100)){
+			vars.arcade = "Monty Golf";
+		}
+		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300)){
+			vars.arcade = "Princess Quest 1";
+		}
+		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400)){
+			vars.arcade = "Princess Quest 2";
+		}
+		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700)){
+			vars.arcade = "Princess Quest 3";
+		}
+		print("Arcade: " + vars.arcade);
 	}
 
 	string dumbVariable = vars.arcade;
 	switch (dumbVariable){
 		default: {
+			if (!settings["Arcade Splits"]) break;
 			if (!settings[vars.arcade]) break;
 
 			switch (dumbVariable){
@@ -1458,6 +1602,7 @@ split {
 					if (current.golfStrokeCount == 0){
 						vars.nHole = 0;
 					}
+
 					if (current.golfStrokeCount > old.golfStrokeCount){
 						vars.nHole++;
 						if (settings["Finish Hole " + vars.nHole.ToString()]){
@@ -1465,7 +1610,6 @@ split {
 							return true;
 						}
 					}
-					break;
 				}
 
 				default: {
@@ -1529,7 +1673,13 @@ split {
 							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 2020, 2210, 3425, 5125)){
 								if (vars.checkPQPosition2("pq1_9", vars.pq1_9)){
 									vars.pq1_9 = false;
-									vars.pq1_end = true;
+									return true;
+								}
+							}
+							if (settings["pq1_end"] && vars.pq1_end){
+								if (old.pos.X >= 4920 && current.pos.X == 0){
+									vars.pq1_end = false;
+									print("pq1_end");
 									return true;
 								}
 							}
@@ -1573,15 +1723,15 @@ split {
 								}
 							}
 							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1070, 2205, 830, 1470)){
-								if (vars.pq2_6){
-									vars.pq2_8 = true;
-								}
 								if (vars.checkPQPosition2("pq2_6", vars.pq2_6)){
 									vars.pq2_6 = false;
 									return true;
 								}
 							}
 							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 5, 1975, -185, 190)){
+								if (vars.pq2_7){
+									vars.pq2_8 = true;
+								}
 								if (vars.checkPQPosition2("pq2_7", vars.pq2_7)){
 									vars.pq2_7 = false;
 									return true;
@@ -1602,7 +1752,13 @@ split {
 							if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 4845, 5045, 725, 925)){
 								if (vars.checkPQPosition2("pq2_10", vars.pq2_10)){
 									vars.pq2_10 = false;
-									vars.pq2_end = true;
+									return true;
+								}
+							}
+							if (settings["pq2_end"] && vars.pq2_end){
+								if (old.pos.Y >= 4845 && current.pos.Y == 0){
+									vars.pq2_end = false;
+									print("pq2_end");
 									return true;
 								}
 							}
@@ -1701,44 +1857,44 @@ split {
 					}
 				}
 				if (settings["Sewer Generators"]){
-					if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, old.posX, old.posY)){
 						vars.cSewerGen1 = false;
 						return true;
 					}
-					if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, old.posX, old.posY)){
 						vars.cSewerGen2 = false;
 						return true;
 					}
-					if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, old.posX, old.posY)){
 						vars.cSewerGen3 = false;
 						return true;
 					}
 				}
 				if (settings["West Arcade Generators"]){
-					if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, old.posX, old.posY)){
 						vars.cWAGen1 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, old.posX, old.posY)){
 						vars.cWAGen2 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, old.posX, old.posY)){
 						vars.cWAGen3 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, old.posX, old.posY)){
 						vars.cWAGen4 = false;
 						return true;
 					}
-					if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, old.pos.X, old.pos.Y)){
+					if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, old.posX, old.posY)){
 						vars.cWAGen5 = false;
 						return true;
 					}
 				}
 			}
 			if (settings["Deload Splits"]){
-				if (current.pos.X != old.pos.X || current.pos.Y != old.pos.Y || current.pos.Z != old.pos.Z){
+				if (current.posX != old.posX || current.posY != old.posY || current.posZ != old.posZ){
 					if (settings["D_Backstage"]){
 						if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4450, 53050, -5320, 52750, -5300, 53235, 1780, 2000)){
 							vars.dFoxyCutout = false;
@@ -1762,7 +1918,7 @@ split {
 						}
 					}
 					if (settings["D_Monty Golf Sublobby"]){
-						if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 42100, 2062, 3000)){
+						if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 43860, 2062, 3000)){
 							vars.dMGFence = false;
 							return true;
 						}
@@ -1873,7 +2029,7 @@ split {
 				}
 				if (settings["Princess Quest Ending"]){
 					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
-						if (current.pq3Attack && !old.pq3Attack){
+						if (current.pq3Attack > old.pq3Attack){
 							if (vars.checkPQPosition2("pq3_endEndings", vars.pq3_end)){
 								vars.pq3_end = false;
 								return true;
@@ -1913,7 +2069,7 @@ split {
 				if (settings["Item List"]){
 					//sets the local fazwatch name
 					if (current.itemCount == 0){
-						if (old.windUp >= 0.99){
+						if (current.splashScreen > old.splashScreen){
 							vars.fazwatchName = old.interactionName;
 						}
 					}
@@ -1923,777 +2079,624 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					//vars.fazwatchName = 0x3921BE;
-					long dumbVariable2 = old.interactionName - vars.fazwatchName;
-					if (current.windUp == 0 && old.windUp >= 0.99){
-						//Collectables, Equipment, CDs, Message Bags
+					//CDS
+					if (current.splashScreen > old.splashScreen){
+						/* Used for testing so that you don't have to collect the fazwatch every time;
+						vars.fazwatchName = 0x3922B8;
+						*/
+						print(Convert.ToString(old.interactionName,16));
+						long dumbVariable2 = old.interactionName - vars.fazwatchName;
 						switch (dumbVariable2){
-							//Default (unaccounted items)
-							default: {
-								if (dumbVariable2 >= 0){
-									print("0x" + Convert.ToString(dumbVariable2, 16));
-								}
-								else {
-									print("-0x" + Convert.ToString(Math.Abs(dumbVariable2), 16));
-								}
-								break;
-							}
-							//Collectables
-							case -0xF9: {
-								if (!settings["Bonnie Plush"]) break;
-								print("Bonnie Plush");
-								return true;
-							}
-							case 0xDFFFFFFBE: {
-								if (!settings["Chica Balloon"]) break;
-								print("Chica Balloon");
-								return true;
-							}
-							case -0x13A: {
-								if (current.pos.X < 0){
-									if (!settings["CB_Chica Magnet"]) break;
-									print("CB_Chica Magnet");
+							//Backstage 
+								//Collectables
+								case 0xCFFFFFFBE: {
+									if (!settings["El Chip Piñata"]) break;
+									print("El Chip Piñata");
 									return true;
 								}
-								else {
-									if (!settings["WA_Chica Magnet"]) break;
-									print("WA_Chica Magnet");
+								case -0xB9: {
+									if (!settings["Freddy Icon Shirt"]) break;
+									print("Freddy Icon Shirt");
 									return true;
 								}
-							}
-							case 0x20000009B: {
-								if (!settings["Chica Mask"]) break;
-								print("Chica Mask");
-								return true;
-							}
-							case 0x7FFFFFFBE: {
-								if (!settings["Chica Name Shirt"]) break;
-								print("Chica Name Shirt");
-								return true;
-							}
-							case 0x12FFFFFFBE: {
-								if (!settings["Chica Piñata"]) break;
-								print("Chica Piñata");
-								return true;
-							}
-							case -0x119: {
-								if (!settings["Comedy Mask"]) break;
-								print("Comedy Mask");
-								return true;
-							}
-							case 0x11FFFFFFBE: {
-								if (!settings["Cupcake Piñata"]) break;
-								print("Cupcake Piñata");
-								return true;
-							}
-							case 0xCFFFFFFBE: {
-								if (!settings["El Chip Piñata"]) break;
-								print("El Chip Piñata");
-								return true;
-							}
-							case -0xCA: {
-								if (!settings["Four Block Shirt"]) break;
-								print("Four Block Shirt");
-								return true;
-							}
-							case -0xF1: {
-								if (!settings["Foxy Plush"]) break;
-								print("Foxy Plush");
-								return true;
-							}
-							case 0xEFFFFFFBE: {
-								if (!settings["Freddy Balloon"]) break;
-								print("Freddy Balloon");
-								return true;
-							}
-							case -0xC3: {
-								if (!settings["Freddy Face Shirt"]) break;
-								print("Freddy Face Shirt");
-								return true;
-							}
-							case -0xB9: {
-								if (!settings["Freddy Icon Shirt"]) break;
-								print("Freddy Icon Shirt");
-								return true;
-							}
-							case -0x132: {
-								if (!settings["Freddy Magnet"]) break;
-								print("Freddy Magnet");
-								return true;
-							}
-							case 0x10000009B: {
-								if (!settings["Freddy Mask"]) break;
-								print("Freddy Mask");
-								return true;
-							}
-							case 0x5FFFFFFBE: {
-								if (!settings["Freddy Name Shirt"]) break;
-								print("Freddy Name Shirt");
-								return true;
-							}
-							case 0x9FFFFFFBE: {
-								if (!settings["Freddy Piñata"]) break;
-								print("Freddy Piñata");
-								return true;
-							}
-							case 0x3FFFFFFBE: {
-								if (!settings["Frozen Chica Treat"]) break;
-								print("Frozen Chica Treat");
-								return true;
-							}
-							case 0x2FFFFFFBE: {
-								if (!settings["Frozen Freddy Treat"]) break;
-								print("Frozen Freddy Treat");
-								return true;
-							}
-							case 0x1FFFFFFBE: {
-								if (!settings["Frozen Monty Treat"]) break;
-								print("Frozen Monty Treat");
-								return true;
-							}
-							case 0x4FFFFFFBE: {
-								if (!settings["Frozen Roxy Treat"]) break;
-								print("Frozen Roxy Treat");
-								return true;
-							}
-							case 0x70000013D: {
-								if (!settings["Glam Chica Figure"]) break;
-								print("Glam Chica Figure");
-								return true;
-							}
-							case 0x20000013D: {
-								if (!settings["Glam Chica Plush"]) break;
-								print("Glam Chica Plush");
-								return true;
-							}
-							case 0x60000013D: {
-								if (!settings["Glam Freddy Figure"]) break;
-								print("Glam Freddy Figure");
-								return true;
-							}
-							case 0x30000013D: {
-								if (!settings["Glam Freddy Plush"]) break;
-								print("Glam Freddy Plush");
-								return true;
-							}
-							case 0x80000013D: {
-								if (!settings["Glam Monty Figure"]) break;
-								print("Glam Monty Figure");
-								return true;
-							}
-							case 0x40000013D: {
-								if (!settings["Glam Monty Plush"]) break;
-								print("Glam Monty Plush");
-								return true;
-							}
-							case 0x90000013D: {
-								if (!settings["Glam Roxy Figure"]) break;
-								print("Glam Roxy Figure");
-								return true;
-							}
-							case 0x10000013D: {
-								if (!settings["Glam Roxy Plush"]) break;
-								print("Glam Roxy Plush");
-								return true;
-							}
-							case -0x18E: {
-								if (!settings["Go Kart"]) break;
-								print("Go Kart");
-								return true;
-							}
-							case -0x189: {
-								if (!settings["Golden Chica"]) break;
-								print("Golden Chica");
-								return true;
-							}
-							case -0x181: {
-								if (!settings["Golden Freddy"]) break;
-								print("Golden Freddy");
-								return true;
-							}
-							case -0x178: {
-								if (!settings["Golden Monty"]) break;
-								print("Golden Monty");
-								return true;
-							}
-							case -0x170: {
-								if (!settings["Golden Moon"]) break;
-								print("Golden Moon");
-								return true;
-							}
-							case -0x168: {
-								if (!settings["Golden Roxy"]) break;
-								print("Golden Roxy");
-								return true;
-							}
-							case -0x160: {
-								if (!settings["Golden Sun"]) break;
-								print("Golden Sun");
-								return true;
-							}
-							case 0xFFFFFFFBE: {
-								if (!settings["Monty Balloon"]) break;
-								print("Monty Balloon");
-								return true;
-							}
-							case -0x129: {
-								if (!settings["Monty Magnet"]) break;
-								print("Monty Magnet");
-								return true;
-							}
-							case 0x40000009B: {
-								if (!settings["Monty Mask"]) break;
-								print("Monty Mask");
-								return true;
-							}
-							case 0xBFFFFFFBE: {
-								if (!settings["Monty Name Shirt"]) break;
-								print("Monty Name Shirt");
-								return true;
-							}
-							case 0x13FFFFFFBE: {
-								if (!settings["Monty Piñata"]) break;
-								print("Monty Piñata");
-								return true;
-							}
-							case 0xB0000013D: {
-								if (!settings["Moon Figure"]) break;
-								print("Moon Figure");
-								return true;
-							}
-							case 0x50000013D: {
-								if (!settings["Moon Plush"]) break;
-								print("Moon Plush");
-								return true;
-							}
-							case -0xEA: {
-								if (!settings["Nightmare Plush"]) break;
-								print("Nightmare Plush");
-								return true;
-							}
-							case -0xE2: {
-								if (!settings["D_Old Poster"]) break;
-								print("D_Old Poster");
-								return true;
-							}
-							case -0xD0: {
-								if (!settings["F_Old Poster"]) break;
-								print("F_Old Poster");
-								return true;
-							}
-							case -0xD6: {
-								if (!settings["S_Old Poster"]) break;
-								print("S_Old Poster");
-								return true;
-							}
-							case -0xDC: {
-								if (!settings["L_Old Poster"]) break;
-								print("L_Old Poster");
-								return true;
-							}
-							case -0x109: {
-								if (!settings["Piñata"]) break;
-								print("Piñata");
-								return true;
-							}
-							case 0x6FFFFFFBE: {
-								if (!settings["Pizzaplex Logo Shirt"]) break;
-								print("Pizzaplex Logo Shirt");
-								return true;
-							}
-							case -0x100: {
-								if (!settings["Plush Baby"]) break;
-								print("Plush Baby");
-								return true;
-							}
-							case 0x10FFFFFFBE: {
-								if (!settings["Roxy Balloon"]) break;
-								print("Roxy Balloon");
-								return true;
-							}
-							case -0x121: {
-								if (!settings["Roxy Magnet"]) break;
-								print("Roxy Magnet");
-								return true;
-							}
-							case 0x30000009B: {
-								if (!settings["Roxy Mask"]) break;
-								print("Roxy Mask");
-								return true;
-							}
-							case 0x8FFFFFFBE: {
-								if (!settings["Roxy Name Shirt"]) break;
-								print("Roxy Name Shirt");
-								return true;
-							}
-							case 0xAFFFFFFBE: {
-								if (!settings["Roxy Piñata"]) break;
-								print("Roxy Piñata");
-								return true;
-							}
-							case -0x159: {
-								if (!settings["Space Chica Keychain"]) break;
-								print("Space Chica Keychain");
-								return true;
-							}
-							case -0x151: {
-								if (!settings["Space Freddy Keychain"]) break;
-								print("Space Freddy Keychain");
-								return true;
-							}
-							case -0x149: {
-								if (!settings["Space Monty Keychain"]) break;
-								print("Space Monty Keychain");
-								return true;
-							}
-							case -0x141: {
-								if (!settings["Space Roxy Keychain"]) break;
-								print("Space Roxy Keychain");
-								return true;
-							}
-							case -0xAF: {
-								if (!settings["Star Shirt"]) break;
-								print("Star Shirt");
-								return true;
-							}
-							case 0xA0000013D: {
-								if (!settings["Sun Figure"]) break;
-								print("Sun Figure");
-								return true;
-							}
-							case 0xFFFFFFBE: {
-								if (!settings["Sun Plush"]) break;
-								print("Sun Plush");
-								return true;
-							}
-							case -0x111: {
-								if (!settings["Tragedy Mask"]) break;
-								print("Tragedy Mask");
-								return true;
-							}
-							//Equipment
-							case -0x2B2A97: {
-								if (!settings["Backstage Pass"]) break;
-								print("Backstage Pass");
-								return true;
-							}
-							case -0x2B29BB: {
-								if (!settings["Bowling Pass"]) break;
-								print("Bowling Pass");
-								return true;
-							}
-							case 0x200000032: {
-								if (!settings["Chica Fizzy Faz"]) break;
-								print("Chica Fizzy Faz");
-								return true;
-							}
-							case 0x39226FFFC6DD54: {
-								if (!settings["Chica's Voicebox"]) break;
-								print("Chica's Voicebox");
-								return true;
-							}
-							case -0x25: {
-								if (!settings["Damaged Head"] || !vars.tDamagedHead) break;
-								print("Damaged Head");
-								vars.tDamagedHead = false;
-								return true;
-							}
-							case -0x1E: {
-								if (!settings["Dance Pass"]) break;
-								print("Dance Pass");
-								return true;
-							}
-							case -0x38: {
-								if (!settings["Entrance Pass"]) break;
-								print("Entrance Pass");
-								return true;
-							}
-							case -0x384BC0: {
-								if (!settings["Fazcam"]) break;
-								print("Fazcam");
-								return true;
-							}
-							case 0x0: {
-								if (!settings["Fazwatch"]) break;
-								print("Fazwatch");
-								return true;
-							}
-							case -0x384BB1: {
-								if (!settings["Flashlight"]) break;
-								print("Flashlight");
-								return true;
-							}
-							case 0x200000015: {
-								if (!settings["D_Flashlight Upgrade"]) break;
-								print("D_Flashlight Upgrade");
-								return true;
-							}
-							case 0x300000015: {
-								if (!settings["B_Flashlight Upgrade"]) break;
-								print("B_Flashlight Upgrade");
-								return true;
-							}
-							case 0x100000015: {
-								if (!settings["MG_Flashlight Upgrade"]) break;
-								print("MG_Flashlight Upgrade");
-								return true;
-							}
-							case 0x300000032: {
-								if (!settings["Freddy Fizzy Faz"]) break;
-								print("Freddy Fizzy Faz");
-								return true;
-							}
-							case 0x20000001F: {
-								if (!settings["RR_Freddy Upgrade"]) break;
-								print("RR_Freddy Upgrade");
-								return true;
-							}
-							case 0x10000001F: {
-								if (!settings["MA_Freddy Upgrade"]) break;
-								print("MA_Freddy Upgrade");
-								return true;
-							}
-							case 0x3E: {
-								if (!settings["Hoodie"]) break;
-								print("Hoodie");
-								return true;
-							}
-							case -0x391FF3: {
-								if (!settings["MA_Mapbot's Map"]) break;
-								print("MA_Mapbot's Map");
-								return true;
-							}
-							case 0x148: {
-								if (!settings["UT_Mapbot's Map"]) break;
-								print("UT_Mapbot's Map");
-								return true;
-							}
-							case -0x2B23DE: {
-								if (!settings["Mazercise Control Key"]) break;
-								print("Mazercise Control Key");
-								return true;
-							}
-							case 0x54: {
-								if (!settings["Mazercise Pass"]) break;
-								print("Mazercise Pass");
-								return true;
-							}
-							case 0x400000032: {
-								if (!settings["Monty Fizzy Faz"]) break;
-								print("Monty Fizzy Faz");
-								return true;
-							}
-							case -0x2B2195: {
-								if (!settings["Monty Mystery Mix"]) break;
-								print("Monty Mystery Mix");
-								return true;
-							}
-							case 0x5D: {
-								if (current.pos.X <= -3000){
+								case 0x70000013D: {
+									if (!settings["Glam Chica Figure"]) break;
+									print("Glam Chica Figure");
+									return true;
+								}
+								//Equipment
+								case -0x2B2A97: {
+									if (!settings["Backstage Pass"]) break;
+									print("Backstage Pass");
+									return true;
+								}
+								case 0x300000015: {
+									if (!settings["B_Flashlight Upgrade"]) break;
+									print("B_Flashlight Upgrade");
+									return true;
+								}
+							//Basement Kitchen
+								//Collectables
+								case -0x132: {
+									if (!settings["Freddy Magnet"]) break;
+									print("Freddy Magnet");
+									return true;
+								}
+								case -0x189: {
+									if (!settings["Golden Chica"]) break;
+									print("Golden Chica");
+									return true;
+								}
+								//Equipment
+								case 0x300000032: {
+									if (!settings["Freddy Fizzy Faz"]) break;
+									print("Freddy Fizzy Faz");
+									return true;
+								}
+							//Bonnie Bowl
+								//Collectables
+								case -0xF9: {
+									if (!settings["Bonnie Plush"]) break;
+									print("Bonnie Plush");
+									return true;
+								}
+								case -0x178: {
+									if (!settings["Golden Monty"]) break;
+									print("Golden Monty");
+									return true;
+								}
+								//Equipment
+								case -0x2B2195: {
+									if (!settings["Monty Mystery Mix"]) break;
+									print("Monty Mystery Mix");
+									return true;
+								}
+							//Chica's Bakery
+								//Collectables
+								case -0x13A: {
+									if (current.pos.X < 0){
+										if (!settings["CB_Chica Magnet"]) break;
+										print("CB_Chica Magnet");
+										return true;
+									}
+									else {
+										if (!settings["WA_Chica Magnet"]) break;
+										print("WA_Chica Magnet");
+										return true;
+									}
+								}
+								case -0x129: {
+									if (!settings["Monty Magnet"]) break;
+									print("Monty Magnet");
+									return true;
+								}
+								//Equipment
+								case 0x3E: {
+									if (!settings["Hoodie"]) break;
+									print("Hoodie");
+									return true;
+								}
+							//Daycare
+								//Collectables
+								case 0x10000009B: {
+									if (!settings["Freddy Mask"]) break;
+									print("Freddy Mask");
+									return true;
+								}
+								case 0x3FFFFFFBE: {
+									if (!settings["Frozen Chica Treat"]) break;
+									print("Frozen Chica Treat");
+									return true;
+								}
+								case 0x60000013D: {
+									if (!settings["Glam Freddy Figure"]) break;
+									print("Glam Freddy Figure");
+									return true;
+								}
+								case -0x170: {
+									if (!settings["Golden Moon"]) break;
+									print("Golden Moon");
+									return true;
+								}
+								case -0xE2: {
+									if (!settings["D_Old Poster"]) break;
+									print("D_Old Poster");
+									return true;
+								}
+								case -0x100: {
+									if (!settings["Plush Baby"]) break;
+									print("Plush Baby");
+									return true;
+								}
+								//Equipment
+								case -0x384BB1: {
+									if (!settings["Flashlight"]) break;
+									print("Flashlight");
+									return true;
+								}
+								case 0x200000015: {
+									if (!settings["D_Flashlight Upgrade"]) break;
+									print("D_Flashlight Upgrade");
+									return true;
+								}
+								case -0x2B23DE: {
+									if (!settings["Mazercise Control Key"]) break;
+									print("Mazercise Control Key");
+									return true;
+								}
+							//El Chips
+								//Collectables
+								case 0xDFFFFFFBE: {
+									if (!settings["Chica Balloon"]) break;
+									print("Chica Balloon");
+									return true;
+								}
+								//Equipment
+								case 0x400000032: {
+									if (!settings["Monty Fizzy Faz"]) break;
+									print("Monty Fizzy Faz");
+									return true;
+								}
+							//Fazerblast
+								//Collectables
+								case 0xEFFFFFFBE: {
+									if (!settings["Freddy Balloon"]) break;
+									print("Freddy Balloon");
+									return true;
+								}
+								case -0xD0: {
+									if (!settings["F_Old Poster"]) break;
+									print("F_Old Poster");
+									return true;
+								}
+								case -0x159: {
+									if (!settings["Space Chica Keychain"]) break;
+									print("Space Chica Keychain");
+									return true;
+								}
+								case -0x141: {
+									if (!settings["Space Roxy Keychain"]) break;
+									print("Space Roxy Keychain");
+									return true;
+								}
+								//Equipment
+								case -0x2B29BB: {
+									if (!settings["Bowling Pass"]) break;
+									print("Bowling Pass");
+									return true;
+								}
+							//Fazerblast Sublobby
+								//Collectables
+								case 0x9FFFFFFBE: {
+									if (!settings["Freddy Piñata"]) break;
+									print("Freddy Piñata");
+									return true;
+								}
+								case -0x151: {
+									if (!settings["Space Freddy Keychain"]) break;
+									print("Space Freddy Keychain");
+									return true;
+								}
+							//Kids Cove Sublobby
+								//Collectables
+								case -0x160: {
+									if (!settings["Golden Sun"]) break;
+									print("Golden Sun");
+									return true;
+								}
+								case 0x50000013D: {
+									if (!settings["Moon Plush"]) break;
+									print("Moon Plush");
+									return true;
+								}
+							//Laundry
+								//Collectables
+								case 0x10000013D: {
+									if (!settings["Glam Roxy Plush"]) break;
+									print("Glam Roxy Plush");
+									return true;
+								}
+								case -0xDC: {
+									if (!settings["L_Old Poster"]) break;
+									print("L_Old Poster");
+									return true;
+								}
+								case -0xAF: {
+									if (!settings["Star Shirt"]) break;
+									print("Star Shirt");
+									return true;
+								}
+							//Lobby
+								//Collectables
+								case 0x7FFFFFFBE: {
+									if (!settings["Chica Name Shirt"]) break;
+									print("Chica Name Shirt");
+									return true;
+								}
+								case 0x11FFFFFFBE: {
+									if (!settings["Cupcake Piñata"]) break;
+									print("Cupcake Piñata");
+									return true;
+								}
+								case 0x5FFFFFFBE: {
+									if (!settings["Freddy Name Shirt"]) break;
+									print("Freddy Name Shirt");
+									return true;
+								}
+								case 0x20000013D: {
+									if (!settings["Glam Chica Plush"]) break;
+									print("Glam Chica Plush");
+									return true;
+								}
+								case 0xFFFFFFBE: {
+									if (!settings["Sun Plush"]) break;
+									print("Sun Plush");
+									return true;
+								}
+								//Equipment
+								case 0x200000032: {
+									if (!settings["Chica Fizzy Faz"]) break;
+									print("Chica Fizzy Faz");
+									return true;
+								}
+								case -0x38: {
+									if (!settings["Entrance Pass"]) break;
+									print("Entrance Pass");
+									return true;
+								}
+								case -0x2B214F: {
+									if (!settings["Mr. Hippo Magnet"]) break;
+									print("Mr. Hippo Magnet");
+									return true;
+								}
+								case 0xB3: {
+									if (!settings["Screwdriver"]) break;
+									print("Screwdriver");
+									return true;
+								}
+							//Main Atrium
+								//Collectables
+								case 0x13FFFFFFBE: {
+									if (!settings["Monty Piñata"]) break;
+									print("Monty Piñata");
+									return true;
+								}
+								case 0x8FFFFFFBE: {
+									if (!settings["Roxy Name Shirt"]) break;
+									print("Roxy Name Shirt");
+									return true;
+								}
+								//Equipment
+								case 0x10000001F: {
+									if (!settings["MA_Freddy Upgrade"]) break;
+									print("MA_Freddy Upgrade");
+									return true;
+								}
+								case -0x391FF3: {
+									if (!settings["MA_Mapbot's Map"]) break;
+									print("MA_Mapbot's Map");
+									return true;
+								}
+							//Monty Golf
+								//Collectables
+								case -0x18E: {
+									if (!settings["Go Kart"]) break;
+									print("Go Kart");
+									return true;
+								}
+								case -0x111: {
+									if (!settings["Tragedy Mask"]) break;
+									print("Tragedy Mask");
+									return true;
+								}
+								//Equipment
+								case -0x384BC0: {
+									if (!settings["Fazcam"]) break;
+									print("Fazcam");
+									return true;
+								}
+								case 0x100000015: {
+									if (!settings["MG_Flashlight Upgrade"]) break;
+									print("MG_Flashlight Upgrade");
+									return true;
+								}
+								case 0x54: {
+									if (!settings["Mazercise Pass"]) break;
+									print("Mazercise Pass");
+									return true;
+								}
+								case 0x5D: {
 									if (!settings["Monty's Claws"]) break;
 									print("Monty's Claws");
 									return true;
 								}
-								else {
-									if (!settings["MONTY UPGRADE"]) break;
-									print("MONTY UPGRADE");
+							//Monty Golf Sublobby
+								//Collectables
+								case 0x1FFFFFFBE: {
+									if (!settings["Frozen Monty Treat"]) break;
+									print("Frozen Monty Treat");
 									return true;
 								}
-							}
-							case -0x2B20B7: {
-								if (!settings["Mr. Hippo Magnet"]) break;
-								print("Mr. Hippo Magnet");
-								return true;
-							}
-							case 0x71: {
-								if (!settings["Party Pass"]) break;
-								print("Party Pass");
-								return true;
-							}
-							case 0x95: {
-								if (!settings["Photo Pass"]) break;
-								print("Photo Pass");
-								return true;
-							}
-							case 0x100000032: {
-								if (!settings["Roxy Fizzy Faz"]) break;
-								print("Roxy Fizzy Faz");
-								return true;
-							}
-							case 0xAE: {
-								if (current.pos.X >= 0){
+								case 0x80000013D: {
+									if (!settings["Glam Monty Figure"]) break;
+									print("Glam Monty Figure");
+									return true;
+								}
+							//Parts & Service
+								//Collectables
+								case 0x90000013D: {
+									if (!settings["Glam Roxy Figure"]) break;
+									print("Glam Roxy Figure");
+									return true;
+								}
+							//Prize Counter
+								//Collectables
+								case 0x2FFFFFFBE: {
+									if (!settings["Frozen Freddy Treat"]) break;
+									print("Frozen Freddy Treat");
+									return true;
+								}
+								case 0x40000009B: {
+									if (!settings["Monty Mask"]) break;
+									print("Monty Mask");
+									return true;
+								}
+							//Rockstar Row
+								//Collectables
+								case 0x20000009B: {
+									if (!settings["Chica Mask"]) break;
+									print("Chica Mask");
+									return true;
+								}
+								case -0xCA: {
+									if (!settings["Four Block Shirt"]) break;
+									print("Four Block Shirt");
+									return true;
+								}
+								case -0x181: {
+									if (!settings["Golden Freddy"]) break;
+									print("Golden Freddy");
+									return true;
+								}
+								case 0xBFFFFFFBE: {
+									if (!settings["Monty Name Shirt"]) break;
+									print("Monty Name Shirt");
+									return true;
+								}
+								case 0x6FFFFFFBE: {
+									if (!settings["Pizzaplex Logo Shirt"]) break;
+									print("Pizzaplex Logo Shirt");
+									return true;
+								}
+								//Equipment
+								case 0x0: {
+									if (!settings["Fazwatch"]) break;
+									print("Fazwatch");
+									return true;
+								}
+								case 0x71: {
+									if (!settings["Party Pass"]) break;
+									print("Party Pass");
+									return true;
+								}
+								case 0x95: {
+									if (!settings["Photo Pass"]) break;
+									print("Photo Pass");
+									return true;
+								}
+							//Roxy Raceway
+								//Collectables
+								case 0xFFFFFFFBE: {
+									if (!settings["Monty Balloon"]) break;
+									print("Monty Balloon");
+									return true;
+								}
+								case -0x149: {
+									if (!settings["Space Monty Keychain"]) break;
+									print("Space Monty Keychain");
+									return true;
+								}
+								//Equipment
+								case -0x25: {
+									if (!settings["Damaged Head"]) break;
+									print("Damaged Head");
+									return true;
+								}
+								case -0x1E: {
+									if (!settings["Dance Pass"]) break;
+									print("Dance Pass");
+									return true;
+								}
+								case 0x20000001F: {
+									if (!settings["RR_Freddy Upgrade"]) break;
+									print("RR_Freddy Upgrade");
+									return true;
+								}
+								case 0xAE: {
 									if (!settings["Roxy's Eyes"]) break;
 									print("Roxy's Eyes");
 									return true;
 								}
-								else {
-									if (!settings["ROXY UPGRADE"]) break;
-									print("ROXY UPGRADE");
+								case 0x100000032: {
+									if (!settings["Roxy Fizzy Faz"]) break;
+									print("Roxy Fizzy Faz");
+									return true;
+								}
+							//Roxy Raceway Sublobby
+								//Collectables
+								case 0x4FFFFFFBE: {
+									if (!settings["Frozen Roxy Treat"]) break;
+									print("Frozen Roxy Treat");
+									return true;
+								}
+								case 0x10FFFFFFBE: {
+									if (!settings["Roxy Balloon"]) break;
+									print("Roxy Balloon");
+									return true;
+								}
+								case 0x30000009B: {
+									if (!settings["Roxy Mask"]) break;
+									print("Roxy Mask");
+									return true;
+								}
+							//Roxy Salon
+								//Collectables
+								case -0x121: {
+									if (!settings["Roxy Magnet"]) break;
+									print("Roxy Magnet");
+									return true;
+								}
+								case 0xAFFFFFFBE: {
+									if (!settings["Roxy Piñata"]) break;
+									print("Roxy Piñata");
+									return true;
+								}
+								//Equipment
+								case 0x27: {
+									if (!settings["Shoes"]) break;
+									print("Shoes");
+									return true;
+								}
+							//Salads & Sides
+								//Collectables
+								case -0xC3: {
+									if (!settings["Freddy Face Shirt"]) break;
+									print("Freddy Face Shirt");
+									return true;
+								}
+								case -0x109: {
+									if (!settings["Piñata"]) break;
+									print("Piñata");
+									return true;
+								}
+							//Sewers
+								//Collectables
+								case -0xD6: {
+									if (!settings["S_Old Poster"]) break;
+									print("S_Old Poster");
+									return true;
+								}
+								//Equipment
+								case 0x39226FFFC6DD54: {
+									if (!settings["Chica's Voicebox"]) break;
+									print("Chica's Voicebox");
+									return true;
+								}
+							//Utility Tunnels
+								//Collectables
+								case 0x12FFFFFFBE: {
+									if (!settings["Chica Piñata"]) break;
+									print("Chica Piñata");
+									return true;
+								}
+								case -0x119: {
+									if (!settings["Comedy Mask"]) break;
+									print("Comedy Mask");
+									return true;
+								}
+								case -0xF1: {
+									if (!settings["Foxy Plush"]) break;
+									print("Foxy Plush");
+									return true;
+								}
+								case 0x30000013D: {
+									if (!settings["Glam Freddy Plush"]) break;
+									print("Glam Freddy Plush");
+									return true;
+								}
+								case -0x168: {
+									if (!settings["Golden Roxy"]) break;
+									print("Golden Roxy");
+									return true;
+								}
+								case 0xB0000013D: {
+									if (!settings["Moon Figure"]) break;
+									print("Moon Figure");
+									return true;
+								}
+								case 0xA0000013D: {
+									if (!settings["Sun Figure"]) break;
+									print("Sun Figure");
+									return true;
+								}
+								//Equipment
+								case 0x148: {
+									if (!settings["UT_Mapbot's Map"]) break;
+									print("UT_Mapbot's Map");
+									return true;
+								}
+							//Warehouse
+								//Collectables
+								case -0xEA: {
+									if (!settings["Nightmare Plush"]) break;
+									print("Nightmare Plush");
+									return true;
+								}
+							//West Arcade
+								//Collectables
+								//Chica Magnet is a special case; grouped with Chica's Bakery
+								case 0x40000013D: {
+									if (!settings["Glam Monty Plush"]) break;
+									print("Glam Monty Plush");
+									return true;
+								}
+							//DEFAULT
+								default: break;
+						}
+					}
+					//extraneous items:
+					//Fazerblasters
+					//Daycare Pass
+					//Cameras
+					//Repaired Head
+					//Badges
+					//CDS
+					if (settings["Equipment"]){
+						if (current.itemCount > old.itemCount){
+							if (settings["E_Fazerblast"]){
+								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
+									return true;
+								}
+								if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
+									vars.tGoldBlaster = false;
 									return true;
 								}
 							}
-							case 0xB3: {
-								if (!settings["Screwdriver"]) break;
-								print("Screwdriver");
+						}
+						if (settings["E_Lobby"]){
+							if (900 <= current.pos.X && current.pos.X <= 1300 && 23300 <= current.pos.Y && current.pos.Y <= 23600 && 1400 <= current.pos.Z && current.pos.Z <= 1600){
+								if (current.itemCount == old.itemCount - 1){
+									vars.nLobbyItemsUsed++;
+								}
+								if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
+									print("Daycare Pass");
+									return true;
+								}
+							}
+						}
+						if (settings["E_Utility Tunnels"]){
+							if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
 								return true;
 							}
-							case 0x27: {
-								if (!settings["Shoes"]) break;
-								print("Shoes");
+						}
+						if (settings["E_West Arcade"]){
+							if (vars.checkTime("Repaired Head", vars.tRepairedHead, 5, 30)){
+								vars.tRepairedHead = false;
 								return true;
 							}
-							//CDs
-							case -0x9000000A4: {
-								if (!settings["CD_Backstage Podium"]) break;
-								print("CD_Backstage Podium");
+						}
+					}
+					if (settings["Security Badges"]){
+						if (current.securityBadgeCount > old.securityBadgeCount){
+							if (settings["Security Badge " + current.securityBadgeCount]){
+								print("Security Badge " + current.securityBadgeCount);
 								return true;
 							}
-							case -0x8000000A4: {
-								if (!settings["CD_Bonnie Bowl"]) break;
-								print("CD_Bonnie Bowl");
-								return true;
-							}
-							case -0x3000000A4: {
-								if (!settings["CD_Chica's Bakery"]) break;
-								print("CD_Chica's Bakery");
-								return true;
-							}
-							case -0xF000000A4: {
-								if (!settings["CD_East Atrium Stage"]) break;
-								print("CD_East Atrium Stage");
-								return true;
-							}
-							case -0x7000000A4: {
-								if (!settings["CD_Fazerblast"]) break;
-								print("CD_Fazerblast");
-								return true;
-							}
-							case -0x4000000A4: {
-								if (!settings["CD_Kid's Cove"]) break;
-								print("CD_Kid's Cove");
-								return true;
-							}
-							case -0xA000000A4: {
-								if (!settings["CD_Main Atrium"]) break;
-								print("CD_Main Atrium");
-								return true;
-							}
-							case -0xE000000A4: {
-								if (!settings["CD_Mazercise"]) break;
-								print("CD_Mazercise");
-								return true;
-							}
-							case -0xD000000A4: {
-								if (!settings["CD_Monty Golf"]) break;
-								print("CD_Monty Golf");
-								return true;
-							}
-							case -0x1000000A4: {
-								if (!settings["CD_Rockstar Row Foxy"]) break;
-								print("CD_Rockstar Row Foxy");
-								return true;
-							}
-							case -0xB000000A4: {
-								if (!settings["CD_Rockstar Row Helpy"]) break;
-								print("CD_Rockstar Row Helpy");
-								return true;
-							}
-							case -0xC000000A4: {
-								if (!settings["CD_Roxy Raceway"]) break;
-								print("CD_Roxy Raceway");
-								return true;
-							}
-							case -0x5000000A4: {
-								if (!settings["CD_Roxy Salon"]) break;
-								print("CD_Roxy Salon");
-								return true;
-							}
-							case -0x2000000A4: {
-								if (!settings["CD_Utility Tunnels Couch"]) break;
-								print("CD_Utility Tunnels Couch");
-								return true;
-							}
-							case -0x6000000A4: {
-								if (!settings["CD_Utility Tunnels Foxy Plush"]) break;
-								print("CD_Utility Tunnels Foxy Plush");
-								return true;
-							}
-							case -0x10000000A4: {
-								if (!settings["CD_West Arcade"]) break;
-								print("CD_West Arcade");
-								return true;
-							}
-							//Messages
-							//MONTY UPGRADE included with Monty's Claws equipment
-							//ROXY UPGRADE included with Roxy's Eyes equipment
-							case 0x20A: {
-								if (!settings["AC Inspection"]) break;
-								print("AC Inspection");
-								return true;
-							}
-							case 0x272: {
-								if (!settings["All Staff Meeting"]) break;
-								print("All Staff Meeting");
-								return true;
-							}
-							case 0x16D: {
-								if (!settings["AR-CADE MAINT LOG"]) break;
-								print("AR-CADE MAINT LOG");
-								return true;
-							}
-							case 0x19A: {
-								if (!settings["ARCADE CONSPIRACY"]) break;
-								print("ARCADE CONSPIRACY");
-								return true;
-							}
-							case 0x15B: {
-								if (!settings["BBW MAINT LOG"]) break;
-								print("BBW MAINT LOG");
-								return true;
-							}
-							case 0x21E: {
-								if (!settings["BEHIND THE MAZE"]) break;
-								print("BEHIND THE MAZE");
-								return true;
-							}
-							case 0x23D: {
-								if (!settings["BETTER EMPLOYEES"]) break;
-								print("BETTER EMPLOYEES");
-								return true;
-							}
-							case 0x164: {
-								if (!settings["CFF MAINT LOG"]) break;
-								print("CFF MAINT LOG");
-								return true;
-							}
-							case 0x243: {
-								if (!settings["Chasing Cars"]) break;
-								print("Chasing Cars");
-								return true;
-							}
-							case 0x1CD: {
-								if (!settings["CHICA REPORT"]) break;
-								print("CHICA REPORT");
-								return true;
-							}
-							case 0x1D3: {
-								if (!settings["CHICA UPGRADE"]) break;
-								print("CHICA UPGRADE");
-								return true;
-							}
-							case 0x1C7: {
-								if (!settings["COMPACTOR INSTRUCTIONS"]) break;
-								print("COMPACTOR INSTRUCTIONS");
-								return true;
-							}
-							case 0x279: {
-								if (!settings["Drink Fizzy Faz!!!"]) break;
-								print("Drink Fizzy Faz!!!");
-								return true;
-							}
-							case 0x288: {
-								if (!settings["Easy Money"]) break;
-								print("Easy Money");
-								return true;
-							}
-							case 0x156: {
-								if (!settings["False Alarm"]) break;
-								print("False Alarm");
-								return true;
-							}
-							case 0x201: {
-								if (!settings["Food Storage"]) break;
-								print("Food Storage");
-								return true;
-							}
-							case 0x1E1: {
-								if (!settings["HI DAVE"]) break;
-								print("HI DAVE");
-								return true;
-							}
-							case 0x1BB: {
-								if (!settings["Hide the Mix"]) break;
-								print("Hide the Mix");
-								return true;
-							}
-							case 0x1E7: {
-								if (!settings["IT IS HAPPENING AGAIN"]) break;
-								print("IT IS HAPPENING AGAIN");
-								return true;
-							}
-							case 0x224: {
-								if (!settings["Job Security"]) break;
-								print("Job Security");
-								return true;
-							}
-							case 0x296: {
-								if (!settings["MARKED FOR DELETION"]) break;
-								print("MARKED FOR DELETION");
-								return true;
-							}
-							case 0x1B3: {
-								if (!settings["MISSING"]) break;
-								print("MISSING");
-								return true;
-							}
-							case 0x22A: {
-								if (!settings["Monty Mischief"]) break;
-								print("Monty Mischief");
-								return true;
-							}
-							case 0x230: {
-								if (!settings["NIGHT SHIFT"]) break;
-								print("NIGHT SHIFT");
-								return true;
-							}
-							case 0x236: {
-								if (!settings["Night Terrors"]) break;
-								print("Night Terrors");
-								return true;
-							}
-							case 0x1F0: {
-								if (!settings["No Flash Photography"]) break;
-								print("No Flash Photography");
-								return true;
-							}
-							case 0x291: {
-								if (!settings["NO QUESTIONS ASKED"]) break;
-								print("NO QUESTIONS ASKED");
-								return true;
-							}
-							case 0x261: {
-								if (!settings["OLD ELEVATOR"]) break;
-								print("OLD ELEVATOR");
-								return true;
-							}
-							case 0x188: {
-								if (!settings["OUT OF ORDER"]) break;
-								print("OUT OF ORDER");
-								return true;
-							}
-							case 0x1F5: {
-								if (!settings["Party Foul"]) break;
-								print("Party Foul");
-								return true;
-							}
-							case 0x267: {
-								if (!settings["PINK SLIP"]) break;
-								print("PINK SLIP");
-								return true;
-							}
-							case 0x25B: {
-								if (!settings["POWER DRAIN"]) break;
-								print("POWER DRAIN");
-								return true;
-							}
-							case 0x176: {
-								if (!settings["PQ1 MAINT LOG"]) break;
-								print("PQ1 MAINT LOG");
-								return true;
-							}
-							case 0x17F: {
-								if (!settings["PQ2 MAINT LOG"]) break;
-								print("PQ2 MAINT LOG");
+						}
+					}
+					if (settings["Retro CDs"]){
+						if (current.splashScreen > old.splashScreen){
+							if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
 								return true;
 							}
 							case 0x26B: {
@@ -2761,55 +2764,10 @@ split {
 								print("Understudy");
 								return true;
 							}
-						}
-					}
-					//extraneous items:
-					//Fazerblasters
-					//Daycare Pass
-					//Cameras
-					//Repaired Head
-					//Badges
-					if (settings["Equipment"]){
-						if (current.itemCount > old.itemCount){
-							if (settings["E_Fazerblast"]){
-								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
-									return true;
-								}
-								if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
-									vars.tGoldBlaster = false;
-									return true;
-								}
-							}
-						}
-						if (settings["E_Lobby"]){
-							if (900 <= current.pos.X && current.pos.X <= 1300 && 23300 <= current.pos.Y && current.pos.Y <= 23600 && 1400 <= current.pos.Z && current.pos.Z <= 1600){
-								if (current.itemCount == old.itemCount - 1){
-									vars.nLobbyItemsUsed++;
-								}
-								if (settings["Daycare Pass"] && vars.nLobbyItemsUsed == 2 && current.itemCount == old.itemCount - 1){
-									print("Daycare Pass");
-									return true;
-								}
-							}
-						}
-						if (settings["E_Utility Tunnels"]){
-							if (current.itemCount > old.itemCount){
-								if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
-									return true;
-								}
-							}
-						}
-						if (settings["E_West Arcade"]){
-							if (vars.checkTime("Repaired Head", vars.tRepairedHead, 5, 30)){
-								vars.tRepairedHead = false;
+							if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
 								return true;
 							}
-						}
-					}
-					if (settings["Security Badges"]){
-						if (current.securityBadgeCount > old.securityBadgeCount){
-							if (settings["Security Badge " + current.securityBadgeCount]){
-								print("Security Badge " + current.securityBadgeCount);
+							if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
 								return true;
 							}
 						}
@@ -2817,7 +2775,7 @@ split {
 				}
 			}
 			if (settings["Positional Splits"]){
-				if (current.pos.X != old.pos.X){
+				if (current.posX != old.posX){
 					if (settings["P_Bonnie Bowl"]){
 						if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
 							vars.pEnBonnieBowl = false;
@@ -2888,7 +2846,7 @@ split {
 						}
 					}
 				}
-			}
+			}	
 			if (settings["Time Splits"] && !vars.onMenu){
 				if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
 					if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
@@ -2899,23 +2857,24 @@ split {
 						vars.tUtilityRecharge = false;
 						return true;
 					}
-					if (current.pos.X >= 250 && 10 <= current.pos.Y && current.pos.Y <= 23100){
+					if (current.posX >= 250 && 10 <= current.posY && current.posY <= 23100){
 						if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
 							print("12AM (no split)");
 							if (vars.checkPosition("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 500, 2500, 19500, 23000, 1450, 2000)){
 								print("12AM (split)");
 								vars.tFrontEntrance = false;
 								return true;
+
 							}
 						}
-						if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
-							vars.tEnDaycare = false;
-							return true;
-						}
-						if (vars.checkTime("Daycare Nighttime (12:55AM)", vars.tDaycareNighttime, 0, 55)){
-							vars.tDaycareNighttime = false;
-							return true;
-						}
+					}
+					if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
+						vars.tEnDaycare = false;
+						return true;
+					}
+					if (vars.checkTime("Daycare Nighttime (12:55AM)", vars.tDaycareNighttime, 0, 55)){
+						vars.tDaycareNighttime = false;
+						return true;
 					}
 					if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", vars.tDaycareRecharge, 1, 0)){
 						vars.tDaycareRecharge = false;
@@ -3005,7 +2964,6 @@ split {
 					}
 				}
 			}
-			break;
 		}
 	}
 }
