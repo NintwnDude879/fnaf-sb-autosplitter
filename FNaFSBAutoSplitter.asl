@@ -1261,13 +1261,10 @@ start {
 		vars.tEyeUpgradeNighttime = true;
 		vars.t6am = true;
 
-		vars.isLoading = true;
+		vars.isLoading = false;
 		vars.onMenu = true;
 		do {
-			if (version == "v1.04"){
-				vars.isLoading = false;
-			}
-			else {
+			if (version != "v1.04"){
 				if (current.worldCheck == 0) break;
 				if (old.worldCheck != 0) break;
 				vars.loadingConstant = current.blackScreen;
@@ -1311,9 +1308,11 @@ isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (vars.arcade != "N/A"){
-			vars.arcade = "N/A";
-			print("Arcade: " + vars.arcade);
+		if (version != "v1.11" || current.blackScreen == vars.loadingConstant){
+			if (vars.arcade != "N/A"){
+				vars.arcade = "N/A";
+				print("Arcade: " + vars.arcade);
+			}
 		}
 	}
 	else if (vars.arcade == "N/A"){
@@ -1383,8 +1382,9 @@ isLoading {
 		}
 		else {
 			if (current.blackScreen != vars.loadingConstant) break;
-			if (old.blackScreen == vars.loadingConstant) break;
-			print("Stop Timer When Loading");
+			if (old.blackScreen != vars.loadingConstant){
+				print("Stop Timer When Loading");
+			}
 			return true;
 		}
 	} while (false);
