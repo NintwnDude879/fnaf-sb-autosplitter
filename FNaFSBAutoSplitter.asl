@@ -3,11 +3,6 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping understand how to use Cheat Engine
 
-//Todo:
-//Piturrete suggestion- add message bags
-//Redo positions
-//new monty ball pointer
-
 //base address change: 0
 state("fnaf9-Win64-Shipping", "v1.04"){
 	//Keeps track of Freddy's power
