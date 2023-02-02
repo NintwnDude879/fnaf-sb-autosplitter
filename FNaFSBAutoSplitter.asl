@@ -644,22 +644,22 @@ init {
 		}
 
 		case 76210176: {
-			vars.version = 1; // 1.04
+			vars.version = 1.04;
 			break;
 		}
 		
 		case 76214272: {
-			vars.version = 2; // 1.05
+			vars.version = 1.05;
 			break;
 		}
 
 		case 76218368: {
-			vars.version = 3; // 1.07
+			vars.version = 1.07;
 			break;
 		}
 
 		case 76251136: {
-			vars.version = 4; // 1.11
+			vars.version = 1.11;
 			break;
 		}
 	}
@@ -776,10 +776,10 @@ init {
 	if (vars.version < 1.05){
 		vars.hasLoaded = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
 	}
-	else if (vars.version == 2){
+	else if (vars.version == 1.05){
 		vars.hasLoaded = new DeepPointer(0x444C568, 0x184);
 	}
-	else if (vars.version == 3){
+	else if (vars.version == 1.07){
 		vars.hasLoaded = new DeepPointer(0x444C6B0, 0x184);
 	}
 	else {
@@ -1301,7 +1301,7 @@ start {
 		if (current.hourClock != -1) break; 
 		if (current.minuteClock != 0) break;
 
-		if (vars.version > 3){
+		if (vars.version > 1.07){
 			if (current.freddyThing != 0) break;
 			if (old.freddyThing == 1) break;
 			print("Start Timer");
@@ -1329,7 +1329,7 @@ isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (vars.version < 2){
+		if (vars.version < 1.05){
 			vars.loadingConstant = 0;
 			if (vars.arcade != "N/A"){
 				vars.arcade = "N/A";
@@ -1394,7 +1394,7 @@ isLoading {
 	do {
 		if (!settings["Stop Timer When Loading"]) break;
 
-		if (vars.version < 2){
+		if (vars.version < 1.05){
 				if (current.hasLoaded == 1){
 					vars.isLoading = false;
 					break;
