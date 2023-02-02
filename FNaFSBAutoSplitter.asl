@@ -4,7 +4,7 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping us understand how to use Cheat Engine
 
-state("fnaf9-Win64-Shipping.exe"){}
+state("fnaf9-Win64-Shipping"){}
 
 startup {
 	//setting names
@@ -635,8 +635,6 @@ init {
 	refreshRate = 60;
 
 	print("Size = " + gameSize.ToString());
-
-	int posBase = 0;
 	
 	switch (gameSize){
 		default: {
@@ -647,31 +645,26 @@ init {
 
 		case 76210176: {
 			vars.version = 1; // 1.04
-			posBase = 0x441C5F0;
 			break;
 		}
 		
 		case 76214272: {
 			vars.version = 2; // 1.05
-			posBase = 0x441D880;
 			break;
 		}
 
 		case 76218368: {
 			vars.version = 3; // 1.07
-			posBase = 0x441D9C0;
 			break;
 		}
 
 		case 76251136: {
 			vars.version = 4; // 1.11
-			posBase = 0x44251F0;
 			break;
 		}
 	}
 
 	print("Version = " + vars.version);
-	print("posBase = " + posBase);
 
 	#region sigscanning
 	
@@ -783,10 +776,10 @@ init {
 	if (vars.version < 2){
 		vars.hasLoaded = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
 	}
-	else if (vars.version = 2){
+	else if (vars.version == 2){
 		vars.hasLoaded = new DeepPointer(0x444C568, 0x184);
 	}
-	else if (vars.version = 3){
+	else if (vars.version == 3){
 		vars.hasLoaded = new DeepPointer(0x444C6B0, 0x184);
 	}
 	else {
@@ -815,7 +808,7 @@ init {
 		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" },
 
 		//Player Info
-		new MemoryWatcher<Vector3f>(new DeepPointer(posBase, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" },
+		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" },
 		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck" },
 
 		//Arcade pointers
@@ -849,16 +842,16 @@ init {
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" },
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" },
-		new MemoryWatcher<long>(new DeepPointer(vars.UWorld, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" },
-		new MemoryWatcher<float>(new DeepPointer(vars.UWorld, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" },
+		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" },
+		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" },
 		
 		//In-Game Clock
 		new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" },
 		new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" },
 		
 		//Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
-		new MemoryWatcher<int>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" },
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu" },
 		new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" },
 
 		//Elevator pointers (elevator in motion = 1)
@@ -879,25 +872,11 @@ init {
 
 update {
 	//Elevator Pointer List
-	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
-		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[1], current.kitElev, old.kitElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[2], current.bonBElev, old.bonBElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[3], current.chicaElev, old.chicaElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[4], current.fazerElev, old.fazerElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[5], current.freddyElev, old.freddyElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy1Elev, old.foy1Elev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy2Elev, old.foy2Elev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[7], current.monGElev, old.monGElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[8], current.montyElev, old.montyElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
-		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
-	};
-
+	
 	//Define all pointers by watchers
 	vars.watchers.UpdateAll(game);
 	current.freddyThing 				= vars.watchers["freddyThing"].Current;
-	current.posWatcher 					= vars.watchers["posWatcher"].Current;
+	current.pos 						= vars.watchers["posWatcher"].Current;
 	current.worldCheck 					= vars.watchers["worldCheck"].Current;
 	current.golfStrokeCount 			= vars.watchers["golfStrokeCount"].Current;
 	current.pq3Attack 					= vars.watchers["pq3Attack"].Current;
@@ -980,6 +959,21 @@ update {
 	old.montyElev 						= vars.watchers["montyElev"].Old;
 	old.roxyElev 						= vars.watchers["roxyElev"].Old;
 	old.freddyElev 						= vars.watchers["freddyElev"].Old;
+
+	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
+		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[1], current.kitElev, old.kitElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[2], current.bonBElev, old.bonBElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[3], current.chicaElev, old.chicaElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[4], current.fazerElev, old.fazerElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[5], current.freddyElev, old.freddyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy1Elev, old.foy1Elev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy2Elev, old.foy2Elev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[7], current.monGElev, old.monGElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[8], current.montyElev, old.montyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
+	};
 }
 
 start {
@@ -1308,8 +1302,8 @@ start {
 		if (current.minuteClock != 0) break;
 
 		if (vars.version > 3){
-			if (!current.freddyThing) break;
-			if (old.freddyThing) break;
+			if (current.freddyThing != 0) break;
+			if (old.freddyThing == 1) break;
 			print("Start Timer");
 			return true;
 		}
@@ -1334,7 +1328,14 @@ isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (version == "v1.04" || current.blackScreen == vars.loadingConstant){
+		if (vars.version < 2){
+			vars.loadingConstant = 0;
+			if (vars.arcade != "N/A"){
+				vars.arcade = "N/A";
+				print("Arcade: " + vars.arcade);
+			}
+		}
+		else if (current.hasLoaded == vars.loadingConstant){
 			if (vars.arcade != "N/A"){
 				vars.arcade = "N/A";
 				print("Arcade: " + vars.arcade);
@@ -1393,7 +1394,7 @@ isLoading {
 		if (!settings["Stop Timer When Loading"]) break;
 
 		if (vars.version < 2){
-				if (current.hasLoaded){
+				if (current.hasLoaded == 1){
 					vars.isLoading = false;
 					break;
 				}
