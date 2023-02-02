@@ -689,16 +689,16 @@ init {
 
 	//This is where the fun begins...
 
-	if (vars.version < 4){
+	if (vars.version < 1.11){
 		vars.freddyThing = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
 	}
 	else {
 		vars.freddyThing = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
 	}
 
-	if (vars.version < 4){
+	if (vars.version < 1.11){
 		vars.FBFlags = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-		if (vars.version < 2){
+		if (vars.version < 1.05){
 			vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
 		}
 		else {
@@ -711,15 +711,15 @@ init {
 	}
 
 	//Buttons that start cutscenes (pressed = 0)
-	if (vars.version < 4){
+	if (vars.version < 1.11){
 		vars.vannyEndButton = new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
-		if (vars.version < 2){
+		if (vars.version < 1.05){
 			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
 			vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
 			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
 			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
 		}
-		else if (vars.version = 2){
+		else if (vars.version = 1.05){
 			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
 			vars.escapeEndLeaveButtonEast	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
 			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
@@ -740,7 +740,7 @@ init {
 		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
 	}
 
-	if (vars.version < 2){
+	if (vars.version < 1.05){
 		vars.aftonEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x260, 0xD8);
 		vars.vannyEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x2D8, 0xD8);
 		vars.fireEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x318, 0xD8);
@@ -757,14 +757,14 @@ init {
 		vars.pqEnd 		= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8);
 	}
 
-	if (vars.version < 4){
+	if (vars.version < 1.11){
 		vars.aftonHealth = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
 	}
 	else {
 		vars.aftonHealth = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
 	}
 
-	if (vars.version < 4){
+	if (vars.version < 1.11){
 		vars.hourClock	= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
 		vars.minuteClock= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
 	}
@@ -773,7 +773,7 @@ init {
 		vars.minuteClock= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
 	}		
 	
-	if (vars.version < 2){
+	if (vars.version < 1.05){
 		vars.hasLoaded = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
 	}
 	else if (vars.version == 2){
@@ -786,7 +786,7 @@ init {
 		vars.hasLoaded = new DeepPointer(0x4453ED8, 0x184);
 	}
 
-	if (vars.version < 4){
+	if (vars.version < 1.11){
 		vars.monGElev 	= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
 		vars.foy2Elev 	= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
 		vars.chicaElev	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8);
@@ -985,7 +985,7 @@ start {
 	}
 	
 	vars.printAllPointers = (Action)(() => {
-		if (vars.version < 4){
+		if (vars.version < 1.11){
 			print("freddyPower: " + old.freddyThing.ToString() + " => " + current.freddyThing.ToString());
 		}
 		else {
@@ -1018,7 +1018,7 @@ start {
 		print("hourClock: " + old.hourClock.ToString() + " => " + current.hourClock.ToString());
 		print("minuteClock: " + old.minuteClock.ToString() + " => " + current.minuteClock.ToString());
 		print("pause: " + old.pause.ToString() + " => " + current.pause.ToString());
-		if (vars.version < 2){
+		if (vars.version < 1.05){
 			print("hasLoaded: " + old.hasLoaded.ToString() + " => " + current.hasLoaded.ToString());
 		}
 		else {
@@ -1281,7 +1281,7 @@ start {
 		vars.isLoading = false;
 		vars.onMenu = true;
 		do {
-			if (vars.version < 2){
+			if (vars.version >= 1.05){
 				vars.isLoading = false;
 			}
 			else {
@@ -1306,11 +1306,12 @@ start {
 			if (old.freddyThing == 1) break;
 			print("Start Timer");
 			return true;
+			return true;
 		}
 		else {
-			if (current.freddyThing >= old.freddyThing) break;
+			if (!current.freddyThing) break;
+			if (old.freddyThing) break;
 			print("Start Timer");
-			return true;
 		}
 		
 	} while (false);
@@ -1943,7 +1944,7 @@ split {
 				if (settings["Item List"]){
 					//sets the local fazwatch name
 					if (current.itemCount == 0){
-						if (old.windUp >= 0.99){
+						if (old.windUp >= 0.98){
 							vars.fazwatchName = old.interactionName;
 						}
 					}
@@ -1954,7 +1955,7 @@ split {
 					//Badges
 					//Repaired Head
 					//vars.fazwatchName = 0x3921BE;
-					if (current.windUp == 0 && old.windUp >= 0.99){
+					if (current.windUp == 0 && old.windUp >= 0.98){
 						long dumbVariable2 = old.interactionName - vars.fazwatchName;
 						//Collectables, Equipment, CDs, Message Bags
 						switch (dumbVariable2){
