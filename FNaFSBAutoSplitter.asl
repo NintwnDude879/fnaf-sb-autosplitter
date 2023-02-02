@@ -1917,7 +1917,7 @@ split {
 				if (settings["Item List"]){
 					//sets the local fazwatch name
 					if (current.itemCount == 0){
-						if (old.windUp >= 0.99){
+						if (old.windUp >= 0.98){
 							vars.fazwatchName = old.interactionName;
 						}
 					}
@@ -1928,7 +1928,7 @@ split {
 					//Badges
 					//Repaired Head
 					//vars.fazwatchName = 0x3921BE;
-					if (current.windUp == 0 && old.windUp >= 0.99){
+					if (current.windUp == 0 && old.windUp >= 0.98){
 						long dumbVariable2 = old.interactionName - vars.fazwatchName;
 						//Collectables, Equipment, CDs, Message Bags
 						switch (dumbVariable2){
