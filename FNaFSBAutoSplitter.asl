@@ -1284,7 +1284,7 @@ start {
 		vars.tEyeUpgradeNighttime = true;
 		vars.t6am = true;
 
-		vars.isLoading = true;
+		vars.isLoading = false;
 		vars.onMenu = true;
 		do {
 			if (vars.version < 2){
@@ -1334,9 +1334,11 @@ isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
 	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
-		if (vars.arcade != "N/A"){
-			vars.arcade = "N/A";
-			print("Arcade: " + vars.arcade);
+		if (version == "v1.04" || current.blackScreen == vars.loadingConstant){
+			if (vars.arcade != "N/A"){
+				vars.arcade = "N/A";
+				print("Arcade: " + vars.arcade);
+			}
 		}
 	}
 	else if (vars.arcade == "N/A"){
@@ -1950,9 +1952,9 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					vars.fazwatchName = 0x3922B8;
-					long dumbVariable2 = old.interactionName - vars.fazwatchName;
+					//vars.fazwatchName = 0x3921BE;
 					if (current.windUp == 0 && old.windUp >= 0.99){
+						long dumbVariable2 = old.interactionName - vars.fazwatchName;
 						//Collectables, Equipment, CDs, Message Bags
 						switch (dumbVariable2){
 							//Default (unaccounted items)
