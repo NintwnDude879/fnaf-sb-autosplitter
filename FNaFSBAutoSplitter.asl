@@ -4,266 +4,7 @@
 //Original autosplitter created by patrogue#4071
 //Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping us understand how to use Cheat Engine
 
-//base address change: 0
-state("fnaf9-Win64-Shipping", "v1.04"){
-	//Keeps track of Freddy's power
-	int freddyPower: 0x441FCB0, 0x188, 0xE0, 0x38, 0xB8;
-
-	//Arcade pointers
-	int golfStrokeCount: 0x441FCB0, 0x128, 0x378, 0x270, 0x230, 0x40;
-	bool pq3Attack: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
-
-	//Counter pointers
-	int DGens: 0x441FCB0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
-	int MGBucket: 0x441FCB0, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158;
-	int FBFlags: 0x441FCB0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
-
-	//Player information
-	float worldCheck: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-
-	//Buttons that start cutscenes (pressed = 0)
-	bool vannyEndButton: 0x441FCB0, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
-	int escapeEndLeaveButtonWest: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268;
-	int escapeEndLeaveButtonEast: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268;
-	int carEndLeaveButton: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268;
-	int fireEndLeaveButton: 0x441FCB0, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268;
-
-	//Keeps track of when an ending cutscene has started playing (end = 1)
-	bool aftonEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x260, 0xD8;
-	bool vannyEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x2D8, 0xD8;
-	bool fireEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x318, 0xD8;
-	bool carEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x358, 0xD8;
-	bool escapeEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x398, 0xD8;
-	bool pqEnd: 0x441C5F0, 0xDE8, 0x388, 0x118, 0x3D8, 0xD8;
-
-	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x441FCB0, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
-
-	//Keeps track of items
-	int securityBadgeCount: 0x441FCB0, 0x188, 0xE0, 0x38, 0xC0;
-	int itemCount: 0x441FCB0, 0x188, 0xE0, 0x38, 0x138;
-	int splashScreen: 0x441FCB0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
-	long interactionName: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C;
-	float windUp: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0;
-
-	//In-Game Clock
-	int hourClock: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
-	int minuteClock: 0x441C5F0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
-
-	//Used to pause the timer (pause = 3, menu = 0, blackScreen != 0)
- 	bool pause: 0x441C5F0, 0x8B8;
-	bool menu: 0x441FCB0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
-	bool hasLoaded: 0x441FCB0, 0x98, 0x8A0, 0x20, 0x128, 0x3B0;
-
-	//Elevator pointers (elevator in motion = 1)
-	bool kitElev: 0x441FCB0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool monGElev: 0x441FCB0, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8;
-	bool foy2Elev: 0x441FCB0, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8;
-	bool foy1Elev: 0x441FCB0, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool bonBElev: 0x441FCB0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
-	bool fazerElev: 0x441FCB0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
-	bool WAElev: 0x441FCB0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
-	bool chicaElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
-	bool montyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
-	bool roxyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
-	bool freddyElev: 0x441FCB0, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
-	bool aftonElev: 0x441FCB0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
-}
-//base address change: 1290
-state("fnaf9-Win64-Shipping", "v1.05"){
-	//Keeps track of Freddy's power
-	int freddyPower: 0x4420F40, 0x188, 0xE0, 0x38, 0xB8;
-
-	//Arcade pointers
-	int golfStrokeCount: 0x4420F40, 0x128, 0x378, 0x270, 0x230, 0x40;
-	bool pq3Attack: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
-
-	//Counter pointers
-	int FBFlags: 0x4420F40, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
-	int DGens: 0x4420F40, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
-	int MGBucket: 0x4420F40, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158;
-
-	//Player information
-	float worldCheck: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-
-	//Buttons that start cutscenes (pressed = 0)
-	bool vannyEndButton: 0x4420F40, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
-	int escapeEndLeaveButtonWest: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
-	int escapeEndLeaveButtonEast: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268;
-	int carEndLeaveButton: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268;
-	int fireEndLeaveButton: 0x4420F40, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
-
-	//Keeps track of when an ending cutscene has started playing (end = 1)
-	bool aftonEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
-	bool vannyEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
-	bool fireEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
-	bool carEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
-	bool escapeEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
-	bool pqEnd: 0x441D880, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
-
-	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x4420F40, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
-
-	//Keeps track of items (splashScreen = 4)
-	int splashScreen: 0x4420F40, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
-	int itemCount: 0x4420F40, 0x188, 0xE0, 0x38, 0x138;
-	int securityBadgeCount: 0x4420F40, 0x188, 0xE0, 0x38, 0xC0;
-	long interactionName: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C;
-	float windUp: 0x0441D880, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0;
-
-	//In-Game Clock
-	int hourClock: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
-	int minuteClock: 0x441D880, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
-
-	//Used to pause the timer (pause = 3, menu = 0)
- 	bool pause: 0x441D880, 0x8B8;
-	bool menu: 0x4420F40, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
-	int blackScreen: 0x444C568, 0x184;
-
-	//Elevator pointers (elevator in motion = 1)
-	bool kitElev: 0x4420F40, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool monGElev: 0x4420F40, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8;
-	bool foy2Elev: 0x4420F40, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8;
-	bool foy1Elev: 0x4420F40, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool bonBElev: 0x4420F40, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
-	bool fazerElev: 0x4420F40, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
-	bool WAElev: 0x4420F40, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
-	bool chicaElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
-	bool montyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
-	bool roxyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
-	bool freddyElev: 0x4420F40, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
-	bool aftonElev: 0x4420F40, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
-}
-//base address change: 13D0
-state("fnaf9-Win64-Shipping", "v1.07"){
-	//Keeps track of Freddy's power
-	int freddyPower: 0x4421080, 0x188, 0xE0, 0x38, 0xB8;
-
-	//Arcade pointers
-	int golfStrokeCount: 0x4421080, 0x128, 0x378, 0x270, 0x230, 0x40;
-	bool pq3Attack: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
-
-	//Countepos.Yr pointers
-	int DGens: 0x4421080, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
-	int MGBucket: 0x4421080, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158;
-	int FBFlags: 0x4421080, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290;
-
-	//Positions
-	float worldCheck: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-
-	//Buttons that start cutscenes (pressed = 0)
-	bool vannyEndButton: 0x4421080, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240;
-	int escapeEndLeaveButtonWest: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268;
-	int escapeEndLeaveButtonEast: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268;
-	int carEndLeaveButton: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268;
-	int fireEndLeaveButton: 0x4421080, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268;
-
-	//Keeps track of when an ending cutscene has started playing (end = 1)
-	bool aftonEnd: 0x441D9C0, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
-	bool vannyEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
-	bool fireEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
-	bool carEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
-	bool escapeEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
-	bool pqEnd: 0x441D998, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
-
-	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x4421080, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800;
-
-	//Keeps track of items
-	int securityBadgeCount: 0x4421080, 0x188, 0xE0, 0x38, 0xC0;
-	int itemCount: 0x4421080, 0x188, 0xE0, 0x38, 0x138;
-	int splashScreen: 0x444C6B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
-	long interactionName: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C;
-	float windUp: 0x0441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0;
-
-	//In-Game Clock
-	int hourClock: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258;
-	int minuteClock: 0x441D9C0, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C;
-
-	//Menus
- 	bool pause: 0x441D9C0, 0x8B8;
-	bool menu: 0x4421080, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
-	int blackScreen: 0x444C6B0, 0x184;
-
-	//Elevator pointers (elevator in motion = 1)
-	bool kitElev: 0x4421080, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool monGElev: 0x4421080, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8;
-	bool foy2Elev: 0x4421080, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8;
-	bool foy1Elev: 0x4421080, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool bonBElev: 0x4421080, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
-	bool fazerElev: 0x4421080, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
-	bool WAElev: 0x4421080, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
-	bool chicaElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8;
-	bool montyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x128, 0x2E8;
-	bool roxyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x288, 0x2E8;
-	bool freddyElev: 0x4421080, 0x98, 0x848, 0x128, 0xA8, 0x2D8, 0x2E8;
-	bool aftonElev: 0x4421080, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
-}
-//base address change: 8C00
-state("fnaf9-Win64-Shipping", "v1.11"){
-	//Keeps track of Freddy's battery popup
-	bool freddyThing: 0x44288B0, 0x128, 0x310, 0x120, 0x18C;
-
-	//Arcade pointers
-	int golfStrokeCount: 0x44288B0, 0x128, 0x378, 0x270, 0x230, 0x40;
-	bool pq3Attack: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9;
-
-	//Counter pointers
-	int DGens: 0x44288B0, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14;
-	int MGBucket: 0x44288B0, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158;
-	int FBFlags: 0x44288B0, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290;
-
-	//Player information
-	float worldCheck: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4;
-
-	//Buttons that start cutscenes (pressed = 0)
-	bool vannyEndButton: 0x44288B0, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240;
-	int escapeEndLeaveButtonWest: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270;
-	int escapeEndLeaveButtonEast: 0x44288B0, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270;
-	int carEndLeaveButton: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270;
-	int fireEndLeaveButton: 0x44288B0, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270;
-
-	//Keeps track of when an ending cutscene has started playing (end = 1)
-	bool aftonEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8;
-	bool vannyEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8;
-	bool fireEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8;
-	bool carEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8;
-	bool escapeEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8;
-	bool pqEnd: 0x44251F0, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8;
-
-	//Afton's health (starts at 750, -100 per button)
-	float aftonHealth: 0x44288B0, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800;
-
-	//Keeps track of items (splashScreen = 4)
-	int securityBadgeCount: 0x44288B0, 0x188, 0xE0, 0x38, 0xC0;
-	int itemCount: 0x44288B0, 0x188, 0xE0, 0x38, 0x138;
-	int splashScreen: 0x44288B0, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8;
-	long interactionName: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C;
-	float windUp: 0x044251F0, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0;
-
-	//In-Game Clock
-	int hourClock: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10;
-	int minuteClock: 0x44251F0, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14;
-
-	//Used to pause the timer (pause = 3, menu = 0)
- 	bool pause: 0x44251F0, 0x8B8;
-	bool menu: 0x44288B0, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228;
-	int blackScreen: 0x4453ED8, 0x184;
-
-	//Elevator pointers (elevator in motion = 1)
-	bool kitElev: 0x44288B0, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool monGElev: 0x44288B0, 0x98, 0x808, 0x128, 0xA8, 0xA0, 0x2E8;
-	bool foy2Elev: 0x44288B0, 0x98, 0x818, 0x128, 0xA8, 0xA8, 0x2E8;
-	bool foy1Elev: 0x44288B0, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8;
-	bool bonBElev: 0x44288B0, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8;
-	bool fazerElev: 0x44288B0, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8;
-	bool WAElev: 0x44288B0, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8;
-	bool chicaElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x300, 0x2E8;
-	bool montyElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x2C0, 0x2E8;
-	bool roxyElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x2E0, 0x2E8;
-	bool freddyElev: 0x44288B0, 0x98, 0x848, 0x128, 0xA8, 0x2D0, 0x2E8;
-	bool aftonElev: 0x44288B0, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8;
-}
+state("fnaf9-Win64-Shipping.exe"){}
 
 startup {
 	//setting names
@@ -900,44 +641,243 @@ init {
 	switch (gameSize){
 		default: {
 			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
-			version = "Unsupported";
+			vars.version = 0; // Unsupported
 			return;
 		}
 
 		case 76210176: {
-			version = "v1.04";
+			vars.version = 1; // 1.04
 			posBase = 0x441C5F0;
 			break;
 		}
 		
 		case 76214272: {
-			version = "v1.05"; 
+			vars.version = 2; // 1.05
 			posBase = 0x441D880;
 			break;
 		}
 
 		case 76218368: {
-			version = "v1.07"; 
+			vars.version = 3; // 1.07
 			posBase = 0x441D9C0;
 			break;
 		}
 
 		case 76251136: {
-			version = "v1.11"; 
+			vars.version = 4; // 1.11
 			posBase = 0x44251F0;
 			break;
 		}
 	}
 
-	print("Version = " + version);
+	print("Version = " + vars.version);
 	print("posBase = " + posBase);
 
-	vars.posWatcher = new MemoryWatcher<Vector3f>(new DeepPointer(posBase, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0));
+	#region sigscanning
+	
+	vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
+        var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
+        var pattern = new SigScanTarget(signature);
+        var location = scanner.Scan(pattern);
+        if (location == IntPtr.Zero) return IntPtr.Zero;
+        int offset = game.ReadValue<int>((IntPtr)location + instructionOffset);
+        return (IntPtr)location + offset + instructionOffset + 0x4;
+    });
+
+	// Signature scans for base address of UWorld and GEngine
+	vars.UWorld = vars.GetStaticPointerFromSig("48 89 0D ?2????02 65 48 8B 04 25 58000000", 0x3);
+	vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F8 0A 00 00 48 85 C9 74 07 48 8B 01 48 FF 60 40", 0x3);
+    
+	if(vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero){
+        throw new Exception("UWorld/GameEngine not initialized - trying again");
+    }
+
+	#endregion
+
+	//This is where the fun begins...
+
+	if (vars.version < 4){
+		vars.freddyThing = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+	}
+	else {
+		vars.freddyThing = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
+	}
+
+	if (vars.version < 4){
+		vars.FBFlags = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+		if (vars.version < 2){
+			vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
+		}
+		else {
+			vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
+		}
+	}
+	else {
+		vars.FBFlags = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
+		vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
+	}
+
+	//Buttons that start cutscenes (pressed = 0)
+	if (vars.version < 4){
+		vars.vannyEndButton = new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
+		if (vars.version < 2){
+			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
+			vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
+			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
+			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
+		}
+		else if (vars.version = 2){
+			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
+			vars.escapeEndLeaveButtonEast	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
+			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
+			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
+		}
+		else {
+			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
+			vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
+			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
+			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
+		}
+	}
+	else {
+		vars.vannyEndButton 			= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240);
+		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
+		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
+		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
+		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
+	}
+
+	if (vars.version < 2){
+		vars.aftonEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x260, 0xD8);
+		vars.vannyEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x2D8, 0xD8);
+		vars.fireEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x318, 0xD8);
+		vars.carEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x358, 0xD8);
+		vars.escapeEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x398, 0xD8);
+		vars.pqEnd 		= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x3D8, 0xD8);
+	}
+	else {
+		vars.aftonEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8);
+		vars.vannyEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8);
+		vars.fireEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8);
+		vars.carEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8);
+		vars.escapeEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8);
+		vars.pqEnd 		= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8);
+	}
+
+	if (vars.version < 4){
+		vars.aftonHealth = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+	}
+	else {
+		vars.aftonHealth = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
+	}
+
+	if (vars.version < 4){
+		vars.hourClock	= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
+		vars.minuteClock= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+	}
+	else {
+		vars.hourClock	= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
+		vars.minuteClock= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
+	}		
+	
+	if (vars.version < 2){
+		vars.hasLoaded = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
+	}
+	else if (vars.version = 2){
+		vars.hasLoaded = new DeepPointer(0x444C568, 0x184);
+	}
+	else if (vars.version = 3){
+		vars.hasLoaded = new DeepPointer(0x444C6B0, 0x184);
+	}
+	else {
+		vars.hasLoaded = new DeepPointer(0x4453ED8, 0x184);
+	}
+
+	if (vars.version < 4){
+		vars.monGElev 	= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
+		vars.foy2Elev 	= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
+		vars.chicaElev	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8);
+		vars.montyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x128,0x2E8);
+		vars.roxyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x288,0x2E8);
+		vars.freddyElev = new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D8,0x2E8);
+	}
+	else {
+		vars.monGElev 	= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0xA0, 0x2E8);
+		vars.foy2Elev 	= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0xA8, 0x2E8);
+		vars.chicaElev	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x300,0x2E8);
+		vars.montyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2C0,0x2E8);
+		vars.roxyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2E0,0x2E8);
+		vars.freddyElev = new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D0,0x2E8);
+	}
+
+    vars.watchers = new MemoryWatcherList {
+		//Freddy's Power OR Freddy Thingie (1.11+)
+		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" },
+
+		//Player Info
+		new MemoryWatcher<Vector3f>(new DeepPointer(posBase, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" },
+		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck" },
+
+		//Arcade pointers
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" },
+
+		//Counter pointers
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" },
+		new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" },
+		new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" },
+
+		//Buttons that start cutscenes (pressed = 0)
+		new MemoryWatcher<bool>(vars.vannyEndButton) { Name = "vannyEndButton" },
+		new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" },
+		new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" },
+		new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" },
+		new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" },
+
+		//Keeps track of when an ending cutscene has started playing (end = 1)
+		new MemoryWatcher<bool>(vars.aftonEnd) { Name = "aftonEnd" },
+		new MemoryWatcher<bool>(vars.vannyEnd) { Name = "vannyEnd" },
+		new MemoryWatcher<bool>(vars.fireEnd) { Name = "fireEnd" },
+		new MemoryWatcher<bool>(vars.carEnd) { Name = "carEnd" },
+		new MemoryWatcher<bool>(vars.escapeEnd) { Name = "escapeEnd" },
+		new MemoryWatcher<bool>(vars.pqEnd) { Name = "pqEnd" },
+		
+		//Afton's health (starts at 750, -100 per button)
+		new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" },
+
+		//Keeps track of items
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" },
+		new MemoryWatcher<long>(new DeepPointer(vars.UWorld, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" },
+		new MemoryWatcher<float>(new DeepPointer(vars.UWorld, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" },
+		
+		//In-Game Clock
+		new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" },
+		new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" },
+		
+		//Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
+		new MemoryWatcher<int>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu" },
+		new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" },
+
+		//Elevator pointers (elevator in motion = 1)
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "kitElev" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "foy1Elev" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8)) { Name = "bonBElev" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8)) { Name = "fazerElev" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8)) { Name = "WAElev" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "aftonElev" },
+		new MemoryWatcher<bool>(vars.monGElev) { Name = "monGElev" },
+		new MemoryWatcher<bool>(vars.foy2Elev) { Name = "foy2Elev" },
+		new MemoryWatcher<bool>(vars.chicaElev) { Name = "chicaElev" },
+		new MemoryWatcher<bool>(vars.montyElev) { Name = "montyElev" },
+		new MemoryWatcher<bool>(vars.roxyElev) { Name = "roxyElev" },
+		new MemoryWatcher<bool>(vars.freddyElev) { Name = "freddyElev" }
+	};
 }
 
 update {
-	if (version == "Unsupported") return false;
-
 	//Elevator Pointer List
 	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
 		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
@@ -954,9 +894,92 @@ update {
 		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
 	};
 
-	vars.posWatcher.Update(game);
-	current.pos = vars.posWatcher.Current;
-	old.pos = vars.posWatcher.Old;
+	//Define all pointers by watchers
+	vars.watchers.UpdateAll(game);
+	current.freddyThing 				= vars.watchers["freddyThing"].Current;
+	current.posWatcher 					= vars.watchers["posWatcher"].Current;
+	current.worldCheck 					= vars.watchers["worldCheck"].Current;
+	current.golfStrokeCount 			= vars.watchers["golfStrokeCount"].Current;
+	current.pq3Attack 					= vars.watchers["pq3Attack"].Current;
+	current.DGens 						= vars.watchers["DGens"].Current;
+	current.FBFlags 					= vars.watchers["FBFlags"].Current;
+	current.MGBucket 					= vars.watchers["MGBucket"].Current;
+	current.vannyEndButton 				= vars.watchers["vannyEndButton"].Current;
+	current.escapeEndLeaveButtonWest 	= vars.watchers["escapeEndLeaveButtonWest"].Current;
+	current.escapeEndLeaveButtonEast 	= vars.watchers["escapeEndLeaveButtonEast"].Current;
+	current.carEndLeaveButton 			= vars.watchers["carEndLeaveButton"].Current;
+	current.fireEndLeaveButton 			= vars.watchers["fireEndLeaveButton"].Current;
+	current.aftonEnd 					= vars.watchers["aftonEnd"].Current;
+	current.vannyEnd 					= vars.watchers["vannyEnd"].Current;
+	current.fireEnd 					= vars.watchers["fireEnd"].Current;
+	current.carEnd 						= vars.watchers["carEnd"].Current;
+	current.escapeEnd 					= vars.watchers["escapeEnd"].Current;
+	current.pqEnd 						= vars.watchers["pqEnd"].Current;
+	current.aftonHealth 				= vars.watchers["aftonHealth"].Current;
+	current.securityBadgeCount 			= vars.watchers["securityBadgeCount"].Current;
+	current.itemCount 					= vars.watchers["itemCount"].Current;
+	current.splashScreen 				= vars.watchers["splashScreen"].Current;
+	current.interactionName 			= vars.watchers["interactionName"].Current;
+	current.windUp 						= vars.watchers["windUp"].Current;
+	current.hourClock 					= vars.watchers["hourClock"].Current;
+	current.minuteClock 				= vars.watchers["minuteClock"].Current;
+	current.pause 						= vars.watchers["pause"].Current;
+	current.menu 						= vars.watchers["menu"].Current;
+	current.hasLoaded 					= vars.watchers["hasLoaded"].Current;
+	current.kitElev 					= vars.watchers["kitElev"].Current;
+	current.foy1Elev 					= vars.watchers["foy1Elev"].Current;
+	current.bonBElev 					= vars.watchers["bonBElev"].Current;
+	current.fazerElev 					= vars.watchers["fazerElev"].Current;
+	current.WAElev 						= vars.watchers["WAElev"].Current;
+	current.aftonElev 					= vars.watchers["aftonElev"].Current;
+	current.monGElev 					= vars.watchers["monGElev"].Current;
+	current.foy2Elev 					= vars.watchers["foy2Elev"].Current;
+	current.chicaElev 					= vars.watchers["chicaElev"].Current;
+	current.montyElev 					= vars.watchers["montyElev"].Current;
+	current.roxyElev 					= vars.watchers["roxyElev"].Current;
+	current.freddyElev 					= vars.watchers["freddyElev"].Current;
+	old.freddyThing 					= vars.watchers["freddyThing"].Old;
+	old.posWatcher 						= vars.watchers["posWatcher"].Old;
+	old.worldCheck 						= vars.watchers["worldCheck"].Old;
+	old.golfStrokeCount 				= vars.watchers["golfStrokeCount"].Old;
+	old.pq3Attack 						= vars.watchers["pq3Attack"].Old;
+	old.DGens 							= vars.watchers["DGens"].Old;
+	old.FBFlags 						= vars.watchers["FBFlags"].Old;
+	old.MGBucket 						= vars.watchers["MGBucket"].Old;
+	old.vannyEndButton 					= vars.watchers["vannyEndButton"].Old;
+	old.escapeEndLeaveButtonWest 		= vars.watchers["escapeEndLeaveButtonWest"].Old;
+	old.escapeEndLeaveButtonEast 		= vars.watchers["escapeEndLeaveButtonEast"].Old;
+	old.carEndLeaveButton 				= vars.watchers["carEndLeaveButton"].Old;
+	old.fireEndLeaveButton 				= vars.watchers["fireEndLeaveButton"].Old;
+	old.aftonEnd 						= vars.watchers["aftonEnd"].Old;
+	old.vannyEnd 						= vars.watchers["vannyEnd"].Old;
+	old.fireEnd 						= vars.watchers["fireEnd"].Old;
+	old.carEnd 							= vars.watchers["carEnd"].Old;
+	old.escapeEnd 						= vars.watchers["escapeEnd"].Old;
+	old.pqEnd 							= vars.watchers["pqEnd"].Old;
+	old.aftonHealth 					= vars.watchers["aftonHealth"].Old;
+	old.securityBadgeCount 				= vars.watchers["securityBadgeCount"].Old;
+	old.itemCount 						= vars.watchers["itemCount"].Old;
+	old.splashScreen 					= vars.watchers["splashScreen"].Old;
+	old.interactionName 				= vars.watchers["interactionName"].Old;
+	old.windUp 							= vars.watchers["windUp"].Old;
+	old.hourClock 						= vars.watchers["hourClock"].Old;
+	old.minuteClock 					= vars.watchers["minuteClock"].Old;
+	old.pause 							= vars.watchers["pause"].Old;
+	old.menu 							= vars.watchers["menu"].Old;
+	old.hasLoaded 						= vars.watchers["hasLoaded"].Old;
+	old.kitElev 						= vars.watchers["kitElev"].Old;
+	old.foy1Elev 						= vars.watchers["foy1Elev"].Old;
+	old.bonBElev 						= vars.watchers["bonBElev"].Old;
+	old.fazerElev 						= vars.watchers["fazerElev"].Old;
+	old.WAElev 							= vars.watchers["WAElev"].Old;
+	old.aftonElev 						= vars.watchers["aftonElev"].Old;
+	old.monGElev 						= vars.watchers["monGElev"].Old;
+	old.foy2Elev 						= vars.watchers["foy2Elev"].Old;
+	old.chicaElev 						= vars.watchers["chicaElev"].Old;
+	old.montyElev 						= vars.watchers["montyElev"].Old;
+	old.roxyElev 						= vars.watchers["roxyElev"].Old;
+	old.freddyElev 						= vars.watchers["freddyElev"].Old;
 }
 
 start {
@@ -968,8 +991,8 @@ start {
 	}
 	
 	vars.printAllPointers = (Action)(() => {
-		if (version != "v1.11"){
-			print("freddyPower: " + old.freddyPower.ToString() + " => " + current.freddyPower.ToString());
+		if (vars.version < 4){
+			print("freddyPower: " + old.freddyThing.ToString() + " => " + current.freddyThing.ToString());
 		}
 		else {
 			print("freddyThing: " + old.freddyThing.ToString() + " => " + current.freddyThing.ToString());
@@ -1001,11 +1024,11 @@ start {
 		print("hourClock: " + old.hourClock.ToString() + " => " + current.hourClock.ToString());
 		print("minuteClock: " + old.minuteClock.ToString() + " => " + current.minuteClock.ToString());
 		print("pause: " + old.pause.ToString() + " => " + current.pause.ToString());
-		if (version == "v1.04"){
+		if (vars.version < 2){
 			print("hasLoaded: " + old.hasLoaded.ToString() + " => " + current.hasLoaded.ToString());
 		}
 		else {
-			print("blackScreen: " + old.blackScreen.ToString() + " => " + current.blackScreen.ToString());
+			print("blackScreen: " + old.hasLoaded.ToString() + " => " + current.hasLoaded.ToString());
 		}
 		print("kitElev: " + old.kitElev.ToString() + " => " + current.kitElev.ToString());
 		print("monGElev: " + old.monGElev.ToString() + " => " + current.monGElev.ToString());
@@ -1264,13 +1287,13 @@ start {
 		vars.isLoading = true;
 		vars.onMenu = true;
 		do {
-			if (version == "v1.04"){
+			if (vars.version < 2){
 				vars.isLoading = false;
 			}
 			else {
 				if (current.worldCheck == 0) break;
 				if (old.worldCheck != 0) break;
-				vars.loadingConstant = current.blackScreen;
+				vars.loadingConstant = current.hasLoaded;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
 		} while(false);
@@ -1284,14 +1307,14 @@ start {
 		if (current.hourClock != -1) break; 
 		if (current.minuteClock != 0) break;
 
-		if (version == "v1.11"){
+		if (vars.version > 3){
 			if (!current.freddyThing) break;
 			if (old.freddyThing) break;
 			print("Start Timer");
 			return true;
 		}
 		else {
-			if (current.freddyPower >= old.freddyPower) break;
+			if (current.freddyThing >= old.freddyThing) break;
 			print("Start Timer");
 			return true;
 		}
@@ -1367,7 +1390,7 @@ isLoading {
 	do {
 		if (!settings["Stop Timer When Loading"]) break;
 
-		if (version == "v1.04"){
+		if (vars.version < 2){
 				if (current.hasLoaded){
 					vars.isLoading = false;
 					break;
@@ -1382,8 +1405,8 @@ isLoading {
 				}
 		}
 		else {
-			if (current.blackScreen != vars.loadingConstant) break;
-			if (old.blackScreen == vars.loadingConstant) break;
+			if (current.hasLoaded != vars.loadingConstant) break;
+			if (old.hasLoaded == vars.loadingConstant) break;
 			print("Stop Timer When Loading");
 			return true;
 		}
