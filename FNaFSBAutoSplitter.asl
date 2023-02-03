@@ -809,7 +809,7 @@ init {
 
 		//Player Info
 		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" },
-		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck" },
+		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Arcade pointers
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" },
@@ -851,7 +851,7 @@ init {
 		
 		//Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
 		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" },
 
 		//Elevator pointers (elevator in motion = 1)
@@ -2918,7 +2918,7 @@ split {
 					}
 				}
 			}
-			if (settings["Time Splits"] && !vars.onMenu){
+			if (settings["Time Splits"] && current.menu == 0){
 				if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
 					if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
 						vars.tVents = false;
