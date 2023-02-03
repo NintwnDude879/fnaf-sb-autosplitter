@@ -638,7 +638,7 @@ init {
 	
 	switch (gameSize){
 		default: {
-			MessageBox.Show("Sorry, it seems like the version  of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+			MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
 			vars.version = 0; // Unsupported
 			return;
 		}
@@ -805,68 +805,68 @@ init {
 
     vars.watchers = new MemoryWatcherList {
 		//Freddy's Power OR Freddy Thingie (1.11+)
-		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" },
+		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Player Info
-		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" },
+		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Arcade pointers
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Counter pointers
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" },
-		new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" },
-		new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Buttons that start cutscenes (pressed = 0)
-		new MemoryWatcher<bool>(vars.vannyEndButton) { Name = "vannyEndButton" },
-		new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" },
-		new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" },
-		new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" },
-		new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" },
+		new MemoryWatcher<bool>(vars.vannyEndButton) { Name = "vannyEndButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Keeps track of when an ending cutscene has started playing (end = 1)
-		new MemoryWatcher<bool>(vars.aftonEnd) { Name = "aftonEnd" },
-		new MemoryWatcher<bool>(vars.vannyEnd) { Name = "vannyEnd" },
-		new MemoryWatcher<bool>(vars.fireEnd) { Name = "fireEnd" },
-		new MemoryWatcher<bool>(vars.carEnd) { Name = "carEnd" },
-		new MemoryWatcher<bool>(vars.escapeEnd) { Name = "escapeEnd" },
-		new MemoryWatcher<bool>(vars.pqEnd) { Name = "pqEnd" },
+		new MemoryWatcher<bool>(vars.aftonEnd) { Name = "aftonEnd" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.vannyEnd) { Name = "vannyEnd" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.fireEnd) { Name = "fireEnd" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.carEnd) { Name = "carEnd" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.escapeEnd) { Name = "escapeEnd" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.pqEnd) { Name = "pqEnd" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		
 		//Afton's health (starts at 750, -100 per button)
-		new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" },
+		new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Keeps track of items
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" },
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" },
-		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" },
-		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		
 		//In-Game Clock
-		new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" },
-		new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" },
+		new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		
 		//Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
-		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" },
+		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" },
+		new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Elevator pointers (elevator in motion = 1)
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "kitElev" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "foy1Elev" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8)) { Name = "bonBElev" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8)) { Name = "fazerElev" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8)) { Name = "WAElev" },
-		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "aftonElev" },
-		new MemoryWatcher<bool>(vars.monGElev) { Name = "monGElev" },
-		new MemoryWatcher<bool>(vars.foy2Elev) { Name = "foy2Elev" },
-		new MemoryWatcher<bool>(vars.chicaElev) { Name = "chicaElev" },
-		new MemoryWatcher<bool>(vars.montyElev) { Name = "montyElev" },
-		new MemoryWatcher<bool>(vars.roxyElev) { Name = "roxyElev" },
-		new MemoryWatcher<bool>(vars.freddyElev) { Name = "freddyElev" }
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x7D0, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "kitElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "foy1Elev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x828, 0x128, 0xA8, 0x58, 0x2E8)) { Name = "bonBElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x830, 0x128, 0xA8, 0x50, 0x2E8)) { Name = "fazerElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x838, 0x128, 0xA8, 0xB0, 0x2E8)) { Name = "WAElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x98, 0x890, 0x128, 0xA8, 0xB8, 0x2E8)) { Name = "aftonElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.monGElev) { Name = "monGElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.foy2Elev) { Name = "foy2Elev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.chicaElev) { Name = "chicaElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.montyElev) { Name = "montyElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.roxyElev) { Name = "roxyElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(vars.freddyElev) { Name = "freddyElev" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 	};
 }
 
