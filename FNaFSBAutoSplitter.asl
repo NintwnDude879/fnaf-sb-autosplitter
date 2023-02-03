@@ -809,7 +809,7 @@ init {
 
 		//Player Info
 		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x30, 0xD8, 0x20, 0xE8, 0x228)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Arcade pointers
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -1281,8 +1281,8 @@ start {
 		vars.onMenu = true;
 		do {
 			if (vars.version >= 1.05) {
-				if (current.worldCheck == 0) break;
-				if (old.worldCheck != 0) break;
+				if (!current.worldCheck) break;
+				if (old.worldCheck) break;
 				vars.loadingConstant = current.hasLoaded;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
@@ -1324,7 +1324,7 @@ reset {
 isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
-	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
+	if (current.worldCheck || vars.isLoading || vars.onMenu){
 		if (vars.version < 1.05){
 			if (vars.arcade != "N/A"){
 				vars.arcade = "N/A";
@@ -1394,7 +1394,7 @@ isLoading {
 				vars.isLoading = false;
 				break;
 			}
-			else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
+			else if ((current.worldCheck || (old.pause && old.worldCheck)) && !vars.isLoading){
 				print("Stop Timer When Loading");
 				vars.isLoading = true;
 			}
@@ -1417,13 +1417,13 @@ isLoading {
 			print(current.worldCheck.ToString());
 			print(vars.arcade);
 		}
-		if (current.worldCheck == 0 && vars.arcade == "N/A"){
+		if (!current.worldCheck && vars.arcade == "N/A"){
 			if (!vars.onMenu){
 				print("Stop Timer On Menu");
 			}
 			vars.onMenu = true;
 		}
-		else if (current.worldCheck != 0 || vars.arcade != "N/A"){
+		else if (current.worldCheck || vars.arcade != "N/A"){
 			vars.onMenu = false;
 		}
 
@@ -1435,7 +1435,7 @@ isLoading {
 	do {
 		if (!settings["Stop Timer When Paused"]) break;
 		if (!current.pause) break;
-		if (current.worldCheck == 0) break;
+		if (!current.worldCheck) break;
 
 		if (!old.pause){
 			print("Stop Timer When Paused");
@@ -1862,7 +1862,7 @@ split {
 						return true;
 					}
 					if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
-						if (current.worldCheck != 0){
+						if (current.worldCheck){
 							print("Car Battery Button");
 							return true;
 						}
@@ -1875,13 +1875,13 @@ split {
 					}
 					if (settings["E_B"]){
 						if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-							if (current.worldCheck != 0){
+							if (current.worldCheck){
 								print("Escape (East) Button");
 								return true;
 							}
 						}
 						if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-							if (current.worldCheck != 0){
+							if (current.worldCheck){
 								print("Escape (West) Button");
 								return true;
 							}
@@ -1894,7 +1894,7 @@ split {
 						return true;
 					}
 					if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-						if (current.worldCheck != 0){
+						if (current.worldCheck){
 							print("Fire Escape Button");
 							return true;
 						}
