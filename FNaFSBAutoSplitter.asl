@@ -1307,6 +1307,7 @@ start {
 			if (!current.freddyThing) break;
 			if (old.freddyThing) break;
 			print("Start Timer");
+			return true;
 		}
 		
 	} while (false);
