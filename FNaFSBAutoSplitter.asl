@@ -2918,7 +2918,7 @@ split {
 					}
 				}
 			}
-			if (settings["Time Splits"] && current.menu == 0){
+			if (settings["Time Splits"] && !vars.onMenu){
 				if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
 					if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
 						vars.tVents = false;
