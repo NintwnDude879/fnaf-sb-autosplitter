@@ -1397,6 +1397,7 @@ isLoading {
 				print("Stop Timer When Loading");
 				vars.isLoading = true;
 			}
+			
 			if (vars.isLoading){
 				return true;
 			}
