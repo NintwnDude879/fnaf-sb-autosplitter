@@ -1413,10 +1413,7 @@ isLoading {
 
 	do {
 		if (!settings["Stop Timer On Menu"]) break;
-		if (current.worldCheck != old.worldCheck){
-			print(current.worldCheck.ToString());
-			print(vars.arcade);
-		}
+		
 		if (current.worldCheck == 0 && vars.arcade == "N/A"){
 			if (!vars.onMenu){
 				print("Stop Timer On Menu");
