@@ -171,7 +171,7 @@ startup {
 	settings.CurrentDefaultParent = "D_Roxy Raceway";
 	settings.Add("Afton Rock Column Deload", false);
 	settings.Add("Garage Fence Jump", false);
-	settings.Add("Roxy's Eye Deload", false);
+	settings.Add("Roxy's Eyes Deload", false);
 
 	settings.CurrentDefaultParent = "D_Roxy Raceway Sublobby";
 	settings.Add("Balloon Deload", false);
@@ -776,10 +776,10 @@ init {
 	if (vars.version < 1.05){
 		vars.hasLoaded = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
 	}
-	else if (vars.version == 1.05){
+	else if (vars.version < 1.07){
 		vars.hasLoaded = new DeepPointer(0x444C568, 0x184);
 	}
-	else if (vars.version == 1.07){
+	else if (vars.version < 1.11){
 		vars.hasLoaded = new DeepPointer(0x444C6B0, 0x184);
 	}
 	else {
@@ -809,7 +809,7 @@ init {
 
 		//Player Info
 		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<bool>(new DeepPointer(vars.UWorld, 0x30, 0xD8, 0x20, 0xE8, 0x228)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Arcade pointers
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -839,7 +839,7 @@ init {
 		new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Keeps track of items
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -1281,8 +1281,8 @@ start {
 		vars.onMenu = true;
 		do {
 			if (vars.version >= 1.05) {
-				if (current.worldCheck == 0) break;
-				if (old.worldCheck != 0) break;
+				if (!current.worldCheck) break;
+				if (old.worldCheck) break;
 				vars.loadingConstant = current.hasLoaded;
 				print("Loading Constant: " + vars.loadingConstant.ToString());
 			}
@@ -1304,8 +1304,8 @@ start {
 			return true;
 		}
 		else {
-			if (!current.freddyThing) break;
-			if (old.freddyThing) break;
+			if (current.freddyThing == 0) break;
+			if (old.freddyThing == 1) break;
 			print("Start Timer");
 			return true;
 		}
@@ -1324,7 +1324,7 @@ reset {
 isLoading {
 	if (!settings["In-Game Time Settings"]) return false;
 
-	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
+	if (current.worldCheck || vars.isLoading || vars.onMenu){
 		if (vars.version < 1.05){
 			if (vars.arcade != "N/A"){
 				vars.arcade = "N/A";
@@ -1394,7 +1394,7 @@ isLoading {
 				vars.isLoading = false;
 				break;
 			}
-			else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
+			else if ((current.worldCheck || (old.pause && old.worldCheck)) && !vars.isLoading){
 				print("Stop Timer When Loading");
 				vars.isLoading = true;
 			}
@@ -1405,22 +1405,23 @@ isLoading {
 		}
 		else {
 			if (current.hasLoaded != vars.loadingConstant) break;
-			if (old.hasLoaded == vars.loadingConstant) break;
-			print("Stop Timer When Loading");
+			if (old.hasLoaded != vars.loadingConstant){
+				print("Stop Timer When Loading");
+			}
 			return true;
 		}
 	} while (false);
 
 	do {
 		if (!settings["Stop Timer On Menu"]) break;
-		
-		if (current.worldCheck == 0 && vars.arcade == "N/A"){
+
+		if (current.pos.Y == 0 && vars.arcade == "N/A"){
 			if (!vars.onMenu){
 				print("Stop Timer On Menu");
 			}
 			vars.onMenu = true;
 		}
-		else if (current.worldCheck != 0 || vars.arcade != "N/A"){
+		else if (current.worldCheck || vars.arcade != "N/A"){
 			vars.onMenu = false;
 		}
 
@@ -1432,7 +1433,7 @@ isLoading {
 	do {
 		if (!settings["Stop Timer When Paused"]) break;
 		if (!current.pause) break;
-		if (current.worldCheck == 0) break;
+		if (!current.worldCheck) break;
 
 		if (!old.pause){
 			print("Stop Timer When Paused");
@@ -1808,7 +1809,7 @@ split {
 							vars.dCurtain = false;
 							return true;
 						}
-						if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3800, 44400, 44500, 1877, 1950)){
+						if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3850, 44300, 44700, 1877, 1950)){
 							vars.dRoxyCutout = false;
 							return true;
 						}
@@ -1826,7 +1827,7 @@ split {
 							vars.dGarageJump = false;
 							return true;
 						}
-						if (vars.checkPosition("Roxy's Eye Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
+						if (vars.checkPosition("Roxy's Eyes Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
 							vars.dRoxyEyes = false;
 							return true;
 						}
@@ -1859,7 +1860,7 @@ split {
 						return true;
 					}
 					if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
-						if (current.worldCheck != 0){
+						if (current.worldCheck){
 							print("Car Battery Button");
 							return true;
 						}
@@ -1872,13 +1873,13 @@ split {
 					}
 					if (settings["E_B"]){
 						if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-							if (current.worldCheck != 0){
+							if (current.worldCheck){
 								print("Escape (East) Button");
 								return true;
 							}
 						}
 						if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-							if (current.worldCheck != 0){
+							if (current.worldCheck){
 								print("Escape (West) Button");
 								return true;
 							}
@@ -1891,7 +1892,7 @@ split {
 						return true;
 					}
 					if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-						if (current.worldCheck != 0){
+						if (current.worldCheck){
 							print("Fire Escape Button");
 							return true;
 						}
@@ -2801,8 +2802,7 @@ split {
 								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
 									return true;
 								}
-								if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
-									vars.tGoldBlaster = false;
+								if (vars.checkItem("Golden Fazerblaster", 13930, 31285, 1530)){
 									return true;
 								}
 							}
