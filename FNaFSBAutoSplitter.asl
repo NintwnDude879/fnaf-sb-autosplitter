@@ -918,7 +918,7 @@ update {
 	current.roxyElev 					= vars.watchers["roxyElev"].Current;
 	current.freddyElev 					= vars.watchers["freddyElev"].Current;
 	old.freddyThing 					= vars.watchers["freddyThing"].Old;
-	old.posWatcher 						= vars.watchers["posWatcher"].Old;
+	old.pos     						= vars.watchers["posWatcher"].Old;
 	old.worldCheck 						= vars.watchers["worldCheck"].Old;
 	old.golfStrokeCount 				= vars.watchers["golfStrokeCount"].Old;
 	old.pq3Attack 						= vars.watchers["pq3Attack"].Old;
@@ -1282,7 +1282,7 @@ start {
 		vars.t6am = true;
 
 		vars.isLoading = false;
-		vars.onMenu = true;
+		vars.onMenu = false;
 		do {
 			if (vars.version >= 1.05) {
 				if (current.worldCheck == 0) break;
@@ -1315,6 +1315,11 @@ start {
 		}
 		
 	} while (false);
+
+	/*if (Math.Abs(current.pos.Y + 4344.795) <= 1){
+		vars.arcade = "Monty Golf";
+		return true;
+	}*/
 }
 
 reset {
