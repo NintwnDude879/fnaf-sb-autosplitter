@@ -183,11 +183,11 @@ startup {
 
 	settings.CurrentDefaultParent = "Ending Splits";
 	settings.Add("Afton Ending", false);
-	settings.Add("Car Battery Ending", false);
-	settings.Add("Escape Ending", false);
-	settings.Add("Fire Escape Ending", false);
-	settings.Add("Princess Quest Ending", false);
-	settings.Add("Vanny Ending", false);
+	settings.Add("V_B", false, "Vanny Ending");
+	settings.Add("CB_B", false, "Car Battery Ending");
+	settings.Add("E_B", false, "Escape Ending");
+	settings.Add("F_B", false, "Fire Escape Ending");
+	settings.Add("pq3_endEndings", false, "Princess Quest Ending");
 
 	settings.CurrentDefaultParent = "Afton Ending";
 	settings.Add("Button 1", false);
@@ -197,27 +197,7 @@ startup {
 	settings.Add("Button 5", false);
 	settings.Add("Button 6", false);
 	settings.Add("Button 7", false);
-	settings.Add("Button 8 / End", false);
-
-	settings.CurrentDefaultParent = "Vanny Ending";
-	settings.Add("V_B", false, "Press Ending Button");
-	settings.Add("V_C", false, "Cutscene");
-
-	settings.CurrentDefaultParent = "Car Battery Ending";
-	settings.Add("CB_B", false, "'Leave' Button");
-	settings.Add("CB_C", false, "Cutscene");
-
-	settings.CurrentDefaultParent = "Escape Ending";
-	settings.Add("E_B", false, "'Leave' Button");
-	settings.Add("E_C", false, "Cutscene");
-
-	settings.CurrentDefaultParent = "Fire Escape Ending";
-	settings.Add("F_B", false, "'Leave' Button");
-	settings.Add("F_C", false, "Cutscene");
-
-	settings.CurrentDefaultParent = "Princess Quest Ending";
-	settings.Add("pq3_endEndings", false, "Use Key");
-	settings.Add("pq_endCutscene", false, "End Cutscene");
+	settings.Add("Button 8/End", false);
 
 	settings.CurrentDefaultParent = "Item Splits";
 	settings.Add("Item List", false);
@@ -608,6 +588,8 @@ startup {
 	settings.Add("Stop Timer On Menu", true);
 	settings.Add("Stop Timer When Loading", true);
 	settings.Add("Stop Timer When Paused", true);
+	
+	//Simpler way of creating all splits for elevators
 
 	foreach (var data in vars.elevatorNames){
 		settings.CurrentDefaultParent = "Elevator Pauses";
@@ -640,172 +622,123 @@ init {
 	
 	switch (gameSize){
 		default: {
-			MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+			MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\n
+			If this seems like a mistake, or you would like to suggest an additional version to support, please go to 
+			https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\n
+			Sorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
 			vars.version = 0; // Unsupported
-			return;
-		}
-
-		case 76210176: {
-			vars.version = 1.04;
 			break;
 		}
-		
-		case 76214272: {
-			vars.version = 1.05;
-			break;
-		}
-
-		case 76218368: {
-			vars.version = 1.07;
-			break;
-		}
-
-		case 76251136: {
-			vars.version = 1.11;
-			break;
-		}
+		case 76210176: vars.version = 1.04; break;
+		case 76214272: vars.version = 1.05; break;
+		case 76218368: vars.version = 1.07; break;
+		case 76251136: vars.version = 1.11; break;
 	}
 
 	print("Version = " + vars.version);
-
-	#region sigscanning
 	
+	//Sigscanning
 	vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
-        var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
-        var pattern = new SigScanTarget(signature);
-        var location = scanner.Scan(pattern);
-        if (location == IntPtr.Zero) return IntPtr.Zero;
-        int offset = game.ReadValue<int>((IntPtr)location + instructionOffset);
-        return (IntPtr)location + offset + instructionOffset + 0x4;
-    });
+        	var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
+        	var pattern = new SigScanTarget(signature);
+        	var location = scanner.Scan(pattern);
+        	if (location == IntPtr.Zero) return IntPtr.Zero;
+        	int offset = game.ReadValue<int>((IntPtr)location + instructionOffset);
+        	return (IntPtr)location + offset + instructionOffset + 0x4;
+    	});
 
 	// Signature scans for base address of UWorld and GEngine
 	vars.UWorld = vars.GetStaticPointerFromSig("48 89 0D ?2????02 65 48 8B 04 25 58000000", 0x3);
 	vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F8 0A 00 00 48 85 C9 74 07 48 8B 01 48 FF 60 40", 0x3);
     
 	if(vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero){
-        throw new Exception("UWorld/GameEngine not initialized - trying again");
-    }
+		throw new Exception("UWorld/GameEngine not initialized - trying again");
+	}
 
 	#endregion
 
-	//This is where the fun begins...
-
-	if (vars.version < 1.11){
-		vars.freddyThing = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+	//Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
+	if (vars.version < 1.05){
+		vars.freddyThing		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+		vars.MGBucket			= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
+		vars.FBFlags			= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
+		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
+		vars.carEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
+		vars.fireEndLeaveButton 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
+		vars.vannyEndButton		= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
+		vars.aftonHealth		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+		vars.hourClock			= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
+		vars.minuteClock		= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+		vars.hasLoaded			= new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
+		vars.monGElev 			= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
+		vars.foy2Elev 			= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
+		vars.chicaElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8);
+		vars.montyElev 			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x128,0x2E8);
+		vars.roxyElev 			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x288,0x2E8);
+		vars.freddyElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D8,0x2E8);
 	}
-	else {
-		vars.freddyThing = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
+	if (vars.version == 1.05){
+		vars.freddyThing		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+		vars.MGBucket			= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
+		vars.FBFlags			= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
+		vars.escapeEndLeaveButtonEast	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
+		vars.carEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
+		vars.fireEndLeaveButton 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
+		vars.vannyEndButton		= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
+		vars.aftonHealth		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+		vars.hourClock			= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
+		vars.minuteClock		= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+		vars.hasLoaded			= new DeepPointer(0x444C568, 0x184);
+		vars.monGElev 			= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
+		vars.foy2Elev 			= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
+		vars.chicaElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8);
+		vars.montyElev 			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x128,0x2E8);
+		vars.roxyElev 			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x288,0x2E8);
+		vars.freddyElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D8,0x2E8);
 	}
-
-	if (vars.version < 1.11){
-		vars.FBFlags = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-		if (vars.version < 1.05){
-			vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
-		}
-		else {
-			vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-		}
+	if (vars.version == 1.07){
+		vars.freddyThing		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+		vars.MGBucket			= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
+		vars.FBFlags			= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
+		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
+		vars.carEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
+		vars.fireEndLeaveButton 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
+		vars.vannyEndButton		= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
+		vars.aftonHealth		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+		vars.hourClock			= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
+		vars.minuteClock		= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+		vars.hasLoaded			= new DeepPointer(0x444C6B0, 0x184);
+		vars.monGElev 			= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
+		vars.foy2Elev 			= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
+		vars.chicaElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8);
+		vars.montyElev 			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x128,0x2E8);
+		vars.roxyElev 			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x288,0x2E8);
+		vars.freddyElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D8,0x2E8);
 	}
-	else {
-		vars.FBFlags = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
-		vars.MGBucket = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
-	}
-
-	//Buttons that start cutscenes (pressed = 0)
-	if (vars.version < 1.11){
-		vars.vannyEndButton = new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
-		if (vars.version < 1.05){
-			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
-			vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
-			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
-			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
-		}
-		else if (vars.version = 1.05){
-			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-			vars.escapeEndLeaveButtonEast	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
-			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
-			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-		}
-		else {
-			vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-			vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
-			vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-			vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
-		}
-	}
-	else {
-		vars.vannyEndButton 			= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240);
+	if (vars.version == 1.11){
+		vars.freddyThing		= new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
+		vars.FBFlags			= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
+		vars.MGBucket			= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
+		vars.vannyEndButton 		= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240);
 		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
 		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
-		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
-		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
+		vars.carEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
+		vars.fireEndLeaveButton 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
+		vars.aftonHealth		= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
+		vars.hourClock			= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
+		vars.minuteClock		= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
+		vars.hasLoaded			= new DeepPointer(0x4453ED8, 0x184);
+		vars.monGElev			= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0xA0, 0x2E8);
+		vars.foy2Elev			= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0xA8, 0x2E8);
+		vars.chicaElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x300,0x2E8);
+		vars.montyElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2C0,0x2E8);
+		vars.roxyElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2E0,0x2E8);
+		vars.freddyElev			= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D0,0x2E8);
 	}
-
-	if (vars.version < 1.05){
-		vars.aftonEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x260, 0xD8);
-		vars.vannyEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x2D8, 0xD8);
-		vars.fireEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x318, 0xD8);
-		vars.carEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x358, 0xD8);
-		vars.escapeEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x398, 0xD8);
-		vars.pqEnd 		= new DeepPointer(vars.GEngine, 0xDE8, 0x388, 0x118, 0x3D8, 0xD8);
-	}
-	else {
-		vars.aftonEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x260, 0xD8);
-		vars.vannyEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x2D8, 0xD8);
-		vars.fireEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x318, 0xD8);
-		vars.carEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x358, 0xD8);
-		vars.escapeEnd 	= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x398, 0xD8);
-		vars.pqEnd 		= new DeepPointer(vars.GEngine, 0xDE8, 0x3B0, 0x118, 0x3D8, 0xD8);
-	}
-
-	if (vars.version < 1.11){
-		vars.aftonHealth = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-	}
-	else {
-		vars.aftonHealth = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
-	}
-
-	if (vars.version < 1.11){
-		vars.hourClock	= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-		vars.minuteClock= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-	}
-	else {
-		vars.hourClock	= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
-		vars.minuteClock= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
-	}		
-	
-	if (vars.version < 1.05){
-		vars.hasLoaded = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
-	}
-	else if (vars.version < 1.07){
-		vars.hasLoaded = new DeepPointer(0x444C568, 0x184);
-	}
-	else if (vars.version < 1.11){
-		vars.hasLoaded = new DeepPointer(0x444C6B0, 0x184);
-	}
-	else {
-		vars.hasLoaded = new DeepPointer(0x4453ED8, 0x184);
-	}
-
-	if (vars.version < 1.11){
-		vars.monGElev 	= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
-		vars.foy2Elev 	= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
-		vars.chicaElev	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0xC8, 0x2E8);
-		vars.montyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x128,0x2E8);
-		vars.roxyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x288,0x2E8);
-		vars.freddyElev = new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D8,0x2E8);
-	}
-	else {
-		vars.monGElev 	= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0xA0, 0x2E8);
-		vars.foy2Elev 	= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0xA8, 0x2E8);
-		vars.chicaElev	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x300,0x2E8);
-		vars.montyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2C0,0x2E8);
-		vars.roxyElev 	= new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2E0,0x2E8);
-		vars.freddyElev = new DeepPointer(vars.UWorld, 0x98, 0x848, 0x128, 0xA8, 0x2D0,0x2E8);
-	}
-
-    vars.watchers = new MemoryWatcherList {
+	vars.watchers = new MemoryWatcherList {
 		//Freddy's Power OR Freddy Thingie (1.11+)
 		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
@@ -875,90 +808,90 @@ init {
 update {
 	//Define all pointers by watchers
 	vars.watchers.UpdateAll(game);
-	current.freddyThing 				= vars.watchers["freddyThing"].Current;
-	current.pos 						= vars.watchers["posWatcher"].Current;
-	current.worldCheck 					= vars.watchers["worldCheck"].Current;
-	current.golfStrokeCount 			= vars.watchers["golfStrokeCount"].Current;
-	current.pq3Attack 					= vars.watchers["pq3Attack"].Current;
-	current.DGens 						= vars.watchers["DGens"].Current;
-	current.FBFlags 					= vars.watchers["FBFlags"].Current;
-	current.MGBucket 					= vars.watchers["MGBucket"].Current;
-	current.vannyEndButton 				= vars.watchers["vannyEndButton"].Current;
+	current.freddyThing			= vars.watchers["freddyThing"].Current;
+	current.pos 				= vars.watchers["posWatcher"].Current;
+	current.worldCheck 			= vars.watchers["worldCheck"].Current;
+	current.golfStrokeCount 		= vars.watchers["golfStrokeCount"].Current;
+	current.pq3Attack 			= vars.watchers["pq3Attack"].Current;
+	current.DGens 				= vars.watchers["DGens"].Current;
+	current.FBFlags 			= vars.watchers["FBFlags"].Current;
+	current.MGBucket 			= vars.watchers["MGBucket"].Current;
+	current.vannyEndButton 			= vars.watchers["vannyEndButton"].Current;
 	current.escapeEndLeaveButtonWest 	= vars.watchers["escapeEndLeaveButtonWest"].Current;
 	current.escapeEndLeaveButtonEast 	= vars.watchers["escapeEndLeaveButtonEast"].Current;
-	current.carEndLeaveButton 			= vars.watchers["carEndLeaveButton"].Current;
-	current.fireEndLeaveButton 			= vars.watchers["fireEndLeaveButton"].Current;
-	current.aftonEnd 					= vars.watchers["aftonEnd"].Current;
-	current.vannyEnd 					= vars.watchers["vannyEnd"].Current;
-	current.fireEnd 					= vars.watchers["fireEnd"].Current;
-	current.carEnd 						= vars.watchers["carEnd"].Current;
-	current.escapeEnd 					= vars.watchers["escapeEnd"].Current;
-	current.pqEnd 						= vars.watchers["pqEnd"].Current;
-	current.aftonHealth 				= vars.watchers["aftonHealth"].Current;
-	current.securityBadgeCount 			= vars.watchers["securityBadgeCount"].Current;
-	current.itemCount 					= vars.watchers["itemCount"].Current;
-	current.splashScreen 				= vars.watchers["splashScreen"].Current;
-	current.interactionName 			= vars.watchers["interactionName"].Current;
-	current.windUp 						= vars.watchers["windUp"].Current;
-	current.hourClock 					= vars.watchers["hourClock"].Current;
-	current.minuteClock 				= vars.watchers["minuteClock"].Current;
-	current.pause 						= vars.watchers["pause"].Current;
-	current.menu 						= vars.watchers["menu"].Current;
-	current.hasLoaded 					= vars.watchers["hasLoaded"].Current;
-	current.kitElev 					= vars.watchers["kitElev"].Current;
-	current.foy1Elev 					= vars.watchers["foy1Elev"].Current;
-	current.bonBElev 					= vars.watchers["bonBElev"].Current;
-	current.fazerElev 					= vars.watchers["fazerElev"].Current;
-	current.WAElev 						= vars.watchers["WAElev"].Current;
-	current.aftonElev 					= vars.watchers["aftonElev"].Current;
-	current.monGElev 					= vars.watchers["monGElev"].Current;
-	current.foy2Elev 					= vars.watchers["foy2Elev"].Current;
-	current.chicaElev 					= vars.watchers["chicaElev"].Current;
-	current.montyElev 					= vars.watchers["montyElev"].Current;
-	current.roxyElev 					= vars.watchers["roxyElev"].Current;
-	current.freddyElev 					= vars.watchers["freddyElev"].Current;
-	old.freddyThing 					= vars.watchers["freddyThing"].Old;
-	old.pos     						= vars.watchers["posWatcher"].Old;
-	old.worldCheck 						= vars.watchers["worldCheck"].Old;
-	old.golfStrokeCount 				= vars.watchers["golfStrokeCount"].Old;
-	old.pq3Attack 						= vars.watchers["pq3Attack"].Old;
-	old.DGens 							= vars.watchers["DGens"].Old;
-	old.FBFlags 						= vars.watchers["FBFlags"].Old;
-	old.MGBucket 						= vars.watchers["MGBucket"].Old;
-	old.vannyEndButton 					= vars.watchers["vannyEndButton"].Old;
-	old.escapeEndLeaveButtonWest 		= vars.watchers["escapeEndLeaveButtonWest"].Old;
+	current.carEndLeaveButton 		= vars.watchers["carEndLeaveButton"].Current;
+	current.fireEndLeaveButton 		= vars.watchers["fireEndLeaveButton"].Current;
+	current.aftonEnd 			= vars.watchers["aftonEnd"].Current;
+	current.vannyEnd 			= vars.watchers["vannyEnd"].Current;
+	current.fireEnd 			= vars.watchers["fireEnd"].Current;
+	current.carEnd 				= vars.watchers["carEnd"].Current;
+	current.escapeEnd 			= vars.watchers["escapeEnd"].Current;
+	current.pqEnd 				= vars.watchers["pqEnd"].Current;
+	current.aftonHealth 			= vars.watchers["aftonHealth"].Current;
+	current.securityBadgeCount 		= vars.watchers["securityBadgeCount"].Current;
+	current.itemCount 			= vars.watchers["itemCount"].Current;
+	current.splashScreen 			= vars.watchers["splashScreen"].Current;
+	current.interactionName 		= vars.watchers["interactionName"].Current;
+	current.windUp 				= vars.watchers["windUp"].Current;
+	current.hourClock 			= vars.watchers["hourClock"].Current;
+	current.minuteClock 			= vars.watchers["minuteClock"].Current;
+	current.pause 				= vars.watchers["pause"].Current;
+	current.menu 				= vars.watchers["menu"].Current;
+	current.hasLoaded 			= vars.watchers["hasLoaded"].Current;
+	current.kitElev 			= vars.watchers["kitElev"].Current;
+	current.foy1Elev 			= vars.watchers["foy1Elev"].Current;
+	current.bonBElev 			= vars.watchers["bonBElev"].Current;
+	current.fazerElev 			= vars.watchers["fazerElev"].Current;
+	current.WAElev 				= vars.watchers["WAElev"].Current;
+	current.aftonElev 			= vars.watchers["aftonElev"].Current;
+	current.monGElev 			= vars.watchers["monGElev"].Current;
+	current.foy2Elev 			= vars.watchers["foy2Elev"].Current;
+	current.chicaElev 			= vars.watchers["chicaElev"].Current;
+	current.montyElev 			= vars.watchers["montyElev"].Current;
+	current.roxyElev 			= vars.watchers["roxyElev"].Current;
+	current.freddyElev 			= vars.watchers["freddyElev"].Current;
+	old.freddyThing 			= vars.watchers["freddyThing"].Old;
+	old.pos     				= vars.watchers["posWatcher"].Old;
+	old.worldCheck 				= vars.watchers["worldCheck"].Old;
+	old.golfStrokeCount 			= vars.watchers["golfStrokeCount"].Old;
+	old.pq3Attack 				= vars.watchers["pq3Attack"].Old;
+	old.DGens 				= vars.watchers["DGens"].Old;
+	old.FBFlags 				= vars.watchers["FBFlags"].Old;
+	old.MGBucket 				= vars.watchers["MGBucket"].Old;
+	old.vannyEndButton 			= vars.watchers["vannyEndButton"].Old;
+	old.escapeEndLeaveButtonest 		= vars.watchers["escapeEndLeaveButtonWest"].Old;
 	old.escapeEndLeaveButtonEast 		= vars.watchers["escapeEndLeaveButtonEast"].Old;
-	old.carEndLeaveButton 				= vars.watchers["carEndLeaveButton"].Old;
-	old.fireEndLeaveButton 				= vars.watchers["fireEndLeaveButton"].Old;
-	old.aftonEnd 						= vars.watchers["aftonEnd"].Old;
-	old.vannyEnd 						= vars.watchers["vannyEnd"].Old;
-	old.fireEnd 						= vars.watchers["fireEnd"].Old;
-	old.carEnd 							= vars.watchers["carEnd"].Old;
-	old.escapeEnd 						= vars.watchers["escapeEnd"].Old;
-	old.pqEnd 							= vars.watchers["pqEnd"].Old;
-	old.aftonHealth 					= vars.watchers["aftonHealth"].Old;
-	old.securityBadgeCount 				= vars.watchers["securityBadgeCount"].Old;
-	old.itemCount 						= vars.watchers["itemCount"].Old;
-	old.splashScreen 					= vars.watchers["splashScreen"].Old;
-	old.interactionName 				= vars.watchers["interactionName"].Old;
-	old.windUp 							= vars.watchers["windUp"].Old;
-	old.hourClock 						= vars.watchers["hourClock"].Old;
-	old.minuteClock 					= vars.watchers["minuteClock"].Old;
-	old.pause 							= vars.watchers["pause"].Old;
-	old.menu 							= vars.watchers["menu"].Old;
-	old.hasLoaded 						= vars.watchers["hasLoaded"].Old;
-	old.kitElev 						= vars.watchers["kitElev"].Old;
-	old.foy1Elev 						= vars.watchers["foy1Elev"].Old;
-	old.bonBElev 						= vars.watchers["bonBElev"].Old;
-	old.fazerElev 						= vars.watchers["fazerElev"].Old;
-	old.WAElev 							= vars.watchers["WAElev"].Old;
-	old.aftonElev 						= vars.watchers["aftonElev"].Old;
-	old.monGElev 						= vars.watchers["monGElev"].Old;
-	old.foy2Elev 						= vars.watchers["foy2Elev"].Old;
-	old.chicaElev 						= vars.watchers["chicaElev"].Old;
-	old.montyElev 						= vars.watchers["montyElev"].Old;
-	old.roxyElev 						= vars.watchers["roxyElev"].Old;
-	old.freddyElev 						= vars.watchers["freddyElev"].Old;
+	old.carEndLeaveButton 			= vars.watchers["carEndLeaveButton"].Old;
+	old.fireEndLeaveButton 			= vars.watchers["fireEndLeaveButton"].Old;
+	old.aftonEnd 				= vars.watchers["aftonEnd"].Old;
+	old.vannyEnd 				= vars.watchers["vannyEnd"].Old;
+	old.fireEnd 				= vars.watchers["fireEnd"].Old;
+	old.carEnd 				= vars.watchers["carEnd"].Old;
+	old.escapeEnd 				= vars.watchers["escapeEnd"].Old;
+	old.pqEnd 				= vars.watchers["pqEnd"].Old;
+	old.aftonHealth 			= vars.watchers["aftonHealth"].Old;
+	old.securityBadgeCount 			= vars.watchers["securityBadgeCount"].Old;
+	old.itemCount 				= vars.watchers["itemCount"].Old;
+	old.splashScreen 			= vars.watchers["splashScreen"].Old;
+	old.interactionName 			= vars.watchers["interactionName"].Old;
+	old.windUp 				= vars.watchers["windUp"].Old;
+	old.hourClock 				= vars.watchers["hourClock"].Old;
+	old.minuteClock 			= vars.watchers["minuteClock"].Old;
+	old.pause 				= vars.watchers["pause"].Old;
+	old.menu 				= vars.watchers["menu"].Old;
+	old.hasLoaded 				= vars.watchers["hasLoaded"].Old;
+	old.kitElev 				= vars.watchers["kitElev"].Old;
+	old.foy1Elev 				= vars.watchers["foy1Elev"].Old;
+	old.bonBElev 				= vars.watchers["bonBElev"].Old;
+	old.fazerElev 				= vars.watchers["fazerElev"].Old;
+	old.WAElev 				= vars.watchers["WAElev"].Old;
+	old.aftonElev 				= vars.watchers["aftonElev"].Old;
+	old.monGElev 				= vars.watchers["monGElev"].Old;
+	old.foy2Elev 				= vars.watchers["foy2Elev"].Old;
+	old.chicaElev 				= vars.watchers["chicaElev"].Old;
+	old.montyElev 				= vars.watchers["montyElev"].Old;
+	old.roxyElev 				= vars.watchers["roxyElev"].Old;
+	old.freddyElev 				= vars.watchers["freddyElev"].Old;
 
 	//Elevator Pointer List
 	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
