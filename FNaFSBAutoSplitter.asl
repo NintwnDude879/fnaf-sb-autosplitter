@@ -2,7 +2,8 @@
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
 //Original autosplitter created by patrogue#4071
-//Special thanks to CheatingMuppet and Cheat The Game for making tutorials and helping us understand how to use Cheat Engine
+//Special thanks to CheatingMuppet, Cheat The Game, and the "Speedrun Tool Development" Discord server 
+//for making tutorials, helping us understand how to use Cheat Engine, and assisting in development of this ASL
 
 state("fnaf9-Win64-Shipping"){}
 
