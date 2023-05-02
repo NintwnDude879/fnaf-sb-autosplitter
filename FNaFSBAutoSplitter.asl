@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach | v1.3.0
+//Five Nights at Freddy's: Security Breach | v1.4.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
 //Original autosplitter created by patrogue#4071
@@ -623,10 +623,7 @@ init {
 	
 	switch (gameSize){
 		default: {
-			MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\n
-			If this seems like a mistake, or you would like to suggest an additional version to support, please go to 
-			https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\n
-			Sorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+			MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
 			vars.version = 0; // Unsupported
 			break;
 		}
@@ -655,8 +652,6 @@ init {
 	if(vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero){
 		throw new Exception("UWorld/GameEngine not initialized - trying again");
 	}
-
-	#endregion
 
 	//Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
 	if (vars.version < 1.05){
@@ -709,8 +704,8 @@ init {
 		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
 		vars.vannyEndButton				= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x2F8, 0x240);
 		vars.aftonHealth				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-		vars.hourClock					= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-		vars.minuteClock				= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+		vars.hourClock					= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
+		vars.minuteClock				= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
 		vars.hasLoaded					= new DeepPointer(0x444C6B0, 0x184);
 		vars.monGElev 					= new DeepPointer(vars.UWorld, 0x98, 0x808, 0x128, 0xA8, 0x68, 0x2E8);
 		vars.foy2Elev 					= new DeepPointer(vars.UWorld, 0x98, 0x818, 0x128, 0xA8, 0x60, 0x2E8);
@@ -725,7 +720,7 @@ init {
 		vars.FBFlags					= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
 		vars.vannyEndButton 			= new DeepPointer(vars.UWorld, 0x98, 0xA0, 0x128, 0xA8, 0x308, 0x240);
 		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
-		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0xC80, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
+		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
 		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
 		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
 		vars.aftonHealth				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
@@ -1185,10 +1180,12 @@ start {
 		vars.isLoading = false;
 		vars.onMenu = false;
 		if (vars.version >= 1.05) {
-			if (current.worldCheck == 0) return;
-			if (old.worldCheck != 0) return;
-			vars.loadingConstant = current.hasLoaded;
-			print("Loading Constant: " + vars.loadingConstant.ToString());
+			if (current.worldCheck != 0){
+				if (old.worldCheck == 0){
+					vars.loadingConstant = current.hasLoaded;
+					print("Loading Constant: " + vars.loadingConstant.ToString());
+				}
+			}
 		}
 	});
 
@@ -1774,39 +1771,33 @@ split {
 						return true;
 					}
 				}
-				if (settings["Car Battery Ending"]){
-					if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
+				if (settings["CB_B"] && current.carEndLeaveButton == 0 && old.carEndLeaveButton != 0){
+					if (current.worldCheck != 0){
+						print("Car Battery Button");
+						return true;
+					}
+				}
+				if (settings["E_B"]){
+					if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
 						if (current.worldCheck != 0){
-							print("Car Battery Button");
+							print("Escape (East) Button");
+							return true;
+						}
+					}
+					if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
+						if (current.worldCheck != 0){
+							print("Escape (West) Button");
 							return true;
 						}
 					}
 				}
-				if (settings["Escape Ending"]){
-					if (settings["E_B"]){
-						if (current.escapeEndLeaveButtonEast == 0 && old.escapeEndLeaveButtonEast != 0){
-							if (current.worldCheck != 0){
-								print("Escape (East) Button");
-								return true;
-							}
-						}
-						if (current.escapeEndLeaveButtonWest == 0 && old.escapeEndLeaveButtonWest != 0){
-							if (current.worldCheck != 0){
-								print("Escape (West) Button");
-								return true;
-							}
-						}
+				if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
+					if (current.worldCheck != 0){
+						print("Fire Escape Button");
+						return true;
 					}
 				}
-				if (settings["Fire Escape Ending"]){
-					if (settings["F_B"] && current.fireEndLeaveButton == 0 && old.fireEndLeaveButton != 0){
-						if (current.worldCheck != 0){
-							print("Fire Escape Button");
-							return true;
-						}
-					}
-				}
-				if (settings["Princess Quest Ending"]){
+				if (settings["pq3_endEndings"]){
 					if (vars.checkPQPosition1(current.pos.Y, current.pos.X, 1800, 2200, 1635.34, 1700)){
 						if (current.pq3Attack && !old.pq3Attack){
 							if (vars.checkPQPosition2("pq3_endEndings", vars.pq3_end)){
@@ -1816,12 +1807,10 @@ split {
 						}
 					}
 				}
-				if (settings["Vanny Ending"]){
-					if (settings["V_B"]){
-						if (!current.vannyEndButton && old.vannyEndButton){
-							if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
-								return true;
-							}
+				if (settings["V_B"]){
+					if (!current.vannyEndButton && old.vannyEndButton){
+						if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+							return true;
 						}
 					}
 				}
