@@ -2609,10 +2609,10 @@ split {
 					if (settings["Equipment"]){
 						if (current.itemCount > old.itemCount){
 							if (settings["E_Fazerblast"]){
-								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
+								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Game"){
 									return true;
 								}
-								if (vars.checkItem("Golden Fazerblaster", 13930, 31285, 1530)){
+								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Prize"){
 									return true;
 								}
 							}
@@ -2630,7 +2630,7 @@ split {
 						}
 						if (settings["E_Utility Tunnels"]){
 							if (current.itemCount > old.itemCount){
-								if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
+								if (vars.GetNameFromFName(old.closestInteractibleFName) == "BB_UtilityStart"){
 									return true;
 								}
 							}
