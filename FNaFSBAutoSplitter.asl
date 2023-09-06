@@ -8,6 +8,7 @@
 state("fnaf9-Win64-Shipping"){}
 
 startup {
+	vars.CompletedSplits = new HashSet<string>();
 	//setting names
 	//print settings
 	settings.CurrentDefaultParent = null;
@@ -871,27 +872,34 @@ start {
 		return true;
 	});
 
-	vars.checkPosition = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, xLB, xUB, yLB, yUB, zLB, zUB) => {
-		if (!settings[name]) return false;
-		if (!check) return false;
-		if (xLB > current.pos.X) return false;
-		if (current.pos.X > xUB) return false;
-		if (yLB > current.pos.Y) return false;
-		if (current.pos.Y > yUB) return false;
-		if (zLB > current.pos.Z) return false;
-		if (current.pos.Z > zUB) return false;
-		print(name);
-		return true;
+	vars.checkBox = (Func<string, Vector3f, Vector3f, bool>)((name, point1, point2) => {
+        	/* This first section is just to allow you to pick any two points directly opposite each other 
+        	on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
+        	
+        	// Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
+        	Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
+        	Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
+		
+        	// Actually calculate if you are in the bounds of the defined cuboid
+        	// Includes a bool called "check" to make sure you haven't already been in this box (i.e. on the previous frame)
+		if (settings[name] && vars.CompletedSplits.Add(name) 
+        	&& LB.X <= current.pos.X && current.pos.X <= UB.X 
+        	&& LB.Y <= current.pos.Y && current.pos.Y <= UB.Y 
+        	&& LB.Z <= current.pos.Z && current.pos.Z <= UB.Z){
+			print(name);
+			return true;
+		}
+		return false;
 	});
 
-	vars.checkArcadePosition = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
-        /* This first section is just to allow you to pick any two points directly opposite each other 
-        on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
-        
-        // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
-        Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
-        Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
-
+	vars.checkBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
+        	/* This first section is just to allow you to pick any two points directly opposite each other 
+        	on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
+        	
+        	// Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
+        	Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
+        	Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
+		
 		//Checks to see if the old position is within a cuboid
 		if (LB.X > old.pos.X && old.pos.X > UB.X
 		&&  LB.Y > old.pos.Y && old.pos.Y > UB.Y
@@ -1045,23 +1053,6 @@ start {
 		vars.cWAGen4 = true;
 		vars.cWAGen5 = true;
 
-		//Deload Splits
-		vars.dFoxyCutout = true;
-		vars.dDaycareArcade = true;
-		vars.dDaycareTheatre = true;
-		vars.dKCFence = true;
-		vars.dMGFence = true;
-		vars.dCounter = true;
-		vars.dChicaRoom = true;
-		vars.dCurtain = true;
-		vars.dRoxyCutout = true;
-		vars.dTunnelDoor = true;
-		vars.dAftonRock = true;
-		vars.dGarageJump = true;
-		vars.dRoxyEyes = true;
-		vars.dBalloon = true;
-		vars.dPlant = true;
-
 		//Item Splits
 		vars.nLobbyItemsUsed = 0;
 		vars.iRoxyEyes = true;
@@ -1169,19 +1160,19 @@ isLoading {
 		}
 	}
 	else if (vars.arcade == "N/A"){
-		if (vars.checkArcadePosition(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
+		if (vars.checkBoxNoBool(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
 			vars.arcade = "BB Arcade";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
+		else if (vars.checkBoxNoBool(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
 			vars.arcade = "Monty Golf";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
+		else if (vars.checkBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
 			vars.arcade = "Princess Quest 1";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+		else if (vars.checkBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
 			vars.arcade = "Princess Quest 2";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
+		else if (vars.checkBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
 			vars.arcade = "Princess Quest 3";
 		}
 		
@@ -1586,74 +1577,60 @@ split {
 						}
 					}
 					if (settings["D_Daycare"]){
-						if (vars.checkPosition("Arcade Deload", vars.dDaycareArcade, -13600, -13300, 30000, 31800, 1821.75, 2000)){
-							vars.dDaycareArcade = false;
+						if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75), new Vector3f(-13300, 31800, 2000)){
 							return true;
 						}
-						if (vars.checkPosition("Theatre Deload", vars.dDaycareTheatre, -20000, -19500, 32377.5, 34800, 2516, 2600)){
-							vars.dDaycareTheatre = false;
+						if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5, 2516), new Vector3f(-19500, 34800, 2600)){
 							return true;
 						}
 					}
 					if (settings["D_Kid's Cove Sublobby"]){
-						if (vars.checkPosition("KCD_Fence Deload", vars.dKCFence, -10270, -9038, 31000, 36403, 2062, 3000)){
-							vars.dKCFence = false;
+						if (vars.checkBox("KCD_Fence Deload", new Vector3f(-10270, 31000, 2062), new Vector3f(-9038, 36403, 3000)){
 							return true;
 						}
 					}
 					if (settings["D_Monty Golf Sublobby"]){
-						if (vars.checkPosition("MGD_Fence Deload", vars.dMGFence, -10270, -9038, 38460, 42100, 2062, 3000)){
-							vars.dMGFence = false;
+						if (vars.checkBox("MGD_Fence Deload", new Vector3f(-10270, 38460, 2062), new Vector3f(-9038, 42100, 3000)){
 							return true;
 						}
 					}
 					if (settings["D_Prize Counter"]){
-						if (vars.checkPosition("Counter Deload", vars.dCounter, -3750, -3250, 28250, 28750, 3750, 4000)){
-							vars.dCounter = false;
+						if (vars.checkBox("Counter Deload", new Vector3f(-3750, 28250, 3750), new Vector3f(-3250, 28750, 4000)){
 							return true;
 						}
 					}
 					if (settings["D_Rockstar Row"]){
-						if (vars.checkPosition("Chica Greenroom Deload", vars.dChicaRoom, -4700, -4200, 52300, 52700, 1993, 2500)){
-							vars.dChicaRoom = false;
+						if (vars.checkBox("Chica Greenroom Deload", new Vector3f(-4700, 52300, 1993), new Vector3f(-4200, 52700, 2500)){
 							return true;
 						}
-						if (vars.checkPosition("Curtain Deload", vars.dCurtain, 5150, 5350, 44450, 44650, 1960, 2100)){
-							vars.dCurtain = false;
+						if (vars.checkBox("Curtain Deload", new Vector3f(5150, 44450, 1960), new Vector3f(5350, 44650, 2100)){
 							return true;
 						}
-						if (vars.checkPosition("Roxy Cutout Deload", vars.dRoxyCutout, 3700, 3850, 44300, 44700, 1877, 1950)){
-							vars.dRoxyCutout = false;
+						if (vars.checkBox("Roxy Cutout Deload", new Vector3f(3700, 44300, 1877), new Vector3f(3850, 44700, 1950)){
 							return true;
 						}
-						if (vars.checkPosition("Tunnel Door Deload", vars.dTunnelDoor, -1500, -1300, 49250, 49492, 1750, 1900)){
-							vars.dTunnelDoor = false;
+						if (vars.checkBox("Tunnel Door Deload", new Vector3f(-1500, 49250, 1750), new Vector3f(-1300, 49492, 1900)){
 							return true;
 						}
 					}
 					if (settings["D_Roxy Raceway"]){
-						if (vars.checkPosition("Afton Rock Column Deload", vars.dAftonRock, 24000, 25500, 48000, 49500, 2411.5, 2800)){
-							vars.dAftonRock = false;
+						if (vars.checkBox("Afton Rock Column Deload", new Vector3f(24000, 48000, 2411.5), new Vector3f(25500, 49500, 2800)){
 							return true;
 						}
-						if (vars.checkPosition("Garage Fence Jump", vars.dGarageJump, 18000, 19500, 38800, 39100, 2411.5, 2800)){
-							vars.dGarageJump = false;
+						if (vars.checkBox("Garage Fence Jump", new Vector3f(18000, 38800, 2411.5), new Vector3f(19500, 39100, 2800)){
 							return true;
 						}
-						if (vars.checkPosition("Roxy's Eyes Deload", vars.dRoxyEyes, 19500, 20500, 50750, 51150, 988, 1100)){
-							vars.dRoxyEyes = false;
+						if (vars.checkBox("Roxy's Eyes Deload", new Vector3f(19500, 50750, 988), new Vector3f(20500, 51150, 1100)){
 							return true;
 						}
 					}
 					if (settings["D_Roxy Raceway Sublobby"]){
-						if (vars.checkPosition("Balloon Deload", vars.dBalloon, 8300, 9000, 38000, 39000, 2708, 3000)){
-							vars.dBalloon = false;
+						if (vars.checkBox("Balloon Deload", new Vector3f(8300, 38000, 2708), new Vector3f(9000, 39000, 3000)){
 							return true;
 						}
 					}
 					if (settings["D_Roxy Salon"]){
-						if (vars.checkPosition("Plant Deload", vars.dPlant, 9000, 10500, 41800, 42000, 2708, 3000)){
-							vars.dPlant = false;
+						if (vars.checkBox("Plant Deload", new Vector3f(9000, 41800, 2708), new Vector3f(10500, 42000, 3000)){
 							return true;
 						}
 					}
