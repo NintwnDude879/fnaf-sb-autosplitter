@@ -576,6 +576,21 @@ startup {
 	settings.Add("Stop Timer When Loading", true);
 	settings.Add("Stop Timer When Paused", true);
 
+	foreach (var data in vars.elevatorNames){
+		settings.CurrentDefaultParent = "Elevator Pauses";
+		settings.Add(data, true);
+
+		settings.CurrentDefaultParent = data;
+		settings.Add(data + "_EUOE", true, "Every Use Of Elevator");
+		settings.Add(data + "_POOU", false, "Pause Only On Use:");
+
+		settings.CurrentDefaultParent = data + "_POOU";
+		var maxUse = 5;
+		for (var k = 1; k <= maxUse; k++){
+			settings.Add(data + "_n" + k.ToString(), false, "#" + k.ToString());
+		}
+	}
+
 	settings.CurrentDefaultParent = null;
 	settings.Add("Reset Settings", false);
 
@@ -602,226 +617,48 @@ init {
 		case 76251136: vars.version = 1.11; break;
 	}
 
-	print("Version = " + vars.version);
+		case 76218368: {
+			version = "v1.07"; 
+			posBase = 0x441D9C0;
+			break;
+		}
 
-	//Declare before usage in MemoryWatcherList
-	vars.lastButton = new MemoryWatcher<bool>((IntPtr)null) { Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-	vars.buttonName = (string)null;
-	
-	//Sigscanning
-	vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
-    	var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
-    	var pattern = new SigScanTarget(signature);
-    	var location = scanner.Scan(pattern);
-    	if (location == IntPtr.Zero) return IntPtr.Zero;
-    	int offset = game.ReadValue<int>((IntPtr)location + instructionOffset);
-    	return (IntPtr)location + offset + instructionOffset + 0x4;
-	});
-
-	vars.GetNameFromFName = (Func<long, string>) ( longKey => {
-        int key = (int)(longKey & uint.MaxValue);
-        int chunkOffset = key >> 16;
-        int nameOffset = (ushort)key;
-        IntPtr namePoolChunk = memory.ReadValue<IntPtr>((IntPtr)vars.FNamePool + (chunkOffset+2) * 0x8);
-        Int16 nameEntry = game.ReadValue<Int16>((IntPtr)namePoolChunk + 2 * nameOffset);
-        int nameLength = nameEntry >> 6;
-        string output = game.ReadString((IntPtr)namePoolChunk + 2 * nameOffset + 2, nameLength);
-        return output;
-    });
-
-	// Signature scans for base address of UWorld and GEngine
-	// MAKE SURE TO CONVERT FROM DECIMAL IF YOU WANT TO USE A HEX OFFSET OF BYTES
-	// There was a bug with UWorld where the offset for the sig was 0x15, which is 21 in decimal
-	// 0x15 =/= 15!!!!!!
-	// FNamePool's base address doesn't get accessed at all (for some reason) but it's base address + 8 does
-	// Because of this, you can just sigscan for the base address + 8 and then subtract the 8 to get the real pointer
-	vars.badFNamePool = vars.GetStaticPointerFromSig("8B 05 ??????03 FF C0 C1 E9 10 3B C8 0F 92 C0 C3 CC", 2);
-	vars.FNamePool = IntPtr.Add(vars.badFNamePool, -8);
-	vars.UWorld = vars.GetStaticPointerFromSig("E8 ???????? 48 8B 88 ??0?0000 48 89 0D ??????02", 15);
-	vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F80A0000 48 85 C9 74 07 48 8B 01 48 FF 60 40", 3);
-    
-	if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero){
-		throw new Exception("UWorld/GameEngine/FNamePool not initialized - trying again");
+		case 76251136: {
+			version = "v1.11"; 
+			posBase = 0x44251F0;
+			break;
+		}
 	}
-
-	//Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
-	if (vars.version < 1.05){
-		vars.freddyThing				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-		vars.MGBucket					= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
-		vars.FBFlags					= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
-		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
-		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
-		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
-		vars.aftonHealth				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-		vars.hourClock					= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-		vars.minuteClock				= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-		vars.hasLoaded					= new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
-	}
-	if (vars.version == 1.05){
-		vars.freddyThing				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-		vars.MGBucket					= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-		vars.FBFlags					= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-		vars.escapeEndLeaveButtonEast	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
-		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
-		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-		vars.aftonHealth				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-		vars.hourClock					= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-		vars.minuteClock				= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-		vars.hasLoaded					= new DeepPointer(0x444C568, 0x184);
-	}
-	if (vars.version == 1.07){
-		vars.freddyThing				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-		vars.MGBucket					= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-		vars.FBFlags					= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
-		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
-		vars.aftonHealth				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-		vars.hourClock					= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
-		vars.minuteClock				= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
-		vars.hasLoaded					= new DeepPointer(0x444C6B0, 0x184);
-	}
-	if (vars.version == 1.11){
-		vars.freddyThing				= new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
-		vars.MGBucket					= new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
-		vars.FBFlags					= new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
-		vars.escapeEndLeaveButtonWest 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
-		vars.escapeEndLeaveButtonEast 	= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
-		vars.carEndLeaveButton 			= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
-		vars.fireEndLeaveButton 		= new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
-		vars.aftonHealth				= new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
-		vars.hourClock					= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
-		vars.minuteClock				= new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
-		vars.hasLoaded					= new DeepPointer(0x4453ED8, 0x184);
-	}
-	vars.watchers = new MemoryWatcherList {
-		//Freddy's Power OR Freddy Thingie (1.11+)
-		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
 		//Player Info
 		new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "posWatcher" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
-		//Arcade pointers
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-
-		//Counter pointers
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-
-		//Buttons that start cutscenes (pressed = 0)
-		new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		
-		//Afton's health (starts at 750, -100 per button)
-		new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-
-		//Keeps track of items
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		//Chica's Voicebox collectible needs a different pointer, see where this pointer is used for reason
-		new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x2C8, 0xD0)) { Name = "chicaWindUp" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		
-		//In-Game Clock
-		new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		
-		//Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
-		new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-
-		//Experimental elevator fix that only requires 3 pointers (instead of 12)
-		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		vars.lastButton,
-	};
+	vars.posWatcher = new MemoryWatcher<Vector3f>(new DeepPointer(posBase, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0));
 }
 
 update {
-	//Define all pointers by watchers
-	vars.watchers.UpdateAll(game);
-	// Check that last interactible was an elevator button, and if it was, cache it
-	current.freddyThing					= vars.watchers["freddyThing"].Current;
-	current.pos 						= vars.watchers["posWatcher"].Current;
-	current.worldCheck 					= vars.watchers["worldCheck"].Current;
-	current.golfStrokeCount 			= vars.watchers["golfStrokeCount"].Current;
-	current.pq3Attack 					= vars.watchers["pq3Attack"].Current;
-	current.DGens 						= vars.watchers["DGens"].Current;
-	current.FBFlags 					= vars.watchers["FBFlags"].Current;
-	current.MGBucket 					= vars.watchers["MGBucket"].Current;
-	current.escapeEndLeaveButtonWest 	= vars.watchers["escapeEndLeaveButtonWest"].Current;
-	current.escapeEndLeaveButtonEast 	= vars.watchers["escapeEndLeaveButtonEast"].Current;
-	current.carEndLeaveButton 			= vars.watchers["carEndLeaveButton"].Current;
-	current.fireEndLeaveButton 			= vars.watchers["fireEndLeaveButton"].Current;
-	current.aftonHealth 				= vars.watchers["aftonHealth"].Current;
-	current.securityBadgeCount 			= vars.watchers["securityBadgeCount"].Current;
-	current.itemCount 					= vars.watchers["itemCount"].Current;
-	current.splashScreen 				= vars.watchers["splashScreen"].Current;
-	current.interactionName 			= vars.watchers["interactionName"].Current;
-	current.windUp 						= vars.watchers["windUp"].Current;
-	current.chicaWindUp					= vars.watchers["chicaWindUp"].Current;
-	current.hourClock 					= vars.watchers["hourClock"].Current;
-	current.minuteClock 				= vars.watchers["minuteClock"].Current;
-	current.pause 						= vars.watchers["pause"].Current;
-	current.menu 						= vars.watchers["menu"].Current;
-	current.hasLoaded 					= vars.watchers["hasLoaded"].Current;
-	old.freddyThing 					= vars.watchers["freddyThing"].Old;
-	old.pos     						= vars.watchers["posWatcher"].Old;
-	old.worldCheck 						= vars.watchers["worldCheck"].Old;
-	old.golfStrokeCount 				= vars.watchers["golfStrokeCount"].Old;
-	old.pq3Attack 						= vars.watchers["pq3Attack"].Old;
-	old.DGens 							= vars.watchers["DGens"].Old;
-	old.FBFlags 						= vars.watchers["FBFlags"].Old;
-	old.MGBucket 						= vars.watchers["MGBucket"].Old;
-	old.escapeEndLeaveButtonest 		= vars.watchers["escapeEndLeaveButtonWest"].Old;
-	old.escapeEndLeaveButtonEast 		= vars.watchers["escapeEndLeaveButtonEast"].Old;
-	old.carEndLeaveButton 				= vars.watchers["carEndLeaveButton"].Old;
-	old.fireEndLeaveButton 				= vars.watchers["fireEndLeaveButton"].Old;
-	old.aftonHealth 					= vars.watchers["aftonHealth"].Old;
-	old.securityBadgeCount 				= vars.watchers["securityBadgeCount"].Old;
-	old.itemCount 						= vars.watchers["itemCount"].Old;
-	old.splashScreen 					= vars.watchers["splashScreen"].Old;
-	old.interactionName 				= vars.watchers["interactionName"].Old;
-	old.windUp 							= vars.watchers["windUp"].Old;
-	old.chicaWindUp						= vars.watchers["chicaWindUp"].Old;
-	old.hourClock 						= vars.watchers["hourClock"].Old;
-	old.minuteClock 					= vars.watchers["minuteClock"].Old;
-	old.pause 							= vars.watchers["pause"].Old;
-	old.menu 							= vars.watchers["menu"].Old;
-	old.hasLoaded 						= vars.watchers["hasLoaded"].Old;
-	//Experimental stuff
-	current.closestInteractibleFName	= vars.watchers["closestInteractibleFName"].Current;
-	old.closestInteractibleFName		= vars.watchers["closestInteractibleFName"].Old;
-	current.closestInteractibleAddress	= vars.watchers["closestInteractibleAddress"].Current;
-	old.closestInteractibleAddress		= vars.watchers["closestInteractibleAddress"].Old;
-	current.lastButton					= vars.watchers["lastButton"].Current;
-	old.lastButton						= vars.watchers["lastButton"].Old;
+	if (version == "Unsupported") return false;
 
-	if (vars.GetNameFromFName(current.closestInteractibleFName).Contains("ElevatorButton")){
-		vars.lastButton = new MemoryWatcher<bool>((IntPtr)current.closestInteractibleAddress+0x2E8){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-		vars.lastButton = "elevButton";
-	}
-	if (vars.GetNameFromFName(current.closestInteractibleFName)== "DestroyVannyEndingTrigger"){
-		vars.lastButton = new MemoryWatcher<bool>((IntPtr)current.closestInteractibleAddress+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-		vars.lastButton = "vannyButton";
-	}
-
-	//print("current.freddyThing: "+current.freddyThing);
-	//print("vars.UWorld: "+vars.UWorld.ToString("X"));
-	//print("vars.GEngine: "+vars.GEngine.ToString("X"));
-	//print("current.interactionName: "+current.interactionName+"\nold.interactionName:"+old.interactionName);
 	//Elevator Pointer List
+	vars.elevatorPointers = new List<Tuple<string, bool, bool>>(){
+		new Tuple<string, bool, bool>(vars.elevatorNames[0], current.aftonElev, old.aftonElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[1], current.kitElev, old.kitElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[2], current.bonBElev, old.bonBElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[3], current.chicaElev, old.chicaElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[4], current.fazerElev, old.fazerElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[5], current.freddyElev, old.freddyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy1Elev, old.foy1Elev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[6], current.foy2Elev, old.foy2Elev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[7], current.monGElev, old.monGElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[8], current.montyElev, old.montyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[9], current.roxyElev, old.roxyElev),
+		new Tuple<string, bool, bool>(vars.elevatorNames[10], current.WAElev, old.WAElev),
+	};
+
+	vars.posWatcher.Update(game);
+	current.pos = vars.posWatcher.Current;
+	old.pos = vars.posWatcher.Old;
 }
 
 start {
@@ -884,21 +721,14 @@ start {
 		return true;
 	});
 
-	vars.checkArcadePosition = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
-        /* This first section is just to allow you to pick any two points directly opposite each other 
-        on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
-        
-        // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
-        Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
-        Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
-
-		//Checks to see if the old position is within a cuboid
-		if (LB.X > old.pos.X && old.pos.X > UB.X
-		&&  LB.Y > old.pos.Y && old.pos.Y > UB.Y
-		&&  LB.Z > old.pos.Z && old.pos.Z > UB.Z){
-			return true;
-		}
-		return false;
+	vars.checkArcadePosition = (Func<double, double, double, double, double, double, bool>)((xLB, xUB, yLB, yUB, zLB, zUB) => {
+		if (xLB > old.pos.X) return false;
+		if (old.pos.X > xUB) return false;
+		if (yLB > old.pos.Y) return false;
+		if (old.pos.Y > yUB) return false;
+		if (zLB > current.pos.Z) return false;
+		if (current.pos.Z > zUB) return false;
+		return true;
 	});
 
 	vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
@@ -1122,25 +952,23 @@ start {
 	vars.resetVariables();
 
 	//Start conditions (time, Freddy power, freddyThing)
-	if (current.hourClock == -1 && current.minuteClock == 0){
-		if (vars.version < 1.11){
-			if (old.freddyThing == 100 && current.freddyThing == 30){
-				print("Start Timer");
-				return true;
-			}
+	do {
+		if (current.hourClock != -1) break; 
+		if (current.minuteClock != 0) break;
+
+		if (version == "v1.11"){
+			if (!current.freddyThing) break;
+			if (old.freddyThing) break;
+			print("Start Timer");
+			return true;
 		}
 		else {
-			if (old.freddyThing == 0 && current.freddyThing == 1){
-				print("Start Timer");
-				return true;
-			}
+			if (current.freddyPower >= old.freddyPower) break;
+			print("Start Timer");
+			return true;
 		}
-	}
-
-	/*if (Math.Abs(current.pos.Y + 4344.795) <= 1){
-		vars.arcade = "Monty Golf";
-		return true;
-	}*/
+		
+	} while (false);
 }
 
 reset {
@@ -1169,19 +997,19 @@ isLoading {
 		}
 	}
 	else if (vars.arcade == "N/A"){
-		if (vars.checkArcadePosition(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
+		if (vars.checkArcadePosition(-17000, -16500, 27200, 27600, 2000, 2300, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "BB Arcade";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
+		else if (vars.checkArcadePosition(-18200, -17900, 44100, 44300, 900, 1100, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Monty Golf";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
+		else if (vars.checkArcadePosition(7000, 8500, 46500, 48000, 2100, 2300, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Princess Quest 1";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+		else if (vars.checkArcadePosition(7500, 9000, 20500, 21000, 3200, 3400, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Princess Quest 2";
 		}
-		else if (vars.checkArcadePosition(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
+		else if (vars.checkArcadePosition(17750, 18000, 28775, 29000, 2500, 2700, old.pos.X, old.pos.Y, old.pos.Z)){
 			vars.arcade = "Princess Quest 3";
 		}
 		
@@ -1190,26 +1018,46 @@ isLoading {
 		}
 	}
 
-	if (vars.buttonName == "elevButton" && current.lastButton) return true;
-
-	if (!settings["Stop Timer When Loading"]){
+	if (current.worldCheck != 0 || vars.isLoading || vars.onMenu){
 		if (vars.version < 1.05){
-			if (current.hasLoaded == 1){
-				vars.isLoading = false;
-			}
-			else if ((current.worldCheck != 0|| (old.pause && old.worldCheck != 0)) && !vars.isLoading){
-				print("Stop Timer When Loading");
-				vars.isLoading = true;
+			if (vars.arcade != "N/A"){
+				vars.arcade = "N/A";
+				print("Arcade: " + vars.arcade);
 			}
 
-			if (vars.isLoading){
+			if (settings[data.Item1 + "_EUOE"]){
+				print("EveryUse");
 				return true;
 			}
-		}
-		else if (current.hasLoaded == vars.loadingConstant) {
-			if (old.hasLoaded != vars.loadingConstant){
-				print("Stop Timer When Loading");
+			else if (settings[data.Item1 + "_POOU"]){
+				if (!settings[data.Item1 + "_n" + vars.useDictionary[data.Item1].ToString()]) break;
+
+				print("OnlyOnUse#");
+				return true;
 			}
+		} while (false);
+	}
+
+	if (vars.buttonName == "elevButton" && current.lastButton) return true;
+
+		if (version == "v1.04"){
+				if (current.hasLoaded){
+					vars.isLoading = false;
+					break;
+				}
+				else if ((current.worldCheck != 0 || (old.pause && old.worldCheck != 0)) && !vars.isLoading){
+					print("Stop Timer When Loading");
+					vars.isLoading = true;
+				}
+
+				if (vars.isLoading){
+					return true;
+				}
+		}
+		else {
+			if (current.blackScreen != vars.loadingConstant) break;
+			if (old.blackScreen == vars.loadingConstant) break;
+			print("Stop Timer When Loading");
 			return true;
 		}
 	}
@@ -1702,10 +1550,22 @@ split {
 							}
 						}
 					}
-				}
-				if (settings["V_B"]){
-					if (vars.buttonName == "vannyButton" && !current.lastButton && old.lastButton){
+					if (settings["pq_endCutscene"] && current.pqEnd && !old.pqEnd){
+						print("Princess Quest End Cutscene");
 						return true;
+					}
+				}
+				if (settings["Vanny Ending"]){
+					if (settings["V_C"] && current.vannyEnd && !old.vannyEnd){
+						print("Vanny Cutscene");
+						return true;
+					}
+					if (settings["V_B"]){
+						if (!current.vannyEndButton && old.vannyEndButton){
+							if (vars.checkPosition("V_B", true, 17550, 17750, 28450, 28740, 2500, 2800)){
+								return true;
+							}
+						}
 					}
 				}
 				//other ending splits
@@ -1773,466 +1633,331 @@ split {
 					//Cameras
 					//Badges
 					//Repaired Head
-					//vars.fazwatchName = 0x3921BE;
-					if (current.windUp == 0 && old.windUp >= 0.98){
-						//Collectables, Equipment, CDs, Message Bags
-						switch ((long)old.interactionName-(long)vars.fazwatchName){
-							//Default (unaccounted items)
-							default: {
-								if ((long)old.interactionName-(long)vars.fazwatchName >= 0){
-									print("0x" + Convert.ToString((long)old.interactionName-(long)vars.fazwatchName, 16));
-								}
-								else {
-									print("-0x" + Convert.ToString(Math.Abs((long)old.interactionName-(long)vars.fazwatchName), 16));
-								}
-								break;
-							}
-							//Collectables
-							case -0xF9: {
-								if (!settings["Bonnie Plush"]) break;
-								print("Bonnie Plush");
-								return true;
-							}
-							case 0xDFFFFFFBE: {
-								if (!settings["Chica Balloon"]) break;
-								print("Chica Balloon");
-								return true;
-							}
-							case -0x13A: {
-								if (current.pos.X < 0){
-									if (!settings["CB_Chica Magnet"]) break;
-									print("CB_Chica Magnet");
+					//CDS
+					if (current.splashScreen > old.splashScreen){
+						vars.fazwatchName = 0x3921BE;
+						print(Convert.ToString(old.interactionName + 250,16));
+						long dumbVariable2 = old.interactionName - vars.fazwatchName;
+						switch (dumbVariable2){
+							//Backstage 
+								//Collectables
+								case 0xCFFFFFFBE: {
+									if (!settings["El Chip Piñata"]) break;
+									print("El Chip Piñata");
 									return true;
 								}
-								else {
-									if (!settings["WA_Chica Magnet"]) break;
-									print("WA_Chica Magnet");
+								case -0xB9: {
+									if (!settings["Freddy Icon Shirt"]) break;
+									print("Freddy Icon Shirt");
 									return true;
 								}
-							}
-							case 0x20000009B: {
-								if (!settings["Chica Mask"]) break;
-								print("Chica Mask");
-								return true;
-							}
-							case 0x7FFFFFFBE: {
-								if (!settings["Chica Name Shirt"]) break;
-								print("Chica Name Shirt");
-								return true;
-							}
-							case 0x12FFFFFFBE: {
-								if (!settings["Chica Piñata"]) break;
-								print("Chica Piñata");
-								return true;
-							}
-							case -0x119: {
-								if (!settings["Comedy Mask"]) break;
-								print("Comedy Mask");
-								return true;
-							}
-							case 0x11FFFFFFBE: {
-								if (!settings["Cupcake Piñata"]) break;
-								print("Cupcake Piñata");
-								return true;
-							}
-							case 0xCFFFFFFBE: {
-								if (!settings["El Chip Piñata"]) break;
-								print("El Chip Piñata");
-								return true;
-							}
-							case -0xCA: {
-								if (!settings["Four Block Shirt"]) break;
-								print("Four Block Shirt");
-								return true;
-							}
-							case -0xF1: {
-								if (!settings["Foxy Plush"]) break;
-								print("Foxy Plush");
-								return true;
-							}
-							case 0xEFFFFFFBE: {
-								if (!settings["Freddy Balloon"]) break;
-								print("Freddy Balloon");
-								return true;
-							}
-							case -0xC3: {
-								if (!settings["Freddy Face Shirt"]) break;
-								print("Freddy Face Shirt");
-								return true;
-							}
-							case -0xB9: {
-								if (!settings["Freddy Icon Shirt"]) break;
-								print("Freddy Icon Shirt");
-								return true;
-							}
-							case -0x132: {
-								if (!settings["Freddy Magnet"]) break;
-								print("Freddy Magnet");
-								return true;
-							}
-							case 0x10000009B: {
-								if (!settings["Freddy Mask"]) break;
-								print("Freddy Mask");
-								return true;
-							}
-							case 0x5FFFFFFBE: {
-								if (!settings["Freddy Name Shirt"]) break;
-								print("Freddy Name Shirt");
-								return true;
-							}
-							case 0x9FFFFFFBE: {
-								if (!settings["Freddy Piñata"]) break;
-								print("Freddy Piñata");
-								return true;
-							}
-							case 0x3FFFFFFBE: {
-								if (!settings["Frozen Chica Treat"]) break;
-								print("Frozen Chica Treat");
-								return true;
-							}
-							case 0x2FFFFFFBE: {
-								if (!settings["Frozen Freddy Treat"]) break;
-								print("Frozen Freddy Treat");
-								return true;
-							}
-							case 0x1FFFFFFBE: {
-								if (!settings["Frozen Monty Treat"]) break;
-								print("Frozen Monty Treat");
-								return true;
-							}
-							case 0x4FFFFFFBE: {
-								if (!settings["Frozen Roxy Treat"]) break;
-								print("Frozen Roxy Treat");
-								return true;
-							}
-							case 0x70000013D: {
-								if (!settings["Glam Chica Figure"]) break;
-								print("Glam Chica Figure");
-								return true;
-							}
-							case 0x20000013D: {
-								if (!settings["Glam Chica Plush"]) break;
-								print("Glam Chica Plush");
-								return true;
-							}
-							case 0x60000013D: {
-								if (!settings["Glam Freddy Figure"]) break;
-								print("Glam Freddy Figure");
-								return true;
-							}
-							case 0x30000013D: {
-								if (!settings["Glam Freddy Plush"]) break;
-								print("Glam Freddy Plush");
-								return true;
-							}
-							case 0x80000013D: {
-								if (!settings["Glam Monty Figure"]) break;
-								print("Glam Monty Figure");
-								return true;
-							}
-							case 0x40000013D: {
-								if (!settings["Glam Monty Plush"]) break;
-								print("Glam Monty Plush");
-								return true;
-							}
-							case 0x90000013D: {
-								if (!settings["Glam Roxy Figure"]) break;
-								print("Glam Roxy Figure");
-								return true;
-							}
-							case 0x10000013D: {
-								if (!settings["Glam Roxy Plush"]) break;
-								print("Glam Roxy Plush");
-								return true;
-							}
-							case -0x18E: {
-								if (!settings["Go Kart"]) break;
-								print("Go Kart");
-								return true;
-							}
-							case -0x189: {
-								if (!settings["Golden Chica"]) break;
-								print("Golden Chica");
-								return true;
-							}
-							case -0x181: {
-								if (!settings["Golden Freddy"]) break;
-								print("Golden Freddy");
-								return true;
-							}
-							case -0x178: {
-								if (!settings["Golden Monty"]) break;
-								print("Golden Monty");
-								return true;
-							}
-							case -0x170: {
-								if (!settings["Golden Moon"]) break;
-								print("Golden Moon");
-								return true;
-							}
-							case -0x168: {
-								if (!settings["Golden Roxy"]) break;
-								print("Golden Roxy");
-								return true;
-							}
-							case -0x160: {
-								if (!settings["Golden Sun"]) break;
-								print("Golden Sun");
-								return true;
-							}
-							case 0xFFFFFFFBE: {
-								if (!settings["Monty Balloon"]) break;
-								print("Monty Balloon");
-								return true;
-							}
-							case -0x129: {
-								if (!settings["Monty Magnet"]) break;
-								print("Monty Magnet");
-								return true;
-							}
-							case 0x40000009B: {
-								if (!settings["Monty Mask"]) break;
-								print("Monty Mask");
-								return true;
-							}
-							case 0xBFFFFFFBE: {
-								if (!settings["Monty Name Shirt"]) break;
-								print("Monty Name Shirt");
-								return true;
-							}
-							case 0x13FFFFFFBE: {
-								if (!settings["Monty Piñata"]) break;
-								print("Monty Piñata");
-								return true;
-							}
-							case 0xB0000013D: {
-								if (!settings["Moon Figure"]) break;
-								print("Moon Figure");
-								return true;
-							}
-							case 0x50000013D: {
-								if (!settings["Moon Plush"]) break;
-								print("Moon Plush");
-								return true;
-							}
-							case -0xEA: {
-								if (!settings["Nightmare Plush"]) break;
-								print("Nightmare Plush");
-								return true;
-							}
-							case -0xE2: {
-								if (!settings["D_Old Poster"]) break;
-								print("D_Old Poster");
-								return true;
-							}
-							case -0xD0: {
-								if (!settings["F_Old Poster"]) break;
-								print("F_Old Poster");
-								return true;
-							}
-							case -0xD6: {
-								if (!settings["S_Old Poster"]) break;
-								print("S_Old Poster");
-								return true;
-							}
-							case -0xDC: {
-								if (!settings["L_Old Poster"]) break;
-								print("L_Old Poster");
-								return true;
-							}
-							case -0x109: {
-								if (!settings["Piñata"]) break;
-								print("Piñata");
-								return true;
-							}
-							case 0x6FFFFFFBE: {
-								if (!settings["Pizzaplex Logo Shirt"]) break;
-								print("Pizzaplex Logo Shirt");
-								return true;
-							}
-							case -0x100: {
-								if (!settings["Plush Baby"]) break;
-								print("Plush Baby");
-								return true;
-							}
-							case 0x10FFFFFFBE: {
-								if (!settings["Roxy Balloon"]) break;
-								print("Roxy Balloon");
-								return true;
-							}
-							case -0x121: {
-								if (!settings["Roxy Magnet"]) break;
-								print("Roxy Magnet");
-								return true;
-							}
-							case 0x30000009B: {
-								if (!settings["Roxy Mask"]) break;
-								print("Roxy Mask");
-								return true;
-							}
-							case 0x8FFFFFFBE: {
-								if (!settings["Roxy Name Shirt"]) break;
-								print("Roxy Name Shirt");
-								return true;
-							}
-							case 0xAFFFFFFBE: {
-								if (!settings["Roxy Piñata"]) break;
-								print("Roxy Piñata");
-								return true;
-							}
-							case -0x159: {
-								if (!settings["Space Chica Keychain"]) break;
-								print("Space Chica Keychain");
-								return true;
-							}
-							case -0x151: {
-								if (!settings["Space Freddy Keychain"]) break;
-								print("Space Freddy Keychain");
-								return true;
-							}
-							case -0x149: {
-								if (!settings["Space Monty Keychain"]) break;
-								print("Space Monty Keychain");
-								return true;
-							}
-							case -0x141: {
-								if (!settings["Space Roxy Keychain"]) break;
-								print("Space Roxy Keychain");
-								return true;
-							}
-							case -0xAF: {
-								if (!settings["Star Shirt"]) break;
-								print("Star Shirt");
-								return true;
-							}
-							case 0xA0000013D: {
-								if (!settings["Sun Figure"]) break;
-								print("Sun Figure");
-								return true;
-							}
-							case 0xFFFFFFBE: {
-								if (!settings["Sun Plush"]) break;
-								print("Sun Plush");
-								return true;
-							}
-							case -0x111: {
-								if (!settings["Tragedy Mask"]) break;
-								print("Tragedy Mask");
-								return true;
-							}
-							//Equipment
-							case -0x2B2A97: {
-								if (!settings["Backstage Pass"]) break;
-								print("Backstage Pass");
-								return true;
-							}
-							case -0x2B29BB: {
-								if (!settings["Bowling Pass"]) break;
-								print("Bowling Pass");
-								return true;
-							}
-							case 0x200000032: {
-								if (!settings["Chica Fizzy Faz"]) break;
-								print("Chica Fizzy Faz");
-								return true;
-							}
-							case -0x25: {
-								if (!settings["Damaged Head"] || !vars.tDamagedHead) break;
-								vars.tDamagedHead = false;
-								return true;
-							}
-							case -0x1E: {
-								if (!settings["Dance Pass"]) break;
-								print("Dance Pass");
-								return true;
-							}
-							case -0x38: {
-								if (!settings["Entrance Pass"]) break;
-								print("Entrance Pass");
-								return true;
-							}
-							case -0x384BC0: {
-								if (!settings["Fazcam"]) break;
-								print("Fazcam");
-								return true;
-							}
-							case 0x0: {
-								if (!settings["Fazwatch"]) break;
-								print("Fazwatch");
-								return true;
-							}
-							case -0x384BB1: {
-								if (!settings["Flashlight"]) break;
-								print("Flashlight");
-								return true;
-							}
-							case 0x200000015: {
-								if (!settings["D_Flashlight Upgrade"]) break;
-								print("D_Flashlight Upgrade");
-								return true;
-							}
-							case 0x300000015: {
-								if (!settings["B_Flashlight Upgrade"]) break;
-								print("B_Flashlight Upgrade");
-								return true;
-							}
-							case 0x100000015: {
-								if (!settings["MG_Flashlight Upgrade"]) break;
-								print("MG_Flashlight Upgrade");
-								return true;
-							}
-							case 0x300000032: {
-								if (!settings["Freddy Fizzy Faz"]) break;
-								print("Freddy Fizzy Faz");
-								return true;
-							}
-							case 0x20000001F: {
-								if (!settings["RR_Freddy Upgrade"]) break;
-								print("RR_Freddy Upgrade");
-								return true;
-							}
-							case 0x10000001F: {
-								if (!settings["MA_Freddy Upgrade"]) break;
-								print("MA_Freddy Upgrade");
-								return true;
-							}
-							case 0x3E: {
-								if (!settings["Hoodie"]) break;
-								print("Hoodie");
-								return true;
-							}
-							case -0x391FF3: {
-								if (!settings["MA_Mapbot's Map"]) break;
-								print("MA_Mapbot's Map");
-								return true;
-							}
-							case 0x148: {
-								if (!settings["UT_Mapbot's Map"]) break;
-								print("UT_Mapbot's Map");
-								return true;
-							}
-							case -0x2B23DE: {
-								if (!settings["Mazercise Control Key"]) break;
-								print("Mazercise Control Key");
-								return true;
-							}
-							case 0x54: {
-								if (!settings["Mazercise Pass"]) break;
-								print("Mazercise Pass");
-								return true;
-							}
-							case 0x400000032: {
-								if (!settings["Monty Fizzy Faz"]) break;
-								print("Monty Fizzy Faz");
-								return true;
-							}
-							case -0x2B2195: {
-								if (!settings["Monty Mystery Mix"]) break;
-								print("Monty Mystery Mix");
-								return true;
-							}
-							case 0x5D: {
-								if (current.pos.X <= -3000){
+								case 0x70000013D: {
+									if (!settings["Glam Chica Figure"]) break;
+									print("Glam Chica Figure");
+									return true;
+								}
+								//Equipment
+								case -0x2B2A97: {
+									if (!settings["Backstage Pass"]) break;
+									print("Backstage Pass");
+									return true;
+								}
+								case 0x300000015: {
+									if (!settings["B_Flashlight Upgrade"]) break;
+									print("B_Flashlight Upgrade");
+									return true;
+								}
+							//Basement Kitchen
+								//Collectables
+								case -0x132: {
+									if (!settings["Freddy Magnet"]) break;
+									print("Freddy Magnet");
+									return true;
+								}
+								case -0x189: {
+									if (!settings["Golden Chica"]) break;
+									print("Golden Chica");
+									return true;
+								}
+								//Equipment
+								case 0x300000032: {
+									if (!settings["Freddy Fizzy Faz"]) break;
+									print("Freddy Fizzy Faz");
+									return true;
+								}
+							//Bonnie Bowl
+								//Collectables
+								case -0xF9: {
+									if (!settings["Bonnie Plush"]) break;
+									print("Bonnie Plush");
+									return true;
+								}
+								case -0x178: {
+									if (!settings["Golden Monty"]) break;
+									print("Golden Monty");
+									return true;
+								}
+								//Equipment
+								case -0x2B2195: {
+									if (!settings["Monty Mystery Mix"]) break;
+									print("Monty Mystery Mix");
+									return true;
+								}
+							//Chica's Bakery
+								//Collectables
+								case -0x13A: {
+									if (current.pos.X < 0){
+										if (!settings["CB_Chica Magnet"]) break;
+										print("CB_Chica Magnet");
+										return true;
+									}
+									else {
+										if (!settings["WA_Chica Magnet"]) break;
+										print("WA_Chica Magnet");
+										return true;
+									}
+								}
+								case -0x129: {
+									if (!settings["Monty Magnet"]) break;
+									print("Monty Magnet");
+									return true;
+								}
+								//Equipment
+								case 0x3E: {
+									if (!settings["Hoodie"]) break;
+									print("Hoodie");
+									return true;
+								}
+							//Daycare
+								//Collectables
+								case 0x10000009B: {
+									if (!settings["Freddy Mask"]) break;
+									print("Freddy Mask");
+									return true;
+								}
+								case 0x3FFFFFFBE: {
+									if (!settings["Frozen Chica Treat"]) break;
+									print("Frozen Chica Treat");
+									return true;
+								}
+								case 0x60000013D: {
+									if (!settings["Glam Freddy Figure"]) break;
+									print("Glam Freddy Figure");
+									return true;
+								}
+								case -0x170: {
+									if (!settings["Golden Moon"]) break;
+									print("Golden Moon");
+									return true;
+								}
+								case -0xE2: {
+									if (!settings["D_Old Poster"]) break;
+									print("D_Old Poster");
+									return true;
+								}
+								case -0x100: {
+									if (!settings["Plush Baby"]) break;
+									print("Plush Baby");
+									return true;
+								}
+								//Equipment
+								case -0x384BB1: {
+									if (!settings["Flashlight"]) break;
+									print("Flashlight");
+									return true;
+								}
+								case 0x200000015: {
+									if (!settings["D_Flashlight Upgrade"]) break;
+									print("D_Flashlight Upgrade");
+									return true;
+								}
+								case -0x2B23DE: {
+									if (!settings["Mazercise Control Key"]) break;
+									print("Mazercise Control Key");
+									return true;
+								}
+							//El Chips
+								//Collectables
+								case 0xDFFFFFFBE: {
+									if (!settings["Chica Balloon"]) break;
+									print("Chica Balloon");
+									return true;
+								}
+								//Equipment
+								case 0x400000032: {
+									if (!settings["Monty Fizzy Faz"]) break;
+									print("Monty Fizzy Faz");
+									return true;
+								}
+							//Fazerblast
+								//Collectables
+								case 0xEFFFFFFBE: {
+									if (!settings["Freddy Balloon"]) break;
+									print("Freddy Balloon");
+									return true;
+								}
+								case -0xD0: {
+									if (!settings["F_Old Poster"]) break;
+									print("F_Old Poster");
+									return true;
+								}
+								case -0x159: {
+									if (!settings["Space Chica Keychain"]) break;
+									print("Space Chica Keychain");
+									return true;
+								}
+								case -0x141: {
+									if (!settings["Space Roxy Keychain"]) break;
+									print("Space Roxy Keychain");
+									return true;
+								}
+								//Equipment
+								case -0x2B29BB: {
+									if (!settings["Bowling Pass"]) break;
+									print("Bowling Pass");
+									return true;
+								}
+							//Fazerblast Sublobby
+								//Collectables
+								case 0x9FFFFFFBE: {
+									if (!settings["Freddy Piñata"]) break;
+									print("Freddy Piñata");
+									return true;
+								}
+								case -0x151: {
+									if (!settings["Space Freddy Keychain"]) break;
+									print("Space Freddy Keychain");
+									return true;
+								}
+							//Kids Cove Sublobby
+								//Collectables
+								case -0x160: {
+									if (!settings["Golden Sun"]) break;
+									print("Golden Sun");
+									return true;
+								}
+								case 0x50000013D: {
+									if (!settings["Moon Plush"]) break;
+									print("Moon Plush");
+									return true;
+								}
+							//Laundry
+								//Collectables
+								case 0x10000013D: {
+									if (!settings["Glam Roxy Plush"]) break;
+									print("Glam Roxy Plush");
+									return true;
+								}
+								case -0xDC: {
+									if (!settings["L_Old Poster"]) break;
+									print("L_Old Poster");
+									return true;
+								}
+								case -0xAF: {
+									if (!settings["Star Shirt"]) break;
+									print("Star Shirt");
+									return true;
+								}
+							//Lobby
+								//Collectables
+								case 0x7FFFFFFBE: {
+									if (!settings["Chica Name Shirt"]) break;
+									print("Chica Name Shirt");
+									return true;
+								}
+								case 0x11FFFFFFBE: {
+									if (!settings["Cupcake Piñata"]) break;
+									print("Cupcake Piñata");
+									return true;
+								}
+								case 0x5FFFFFFBE: {
+									if (!settings["Freddy Name Shirt"]) break;
+									print("Freddy Name Shirt");
+									return true;
+								}
+								case 0x20000013D: {
+									if (!settings["Glam Chica Plush"]) break;
+									print("Glam Chica Plush");
+									return true;
+								}
+								case 0xFFFFFFBE: {
+									if (!settings["Sun Plush"]) break;
+									print("Sun Plush");
+									return true;
+								}
+								//Equipment
+								case 0x200000032: {
+									if (!settings["Chica Fizzy Faz"]) break;
+									print("Chica Fizzy Faz");
+									return true;
+								}
+								case -0x38: {
+									if (!settings["Entrance Pass"]) break;
+									print("Entrance Pass");
+									return true;
+								}
+								case -0x2B214F: {
+									if (!settings["Mr. Hippo Magnet"]) break;
+									print("Mr. Hippo Magnet");
+									return true;
+								}
+								case 0xB3: {
+									if (!settings["Screwdriver"]) break;
+									print("Screwdriver");
+									return true;
+								}
+							//Main Atrium
+								//Collectables
+								case 0x13FFFFFFBE: {
+									if (!settings["Monty Piñata"]) break;
+									print("Monty Piñata");
+									return true;
+								}
+								case 0x8FFFFFFBE: {
+									if (!settings["Roxy Name Shirt"]) break;
+									print("Roxy Name Shirt");
+									return true;
+								}
+								//Equipment
+								case 0x10000001F: {
+									if (!settings["MA_Freddy Upgrade"]) break;
+									print("MA_Freddy Upgrade");
+									return true;
+								}
+								case -0x391FF3: {
+									if (!settings["MA_Mapbot's Map"]) break;
+									print("MA_Mapbot's Map");
+									return true;
+								}
+							//Monty Golf
+								//Collectables
+								case -0x18E: {
+									if (!settings["Go Kart"]) break;
+									print("Go Kart");
+									return true;
+								}
+								case -0x111: {
+									if (!settings["Tragedy Mask"]) break;
+									print("Tragedy Mask");
+									return true;
+								}
+								//Equipment
+								case -0x384BC0: {
+									if (!settings["Fazcam"]) break;
+									print("Fazcam");
+									return true;
+								}
+								case 0x100000015: {
+									if (!settings["MG_Flashlight Upgrade"]) break;
+									print("MG_Flashlight Upgrade");
+									return true;
+								}
+								case 0x54: {
+									if (!settings["Mazercise Pass"]) break;
+									print("Mazercise Pass");
+									return true;
+								}
+								case 0x5D: {
 									if (!settings["Monty's Claws"]) break;
 									print("Monty's Claws");
 									return true;
@@ -2242,362 +1967,231 @@ split {
 									print("MONTY UPGRADE");
 									return true;
 								}
-							}
-							case -0x2B20B7: {
-								if (!settings["Mr. Hippo Magnet"]) break;
-								print("Mr. Hippo Magnet");
-								return true;
-							}
-							case 0x71: {
-								if (!settings["Party Pass"]) break;
-								print("Party Pass");
-								return true;
-							}
-							case 0x95: {
-								if (!settings["Photo Pass"]) break;
-								print("Photo Pass");
-								return true;
-							}
-							case 0x100000032: {
-								if (!settings["Roxy Fizzy Faz"]) break;
-								print("Roxy Fizzy Faz");
-								return true;
-							}
-							case 0xAE: {
-								if (current.pos.X > 0) break;
-								if (!settings["ROXY UPGRADE"]) break;
-								print("ROXY UPGRADE");
-								return true;
-							}
-							case 0xB3: {
-								if (!settings["Screwdriver"]) break;
-								print("Screwdriver");
-								return true;
-							}
-							case 0x27: {
-								if (!settings["Shoes"]) break;
-								print("Shoes");
-								return true;
-							}
-							//CDs
-							case -0x9000000A4: {
-								if (!settings["CD_Backstage Podium"]) break;
-								print("CD_Backstage Podium");
-								return true;
-							}
-							case -0x8000000A4: {
-								if (!settings["CD_Bonnie Bowl"]) break;
-								print("CD_Bonnie Bowl");
-								return true;
-							}
-							case -0x3000000A4: {
-								if (!settings["CD_Chica's Bakery"]) break;
-								print("CD_Chica's Bakery");
-								return true;
-							}
-							case -0xF000000A4: {
-								if (!settings["CD_East Atrium Stage"]) break;
-								print("CD_East Atrium Stage");
-								return true;
-							}
-							case -0x7000000A4: {
-								if (!settings["CD_Fazerblast"]) break;
-								print("CD_Fazerblast");
-								return true;
-							}
-							case -0x4000000A4: {
-								if (!settings["CD_Kid's Cove"]) break;
-								print("CD_Kid's Cove");
-								return true;
-							}
-							case -0xA000000A4: {
-								if (!settings["CD_Main Atrium"]) break;
-								print("CD_Main Atrium");
-								return true;
-							}
-							case -0xE000000A4: {
-								if (!settings["CD_Mazercise"]) break;
-								print("CD_Mazercise");
-								return true;
-							}
-							case -0xD000000A4: {
-								if (!settings["CD_Monty Golf"]) break;
-								print("CD_Monty Golf");
-								return true;
-							}
-							case -0x1000000A4: {
-								if (!settings["CD_Rockstar Row Foxy"]) break;
-								print("CD_Rockstar Row Foxy");
-								return true;
-							}
-							case -0xB000000A4: {
-								if (!settings["CD_Rockstar Row Helpy"]) break;
-								print("CD_Rockstar Row Helpy");
-								return true;
-							}
-							case -0xC000000A4: {
-								if (!settings["CD_Roxy Raceway"]) break;
-								print("CD_Roxy Raceway");
-								return true;
-							}
-							case -0x5000000A4: {
-								if (!settings["CD_Roxy Salon"]) break;
-								print("CD_Roxy Salon");
-								return true;
-							}
-							case -0x2000000A4: {
-								if (!settings["CD_Utility Tunnels Couch"]) break;
-								print("CD_Utility Tunnels Couch");
-								return true;
-							}
-							case -0x6000000A4: {
-								if (!settings["CD_Utility Tunnels Foxy Plush"]) break;
-								print("CD_Utility Tunnels Foxy Plush");
-								return true;
-							}
-							case -0x10000000A4: {
-								if (!settings["CD_West Arcade"]) break;
-								print("CD_West Arcade");
-								return true;
-							}
-							//Messages
-							//MONTY UPGRADE included with Monty's Claws equipment
-							//ROXY UPGRADE included with Roxy's Eyes equipment
-							case 0x20A: {
-								if (!settings["AC Inspection"]) break;
-								print("AC Inspection");
-								return true;
-							}
-							case 0x272: {
-								if (!settings["All Staff Meeting"]) break;
-								print("All Staff Meeting");
-								return true;
-							}
-							case 0x16D: {
-								if (!settings["AR-CADE MAINT LOG"]) break;
-								print("AR-CADE MAINT LOG");
-								return true;
-							}
-							case 0x19A: {
-								if (!settings["ARCADE CONSPIRACY"]) break;
-								print("ARCADE CONSPIRACY");
-								return true;
-							}
-							case 0x15B: {
-								if (!settings["BBW MAINT LOG"]) break;
-								print("BBW MAINT LOG");
-								return true;
-							}
-							case 0x21E: {
-								if (!settings["BEHIND THE MAZE"]) break;
-								print("BEHIND THE MAZE");
-								return true;
-							}
-							case 0x23D: {
-								if (!settings["BETTER EMPLOYEES"]) break;
-								print("BETTER EMPLOYEES");
-								return true;
-							}
-							case 0x164: {
-								if (!settings["CFF MAINT LOG"]) break;
-								print("CFF MAINT LOG");
-								return true;
-							}
-							case 0x243: {
-								if (!settings["Chasing Cars"]) break;
-								print("Chasing Cars");
-								return true;
-							}
-							case 0x1CD: {
-								if (!settings["CHICA REPORT"]) break;
-								print("CHICA REPORT");
-								return true;
-							}
-							case 0x1D3: {
-								if (!settings["CHICA UPGRADE"]) break;
-								print("CHICA UPGRADE");
-								return true;
-							}
-							case 0x1C7: {
-								if (!settings["COMPACTOR INSTRUCTIONS"]) break;
-								print("COMPACTOR INSTRUCTIONS");
-								return true;
-							}
-							case 0x279: {
-								if (!settings["Drink Fizzy Faz!!!"]) break;
-								print("Drink Fizzy Faz!!!");
-								return true;
-							}
-							case 0x288: {
-								if (!settings["Easy Money"]) break;
-								print("Easy Money");
-								return true;
-							}
-							case 0x156: {
-								if (!settings["False Alarm"]) break;
-								print("False Alarm");
-								return true;
-							}
-							case 0x201: {
-								if (!settings["Food Storage"]) break;
-								print("Food Storage");
-								return true;
-							}
-							case 0x1E1: {
-								if (!settings["HI DAVE"]) break;
-								print("HI DAVE");
-								return true;
-							}
-							case 0x1BB: {
-								if (!settings["Hide the Mix"]) break;
-								print("Hide the Mix");
-								return true;
-							}
-							case 0x1E7: {
-								if (!settings["IT IS HAPPENING AGAIN"]) break;
-								print("IT IS HAPPENING AGAIN");
-								return true;
-							}
-							case 0x224: {
-								if (!settings["Job Security"]) break;
-								print("Job Security");
-								return true;
-							}
-							case 0x296: {
-								if (!settings["MARKED FOR DELETION"]) break;
-								print("MARKED FOR DELETION");
-								return true;
-							}
-							case 0x1B3: {
-								if (!settings["MISSING"]) break;
-								print("MISSING");
-								return true;
-							}
-							case 0x22A: {
-								if (!settings["Monty Mischief"]) break;
-								print("Monty Mischief");
-								return true;
-							}
-							case 0x230: {
-								if (!settings["NIGHT SHIFT"]) break;
-								print("NIGHT SHIFT");
-								return true;
-							}
-							case 0x236: {
-								if (!settings["Night Terrors"]) break;
-								print("Night Terrors");
-								return true;
-							}
-							case 0x1F0: {
-								if (!settings["No Flash Photography"]) break;
-								print("No Flash Photography");
-								return true;
-							}
-							case 0x291: {
-								if (!settings["NO QUESTIONS ASKED"]) break;
-								print("NO QUESTIONS ASKED");
-								return true;
-							}
-							case 0x261: {
-								if (!settings["OLD ELEVATOR"]) break;
-								print("OLD ELEVATOR");
-								return true;
-							}
-							case 0x188: {
-								if (!settings["OUT OF ORDER"]) break;
-								print("OUT OF ORDER");
-								return true;
-							}
-							case 0x1F5: {
-								if (!settings["Party Foul"]) break;
-								print("Party Foul");
-								return true;
-							}
-							case 0x267: {
-								if (!settings["PINK SLIP"]) break;
-								print("PINK SLIP");
-								return true;
-							}
-							case 0x25B: {
-								if (!settings["POWER DRAIN"]) break;
-								print("POWER DRAIN");
-								return true;
-							}
-							case 0x176: {
-								if (!settings["PQ1 MAINT LOG"]) break;
-								print("PQ1 MAINT LOG");
-								return true;
-							}
-							case 0x17F: {
-								if (!settings["PQ2 MAINT LOG"]) break;
-								print("PQ2 MAINT LOG");
-								return true;
-							}
-							case 0x26B: {
-								if (!settings["QUESTION"]) break;
-								print("QUESTION");
-								return true;
-							}
-							case 0x1AB: {
-								if (!settings["Re-Theme"]) break;
-								print("Re-Theme");
-								return true;
-							}
-							case 0x1DB: {
-								if (!settings["RECYCLED PIZZA?"]) break;
-								print("RECYCLED PIZZA?");
-								return true;
-							}
-							case 0x191: {
-								if (!settings["RED FLAG"]) break;
-								print("RED FLAG");
-								return true;
-							}
-							case 0x1C1: {
-								if (!settings["SAFETY CHECK"]) break;
-								print("SAFETY CHECK");
-								return true;
-							}
-							case 0x255: {
-								if (!settings["SINKHOLE"]) break;
-								print("SINKHOLE");
-								return true;
-							}
-							case 0x249: {
-								if (!settings["SORE WINNER"]) break;
-								print("SORE WINNER");
-								return true;
-							}
-							case 0x211: {
-								if (!settings["Stolen Property"]) break;
-								print("Stolen Property");
-								return true;
-							}
-							case 0x24F: {
-								if (!settings["TEST DRIVERS WANTED"]) break;
-								print("TEST DRIVERS WANTED");
-								return true;
-							}
-							case 0x218: {
-								if (!settings["THE ANSWER"]) break;
-								print("THE ANSWER");
-								return true;
-							}
-							case 0x282: {
-								if (!settings["TORN PAPER"]) break;
-								print("TORN PAPER");
-								return true;
-							}
-							case 0x1ED: {
-								if (!settings["ULTIMATE PARTY HOST"]) break;
-								print("ULTIMATE PARTY HOST");
-								return true;
-							}
-							case 0x1A3: {
-								if (!settings["Understudy"]) break;
-								print("Understudy");
-								return true;
-							}
+								case 0x80000013D: {
+									if (!settings["Glam Monty Figure"]) break;
+									print("Glam Monty Figure");
+									return true;
+								}
+							//Parts & Service
+								//Collectables
+								case 0x90000013D: {
+									if (!settings["Glam Roxy Figure"]) break;
+									print("Glam Roxy Figure");
+									return true;
+								}
+							//Prize Counter
+								//Collectables
+								case 0x2FFFFFFBE: {
+									if (!settings["Frozen Freddy Treat"]) break;
+									print("Frozen Freddy Treat");
+									return true;
+								}
+								case 0x40000009B: {
+									if (!settings["Monty Mask"]) break;
+									print("Monty Mask");
+									return true;
+								}
+							//Rockstar Row
+								//Collectables
+								case 0x20000009B: {
+									if (!settings["Chica Mask"]) break;
+									print("Chica Mask");
+									return true;
+								}
+								case -0xCA: {
+									if (!settings["Four Block Shirt"]) break;
+									print("Four Block Shirt");
+									return true;
+								}
+								case -0x181: {
+									if (!settings["Golden Freddy"]) break;
+									print("Golden Freddy");
+									return true;
+								}
+								case 0xBFFFFFFBE: {
+									if (!settings["Monty Name Shirt"]) break;
+									print("Monty Name Shirt");
+									return true;
+								}
+								case 0x6FFFFFFBE: {
+									if (!settings["Pizzaplex Logo Shirt"]) break;
+									print("Pizzaplex Logo Shirt");
+									return true;
+								}
+								//Equipment
+								case 0x0: {
+									if (!settings["Fazwatch"]) break;
+									print("Fazwatch");
+									return true;
+								}
+								case 0x71: {
+									if (!settings["Party Pass"]) break;
+									print("Party Pass");
+									return true;
+								}
+								case 0x95: {
+									if (!settings["Photo Pass"]) break;
+									print("Photo Pass");
+									return true;
+								}
+							//Roxy Raceway
+								//Collectables
+								case 0xFFFFFFFBE: {
+									if (!settings["Monty Balloon"]) break;
+									print("Monty Balloon");
+									return true;
+								}
+								case -0x149: {
+									if (!settings["Space Monty Keychain"]) break;
+									print("Space Monty Keychain");
+									return true;
+								}
+								//Equipment
+								case -0x25: {
+									if (!settings["Damaged Head"]) break;
+									print("Damaged Head");
+									return true;
+								}
+								case -0x1E: {
+									if (!settings["Dance Pass"]) break;
+									print("Dance Pass");
+									return true;
+								}
+								case 0x20000001F: {
+									if (!settings["RR_Freddy Upgrade"]) break;
+									print("RR_Freddy Upgrade");
+									return true;
+								}
+								case 0xAE: {
+									if (!settings["Roxy's Eyes"]) break;
+									print("Roxy's Eyes");
+									return true;
+								}
+								case 0x100000032: {
+									if (!settings["Roxy Fizzy Faz"]) break;
+									print("Roxy Fizzy Faz");
+									return true;
+								}
+							//Roxy Raceway Sublobby
+								//Collectables
+								case 0x4FFFFFFBE: {
+									if (!settings["Frozen Roxy Treat"]) break;
+									print("Frozen Roxy Treat");
+									return true;
+								}
+								case 0x10FFFFFFBE: {
+									if (!settings["Roxy Balloon"]) break;
+									print("Roxy Balloon");
+									return true;
+								}
+								case 0x30000009B: {
+									if (!settings["Roxy Mask"]) break;
+									print("Roxy Mask");
+									return true;
+								}
+							//Roxy Salon
+								//Collectables
+								case -0x121: {
+									if (!settings["Roxy Magnet"]) break;
+									print("Roxy Magnet");
+									return true;
+								}
+								case 0xAFFFFFFBE: {
+									if (!settings["Roxy Piñata"]) break;
+									print("Roxy Piñata");
+									return true;
+								}
+								//Equipment
+								case 0x27: {
+									if (!settings["Shoes"]) break;
+									print("Shoes");
+									return true;
+								}
+							//Salads & Sides
+								//Collectables
+								case -0xC3: {
+									if (!settings["Freddy Face Shirt"]) break;
+									print("Freddy Face Shirt");
+									return true;
+								}
+								case -0x109: {
+									if (!settings["Piñata"]) break;
+									print("Piñata");
+									return true;
+								}
+							//Sewers
+								//Collectables
+								case -0xD6: {
+									if (!settings["S_Old Poster"]) break;
+									print("S_Old Poster");
+									return true;
+								}
+								//Equipment
+								case 0x39226FFFC6DD54: {
+									if (!settings["Chica's Voicebox"]) break;
+									print("Chica's Voicebox");
+									return true;
+								}
+							//Utility Tunnels
+								//Collectables
+								case 0x12FFFFFFBE: {
+									if (!settings["Chica Piñata"]) break;
+									print("Chica Piñata");
+									return true;
+								}
+								case -0x119: {
+									if (!settings["Comedy Mask"]) break;
+									print("Comedy Mask");
+									return true;
+								}
+								case -0xF1: {
+									if (!settings["Foxy Plush"]) break;
+									print("Foxy Plush");
+									return true;
+								}
+								case 0x30000013D: {
+									if (!settings["Glam Freddy Plush"]) break;
+									print("Glam Freddy Plush");
+									return true;
+								}
+								case -0x168: {
+									if (!settings["Golden Roxy"]) break;
+									print("Golden Roxy");
+									return true;
+								}
+								case 0xB0000013D: {
+									if (!settings["Moon Figure"]) break;
+									print("Moon Figure");
+									return true;
+								}
+								case 0xA0000013D: {
+									if (!settings["Sun Figure"]) break;
+									print("Sun Figure");
+									return true;
+								}
+								//Equipment
+								case 0x148: {
+									if (!settings["UT_Mapbot's Map"]) break;
+									print("UT_Mapbot's Map");
+									return true;
+								}
+							//Warehouse
+								//Collectables
+								case -0xEA: {
+									if (!settings["Nightmare Plush"]) break;
+									print("Nightmare Plush");
+									return true;
+								}
+							//West Arcade
+								//Collectables
+								//Chica Magnet is a special case; grouped with Chica's Bakery
+								case 0x40000013D: {
+									if (!settings["Glam Monty Plush"]) break;
+									print("Glam Monty Plush");
+									return true;
+								}
+							//DEFAULT
+								default: break;
 						}
 					}
 					//extraneous items:
@@ -2606,13 +2200,15 @@ split {
 					//Cameras
 					//Repaired Head
 					//Badges
+					//CDS
 					if (settings["Equipment"]){
 						if (current.itemCount > old.itemCount){
 							if (settings["E_Fazerblast"]){
-								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Game"){
+								if (vars.checkItem("Grey Fazerblaster", 12120, 31180, 1530)){
 									return true;
 								}
-								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Prize"){
+								if (vars.checkTime("Golden Fazerblaster", vars.tGoldBlaster, 4, 15)){
+									vars.tGoldBlaster = false;
 									return true;
 								}
 							}
@@ -2629,10 +2225,8 @@ split {
 							}
 						}
 						if (settings["E_Utility Tunnels"]){
-							if (current.itemCount > old.itemCount){
-								if (vars.GetNameFromFName(old.closestInteractibleFName) == "BB_UtilityStart"){
-									return true;
-								}
+							if (vars.checkItem("Pizzaplex Cameras", 5350, 22975, 1505)){
+								return true;
 							}
 						}
 						if (settings["E_West Arcade"]){
@@ -2646,6 +2240,58 @@ split {
 						if (current.securityBadgeCount > old.securityBadgeCount){
 							if (settings["Security Badge " + current.securityBadgeCount]){
 								print("Security Badge " + current.securityBadgeCount);
+								return true;
+							}
+						}
+					}
+					if (settings["Retro CDs"]){
+						if (current.splashScreen > old.splashScreen){
+							if (vars.checkItem("CD_Backstage Podium", -7595, 51270, 1545)){
+								return true;
+							}
+							if (vars.checkItem("CD_Bonnie Bowl", 16900, 31180, 3320)){
+								return true;
+							}
+							if (vars.checkItem("CD_Chica's Bakery", -11245, 46150, 2155)){
+								return true;
+							}
+							if (vars.checkItem("CD_Fazerblast", 8160, 35555, 1500)){
+								return true;
+							}
+							if (vars.checkItem("CD_Kids Cove", -9060, 35820, 1530)){
+								return true;
+							}
+							if (vars.checkItem("CD_Main Atrium", -1690, 36955, 1435)){
+								return true;
+							}
+							if (vars.checkItem("CD_Mazercise", -8710, 41085, 3320)){
+								return true;
+							}
+							if (vars.checkItem("CD_Monty Golf", -20155, 44645, 1575)){
+								return true;
+							}
+							if (vars.checkItem("CD_Rockstar Row Foxy", 360, 49320, 1570)){
+								return true;
+							}
+							if (vars.checkItem("CD_Rockstar Row Helpy", 4195, 45305, 1525)){
+								return true;
+							}
+							if (vars.checkItem("CD_Roxy Raceway", 12740, 48010, 1545)){
+								return true;
+							}
+							if (vars.checkItem("CD_Roxy Salon", 8025, 44675, 2205)){
+								return true;
+							}
+							if (vars.checkItem("CD_Utility Tunnels Couch", 4475, 32800, 70)){
+								return true;
+							}
+							if (vars.checkItem("CD_Utility Tunnels Foxy Plush", 5805, 42930, -660)){
+								return true;
+							}
+							if (vars.checkItem("CD_East Atrium Stage", -8325, 41485, 1520)){
+								return true;
+							}
+							if (vars.checkItem("CD_West Arcade", 10910, 24440, 3360)){
 								return true;
 							}
 						}
