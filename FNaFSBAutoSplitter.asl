@@ -809,11 +809,11 @@ update {
 	current.lastButton					= vars.watchers["lastButton"].Current;
 	old.lastButton						= vars.watchers["lastButton"].Old;
 
-	if (vars.GetNameFromFName(current.closestInteractibleFName).Contains("ElevatorButton")){
+	if (vars.GetNameFromFName(current.closestInteractibleFName) == ("Button_B_GEN_VARIABLE_ElevatorButton_C_CAT")){
 		vars.lastButton = new MemoryWatcher<bool>((IntPtr)current.closestInteractibleAddress+0x2E8){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 		vars.lastButton = "elevButton";
 	}
-	if (vars.GetNameFromFName(current.closestInteractibleFName)== "DestroyVannyEndingTrigger"){
+	if (vars.GetNameFromFName(current.closestInteractibleFName) == "DestroyVannyEndingTrigger"){
 		vars.lastButton = new MemoryWatcher<bool>((IntPtr)current.closestInteractibleAddress+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 		vars.lastButton = "vannyButton";
 	}
@@ -986,13 +986,14 @@ start {
 		return true;
 	});
 
-	vars.checkTime = (Func<string, bool, int, int, bool>)((name, check, hour, minute) => {
-		if (!settings[name]) return false;
-		if (!check) return false;
-		if (current.hourClock != hour) return false;
-		if (current.minuteClock != minute) return false;
-		print(name);
-		return true;
+	vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
+		if (settings[name] && vars.CompletedSplits.Add(name)){
+			if (current.hourClock == hour && current.minuteClock == minute){
+				print(name);
+				return true;
+			}
+		}
+		return false;
 	});
 
 	vars.resetVariables = (Action)(() => {
@@ -1136,10 +1137,10 @@ start {
 
 reset {
 	//Resets timer upon starting new game
-	if (!settings["Reset Settings"]) return false;
-	if (old.hourClock == -1) return false;
-	if (!vars.checkTime("Reset On New Game", true, -1, 0)) return false;
-	return true;
+	if (settings["Reset Settings"] && old.hourClock != -1 && vars.checkTime("Reset On New Game", -1, 0)){
+		return true;
+	}
+	return false;
 }
 
 isLoading {
@@ -1570,70 +1571,30 @@ split {
 			}
 			if (settings["Deload Splits"]){
 				if (current.pos.X != old.pos.X || current.pos.Y != old.pos.Y || current.pos.Z != old.pos.Z){
-					if (settings["D_Backstage"]){
-						if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4450, 53050, -5320, 52750, -5300, 53235, 1780, 2000)){
-							vars.dFoxyCutout = false;
-							return true;
-						}
+					if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4450, 53050, -5320, 52750, -5300, 53235, 1780, 2000)){
+						vars.dFoxyCutout = false;
+						return true;
 					}
 					if (settings["D_Daycare"]){
-						if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75), new Vector3f(-13300, 31800, 2000)){
-							return true;
-						}
-						if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5, 2516), new Vector3f(-19500, 34800, 2600)){
-							return true;
-						}
+						if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75), new Vector3f(-13300, 31800, 2000))) return true;
+						if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5, 2516), new Vector3f(-19500, 34800, 2600))) return true;
 					}
-					if (settings["D_Kid's Cove Sublobby"]){
-						if (vars.checkBox("KCD_Fence Deload", new Vector3f(-10270, 31000, 2062), new Vector3f(-9038, 36403, 3000)){
-							return true;
-						}
-					}
-					if (settings["D_Monty Golf Sublobby"]){
-						if (vars.checkBox("MGD_Fence Deload", new Vector3f(-10270, 38460, 2062), new Vector3f(-9038, 42100, 3000)){
-							return true;
-						}
-					}
-					if (settings["D_Prize Counter"]){
-						if (vars.checkBox("Counter Deload", new Vector3f(-3750, 28250, 3750), new Vector3f(-3250, 28750, 4000)){
-							return true;
-						}
-					}
+					if (vars.checkBox("KCD_Fence Deload", new Vector3f(-10270, 31000, 2062), new Vector3f(-9038, 36403, 3000))) return true;
+					if (vars.checkBox("MGD_Fence Deload", new Vector3f(-10270, 38460, 2062), new Vector3f(-9038, 42100, 3000))) return true;
+					if (vars.checkBox("Counter Deload", new Vector3f(-3750, 28250, 3750), new Vector3f(-3250, 28750, 4000))) return true;
 					if (settings["D_Rockstar Row"]){
-						if (vars.checkBox("Chica Greenroom Deload", new Vector3f(-4700, 52300, 1993), new Vector3f(-4200, 52700, 2500)){
-							return true;
-						}
-						if (vars.checkBox("Curtain Deload", new Vector3f(5150, 44450, 1960), new Vector3f(5350, 44650, 2100)){
-							return true;
-						}
-						if (vars.checkBox("Roxy Cutout Deload", new Vector3f(3700, 44300, 1877), new Vector3f(3850, 44700, 1950)){
-							return true;
-						}
-						if (vars.checkBox("Tunnel Door Deload", new Vector3f(-1500, 49250, 1750), new Vector3f(-1300, 49492, 1900)){
-							return true;
-						}
+						if (vars.checkBox("Chica Greenroom Deload", new Vector3f(-4700, 52300, 1993), new Vector3f(-4200, 52700, 2500))) return true;
+						if (vars.checkBox("Curtain Deload", new Vector3f(5150, 44450, 1960), new Vector3f(5350, 44650, 2100))) return true;
+						if (vars.checkBox("Roxy Cutout Deload", new Vector3f(3700, 44300, 1877), new Vector3f(3850, 44700, 1950))) return true;
+						if (vars.checkBox("Tunnel Door Deload", new Vector3f(-1500, 49250, 1750), new Vector3f(-1300, 49492, 1900))) return true;
 					}
 					if (settings["D_Roxy Raceway"]){
-						if (vars.checkBox("Afton Rock Column Deload", new Vector3f(24000, 48000, 2411.5), new Vector3f(25500, 49500, 2800)){
-							return true;
-						}
-						if (vars.checkBox("Garage Fence Jump", new Vector3f(18000, 38800, 2411.5), new Vector3f(19500, 39100, 2800)){
-							return true;
-						}
-						if (vars.checkBox("Roxy's Eyes Deload", new Vector3f(19500, 50750, 988), new Vector3f(20500, 51150, 1100)){
-							return true;
-						}
+						if (vars.checkBox("Afton Rock Column Deload", new Vector3f(24000, 48000, 2411.5), new Vector3f(25500, 49500, 2800))) return true;
+						if (vars.checkBox("Garage Fence Jump", new Vector3f(18000, 38800, 2411.5), new Vector3f(19500, 39100, 2800))) return true;
+						if (vars.checkBox("Roxy's Eyes Deload", new Vector3f(19500, 50750, 988), new Vector3f(20500, 51150, 1100))) return true;
 					}
-					if (settings["D_Roxy Raceway Sublobby"]){
-						if (vars.checkBox("Balloon Deload", new Vector3f(8300, 38000, 2708), new Vector3f(9000, 39000, 3000)){
-							return true;
-						}
-					}
-					if (settings["D_Roxy Salon"]){
-						if (vars.checkBox("Plant Deload", new Vector3f(9000, 41800, 2708), new Vector3f(10500, 42000, 3000)){
-							return true;
-						}
-					}
+					if (vars.checkBox("Balloon Deload", new Vector3f(8300, 38000, 2708), new Vector3f(9000, 39000, 3000))) return true;
+					if (vars.checkBox("Plant Deload", new Vector3f(9000, 41800, 2708), new Vector3f(10500, 42000, 3000))) return true;
 				}
 			}
 			if (settings["Ending Splits"]){
@@ -1680,19 +1641,13 @@ split {
 						}
 					}
 				}
-				if (settings["V_B"]){
-					if (vars.buttonName == "vannyButton" && !current.lastButton && old.lastButton){
-						return true;
-					}
-				}
+				if (settings["V_B"] && vars.buttonName == "vannyButton" && !current.lastButton && old.lastButton) return true;
 				//other ending splits
-				if (settings["Afton Ending"]){
-					if (current.aftonHealth < old.aftonHealth){
-						var currentButton = ((750 - current.aftonHealth) / 100);
-						if (settings["Button " + currentButton]){
-							print("Button " + currentButton);
-							return true;
-						}
+				if (settings["Afton Ending"] && current.aftonHealth < old.aftonHealth){
+					var currentButton = ((750 - current.aftonHealth) / 100);
+					if (settings["Button " + currentButton]){
+						print("Button " + currentButton);
+						return true;
 					}
 				}
 			}
@@ -2586,13 +2541,10 @@ split {
 					if (settings["Equipment"]){
 						if (current.itemCount > old.itemCount){
 							if (settings["E_Fazerblast"]){
-								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Game"){
-									return true;
-								}
-								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Prize"){
-									return true;
-								}
+								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Game") return true;
+								if (vars.GetNameFromFName(old.closestInteractibleFName) == "LaserGunCollectible_Prize") return true;
 							}
+							if (settings["E_Utility Tunnels"] && vars.GetNameFromFName(old.closestInteractibleFName) == "BB_UtilityStart") return true;
 						}
 						if (settings["E_Lobby"]){
 							if (900 <= current.pos.X && current.pos.X <= 1300 && 23300 <= current.pos.Y && current.pos.Y <= 23600 && 1400 <= current.pos.Z && current.pos.Z <= 1600){
@@ -2605,19 +2557,7 @@ split {
 								}
 							}
 						}
-						if (settings["E_Utility Tunnels"]){
-							if (current.itemCount > old.itemCount){
-								if (vars.GetNameFromFName(old.closestInteractibleFName) == "BB_UtilityStart"){
-									return true;
-								}
-							}
-						}
-						if (settings["E_West Arcade"]){
-							if (vars.checkTime("Repaired Head", vars.tRepairedHead, 5, 30)){
-								vars.tRepairedHead = false;
-								return true;
-							}
-						}
+						if (settings["E_West Arcade"] && vars.checkTime("Repaired Head", 5, 30)) return true;
 					}
 					if (settings["Security Badges"]){
 						if (current.securityBadgeCount > old.securityBadgeCount){
@@ -2631,63 +2571,21 @@ split {
 			}
 			if (settings["Positional Splits"]){
 				if (current.pos.X != old.pos.X){
-					if (settings["P_Bonnie Bowl"]){
-						if (vars.checkPosition("Enter Bonnie Bowl", vars.pEnBonnieBowl, 5970, 6280, 37000, 37300, 3200, 3700)){
-							vars.pEnBonnieBowl = false;
-							return true;
-						}
-					}
-					if (settings["P_Daycare"]){
-						if(vars.checkTime("Enter Daycare", vars.tEnDaycare, 0, 30)){
-							vars.tEnDaycare = false;
-							return true;
-						}
-					}
-					if (settings["P_El Chips"]){
-						if (vars.checkPosition("Enter El Chips", vars.pEnElChips, -8700, -8445, 34600, 35700, 3200, 3700)){
-							vars.pEnElChips = false;
-							return true;
-						}
-					}
-					if (settings["P_Fazerblast"]){
-						if (vars.checkPosition("Fazerblast Spiral Stairs", vars.pFazerStairs, 13100, 14600, 31830, 33330, 350, 750)){
-							vars.pFazerStairs = false;
-							return true;
-						}
-					}
-					if (settings["P_Fazerblast Sublobby"]){
-						if (vars.checkPosition("Rail Outside Fazerblast", vars.pFazerRail, 6800, 7550, 35586, 35637.4, 1500, 2150)){
-							vars.pFazerRail = false;
-							return true;
-						}
-					}
-					if (settings["P_Underground Afton Cave"]){
-						if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-							vars.pAftonElev = false;
-							return true;
-						}
+					if (vars.checkBox("Enter Bonnie Bowl", new Vector3f(5970, 37000, 3200), new Vector3f(6280, 37300, 3700))) return true;
+					if (vars.checkTime("Enter Daycare", 0, 30)) return true;
+					if (vars.checkBox("Enter El Chips", new Vector3f(-8700, 34600, 3200), new Vector3f(-8445, 35700, 3700))) return true;
+					if (vars.checkBox("Fazerblast Spiral Stairs", new Vector3f(13100, 31830, 350), new Vector3f(14600, 33330, 750))) return true;
+					if (vars.checkBox("Rail Outside Fazerblast", new Vector3f(6800, 35586, 1500), new Vector3f(7550, 35637.4, 2150))) return true;
+					if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
+						vars.pAftonElev = false;
+						return true;
 					}
 					if (settings["P_Utility Tunnels"]){
-						if (vars.checkPosition("First Aid Vanessa Cutscene", vars.pFirstAid, 4368, 4370, 45005, 45007, -1308, -1306)){
-							vars.pFirstAid = false;
-							return true;
-						}
-						if (vars.checkPosition("Freddy Rail Jump", vars.pFredRail, 2250, 2850, 46900, 47500, 400, 900)){
-							vars.pFredRail = false;
-							return true;
-						}
-						if (vars.checkPosition("Monty Chase", vars.pMontyChase, 2900, 3400, 29500, 29898.825, 0, 300)){
-							vars.pMontyChase = false;
-							return true;
-						}
-						if (vars.checkPosition("STR-ATR-W Stairs", vars.pSTRATRW, 5400, 6000, 37500, 38000, -1230, -1150)){
-							vars.pSTRATRW = false;
-							return true;
-						}
-						if (vars.checkPosition("STR-LB Stairs", vars.pSTRLB, 5000, 6000, 24500, 25000, 150, 400)){
-							vars.pSTRLB = false;
-							return true;
-						}
+						if (vars.checkBox("First Aid Vanessa Cutscene", new Vector3f(4368, 45005, -1308), new Vector3f(4370, 45007, -1306))) return true;
+						if (vars.checkBox("Freddy Rail Jump", new Vector3f(2250, 46900, 400), new Vector3f(2850, 47500, 900))) return true;
+						if (vars.checkBox("Monty Chase", new Vector3f(2900, 29898.825, 0), new Vector3f(3400, 29500, 300))) return true;
+						if (vars.checkBox("STR-ATR-W Stairs", new Vector3f(5400, 37500, -1230), new Vector3f(6000, 38000, -1150))) return true;
+						if (vars.checkBox("STR-LB Stairs", new Vector3f(5000, 24500, 150), new Vector3f(6000, 25000, 400))) return true;
 					}
 					if (settings["P_West Arcade"]){
 						if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
@@ -2704,118 +2602,38 @@ split {
 			}
 			if (settings["Time Splits"] && !vars.onMenu){
 				if (current.hourClock != old.hourClock || current.minuteClock != old.minuteClock){
-					if (vars.checkTime("Exit Vents (11:30PM)", vars.tVents, -1, 30)){
-						vars.tVents = false;
-						return true;
-					}
-					if (vars.checkTime("Freddy Recharge (11:45PM)", vars.tUtilityRecharge, -1, 45)){
-						vars.tUtilityRecharge = false;
-						return true;
-					}
+					if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
+					if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
 					if (current.pos.X >= 250 && 10 <= current.pos.Y && current.pos.Y <= 23100){
-						if (vars.checkTime("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 0, 0)){
-							print("12AM (no split)");
-							if (vars.checkPosition("Front Entrance Closure (12:00AM)", vars.tFrontEntrance, 500, 2500, 19500, 23000, 1450, 2000)){
-								print("12AM (split)");
-								vars.tFrontEntrance = false;
-								return true;
-							}
-						}
-						if (vars.checkTime("Enter Daycare (12:30AM)", vars.tEnDaycare, 0, 30)){
-							vars.tEnDaycare = false;
-							return true;
-						}
-						if (vars.checkTime("Daycare Nighttime (12:55AM)", vars.tDaycareNighttime, 0, 55)){
-							vars.tDaycareNighttime = false;
-							return true;
-						}
+						if (vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
+						if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
+						if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
 					}
-					if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", vars.tDaycareRecharge, 1, 0)){
-						vars.tDaycareRecharge = false;
-						return true;
-					}
-					if (vars.checkTime("Mini Music Man Chase (1:15AM)", vars.t1_15, 1, 15)){
-						vars.t1_15 = false;
-						return true;
-					}
-					if (vars.checkTime("Pizzabot (1:30AM)", vars.tPizzabot, 1, 30)){
-						vars.tPizzabot = false;
-						return true;
-					}
-					if (vars.checkTime("White Woman Abduction (2:00AM)", vars.tWhiteWoman, 2, 0)){
-						vars.tWhiteWoman = false;
-						return true;
-					}
-					if (vars.checkTime("Dead Fred (2:15AM)", vars.tDeadFred, 2, 15)){
-						vars.tDeadFred = false;
-						return true;
-					}
-					if (vars.checkTime("Backstage Pass (2:30AM)", vars.tBackstagePass, 2, 30)){
-						vars.tBackstagePass = false;
-						return true;
-					}
-					if (vars.checkTime("Use Showtime Disk (2:45AM)", vars.tShowtimeDisk, 2, 45)){
-						vars.tShowtimeDisk = false;
-						return true;
-					}
-					if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", vars.tAbductionRecharge, 3, 1)){
-						vars.tAbductionRecharge = false;
-						return true;
-					}
-					if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", vars.tVanessaRepair, 3, 15)){
-						vars.tVanessaRepair = false;
-						return true;
-					}
-					if (vars.checkTime("Freddy Power Upgrade (3:30AM)", vars.tPowerUpgrade, 3, 30)){
-						vars.tPowerUpgrade = false;
-						return true;
-					}
-					if (vars.checkTime("Party Pass Recharge (4:00AM)", vars.tPartyPassRecharge, 4, 0)){
-						vars.tPartyPassRecharge = false;
-						return true;
-					}
-					if (vars.checkTime("Golden Fazerblaster (4:15AM)", vars.tGoldBlaster, 4, 15)){
-						vars.tGoldBlaster = false;
-						return true;
-					}
+					if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", 1, 0)) return true;
+					if (vars.checkTime("Mini Music Man Chase (1:15AM)", 1, 15)) return true;
+					if (vars.checkTime("Pizzabot (1:30AM)", 1, 30)) return true;
+					if (vars.checkTime("White Woman Abduction (2:00AM)", 2, 0)) return true;
+					if (vars.checkTime("Dead Fred (2:15AM)", 2, 15)) return true;
+					if (vars.checkTime("Backstage Pass (2:30AM)", 2, 30)) return true;
+					if (vars.checkTime("Use Showtime Disk (2:45AM)", 2, 45)) return true;
+					if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 1)) return true;
+					if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", 3, 15)) return true;
+					if (vars.checkTime("Freddy Power Upgrade (3:30AM)", 3, 30)) return true;
+					if (vars.checkTime("Party Pass Recharge (4:00AM)", 4, 0)) return true;
+					if (vars.checkTime("Golden Fazerblaster (4:15AM)", 4, 15)) return true;
 					if (settings["Monty Mix / Mazercise Key (4:30AM)"]){
 						if (current.splashScreen > old.splashScreen){
-							if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", 15060, 30205, 3425)){
-								return true;
-							}
-							if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", -17450, 31605, 70)){
-								return true;
-							}
+							if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", 15060, 30205, 3425)) return true;
+							if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", -17450, 31605, 70)) return true;
 						}
 					}
-					if (vars.checkTime("Leave Sewers (4:40AM)", vars.tLeaveSewers, 4, 40)){
-						vars.tLeaveSewers = false;
-						return true;
-					}
-					if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", vars.tFreddyUpgrade, 5, 0)){
-						vars.tFreddyUpgrade = false;
-						return true;
-					}
-					if (vars.checkTime("Damaged Head (5:15AM)", vars.tDamagedHead, 5, 15)){
-						vars.tDamagedHead = false;
-						return true;
-					}
-					if (vars.checkTime("Repaired Head (5:30AM)", vars.tRepairedHead, 5, 30)){
-						vars.tRepairedHead = false;
-						return true;
-					}
-					if (vars.checkTime("Finish Roxy Sequence (5:40AM)", vars.tRoxySequence, 5, 40)){
-						vars.tRoxySequence = false;
-						return true;
-					}
-					if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", vars.tEyeUpgradeNighttime, 5, 50)){
-						vars.tEyeUpgradeNighttime = false;
-						return true;
-					}
-					if (vars.checkTime("Reach Exit Door (6:00AM)", vars.t6am, 6, 0)){
-						vars.t6am = false;
-						return true;
-					}
+					if (vars.checkTime("Leave Sewers (4:40AM)", 4, 40)) return true;
+					if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", 5, 0)) return true;
+					if (vars.checkTime("Damaged Head (5:15AM)", 5, 15)) return true;
+					if (vars.checkTime("Repaired Head (5:30AM)", 5, 30)) return true;
+					if (vars.checkTime("Finish Roxy Sequence (5:40AM)", 5, 40)) return true;
+					if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", 5, 50))return true;
+					if (vars.checkTime("Reach Exit Door (6:00AM)", 6, 0)) return true;
 				}
 			}
 			break;
