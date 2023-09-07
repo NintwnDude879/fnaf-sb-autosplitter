@@ -987,11 +987,10 @@ start {
 	});
 
 	vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
-		if (settings[name] && vars.CompletedSplits.Add(name)){
-			if (current.hourClock == hour && current.minuteClock == minute){
-				print(name);
-				return true;
-			}
+		if (settings[name] && vars.CompletedSplits.Add(name)
+		&& current.hourClock == hour && current.minuteClock == minute){
+			print(name);
+			return true;
 		}
 		return false;
 	});
@@ -1057,46 +1056,6 @@ start {
 		//Item Splits
 		vars.nLobbyItemsUsed = 0;
 		vars.iRoxyEyes = true;
-
-		//Positional Splits
-		vars.pEnBonnieBowl = true;
-		vars.pEnElChips = true;
-		vars.pFazerStairs = true;
-		vars.pFazerRail = true;
-		vars.pAftonElev = true;
-		vars.pFirstAid = true;
-		vars.pFredRail = true;
-		vars.pMontyChase = true;
-		vars.pSTRATRW = true;
-		vars.pSTRLB = true;
-		vars.pEnWestArcade = true;
-		vars.pExWestArcade = false;
-
-		//Clock Splits
-		vars.tVents = true;
-		vars.tUtilityRecharge = true;
-		vars.tFrontEntrance = true;
-		vars.tEnDaycare = true;
-		vars.tDaycareNighttime = true;
-		vars.tDaycareRecharge = true;
-		vars.t1_15 = true;
-		vars.tPizzabot = true;
-		vars.tWhiteWoman = true;
-		vars.tDeadFred = true;
-		vars.tBackstagePass = true;
-		vars.tShowtimeDisk = true;
-		vars.tAbductionRecharge = true;
-		vars.tVanessaRepair = true;
-		vars.tPowerUpgrade = true;
-		vars.tPartyPassRecharge = true;
-		vars.tGoldBlaster = true;
-		vars.tLeaveSewers = true;
-		vars.tFreddyUpgrade = true;
-		vars.tDamagedHead = true;
-		vars.tRepairedHead = true;
-		vars.tRoxySequence = true;
-		vars.tEyeUpgradeNighttime = true;
-		vars.t6am = true;
 
 		vars.isLoading = false;
 		vars.onMenu = false;
@@ -1720,11 +1679,7 @@ split {
 								break;
 							}
 							//Collectables
-							case -0xF9: {
-								if (!settings["Bonnie Plush"]) break;
-								print("Bonnie Plush");
-								return true;
-							}
+							case -0xF9: { if (!settings["Bonnie Plush"]) break; print("Bonnie Plush"); return true; }
 							case 0xDFFFFFFBE: {
 								if (!settings["Chica Balloon"]) break;
 								print("Chica Balloon");
