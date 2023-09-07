@@ -601,12 +601,13 @@ init {
 		case 76218368: vars.version = 1.07; break;
 		case 76251136: vars.version = 1.11; break;
 	}
-
+	current.lastButton = false;
+	old.lastButton = false;
 	print("Version = " + vars.version);
 
 	//Declare before usage in MemoryWatcherList
-	vars.lastButton = new MemoryWatcher<bool>((IntPtr)null) { Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 	vars.buttonName = (string)null;
+	vars.lastButton = new MemoryWatcher<bool>((IntPtr)null) { Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 	
 	//Sigscanning
 	vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
@@ -698,6 +699,9 @@ init {
 		vars.hasLoaded					= new DeepPointer(0x4453ED8, 0x184);
 	}
 	vars.watchers = new MemoryWatcherList {
+		//Putting this at index 0 so it can be easy to find :) (i am full of hatred rn)
+		vars.lastButton = new MemoryWatcher<bool>((IntPtr)null) { Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
 		//Freddy's Power OR Freddy Thingie (1.11+)
 		new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
@@ -744,7 +748,6 @@ init {
 		//Experimental elevator fix that only requires 3 pointers (instead of 12)
 		new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 		new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-		vars.lastButton,
 	};
 }
 
@@ -805,17 +808,21 @@ update {
 	old.closestInteractibleFName		= vars.watchers["closestInteractibleFName"].Old;
 	current.closestInteractibleAddress	= vars.watchers["closestInteractibleAddress"].Current;
 	old.closestInteractibleAddress		= vars.watchers["closestInteractibleAddress"].Old;
-	current.lastButton					= vars.watchers["lastButton"].Current;
-	old.lastButton						= vars.watchers["lastButton"].Old;
 
-	if (vars.GetNameFromFName(current.closestInteractibleFName).Contains("ElevatorButton")){
-		vars.lastButton = new MemoryWatcher<bool>((IntPtr)current.closestInteractibleAddress+0x2E8){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-		vars.lastButton = "elevButton";
+	if (vars.GetNameFromFName(current.closestInteractibleFName).Contains("ElevatorButton") && old.closestInteractibleFName == 0){
+		vars.watchers[0] = new MemoryWatcher<bool>(current.closestInteractibleAddress+0x2E8){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+		vars.buttonName = "elevButton";
 	}
-	if (vars.GetNameFromFName(current.closestInteractibleFName)== "DestroyVannyEndingTrigger"){
-		vars.lastButton = new MemoryWatcher<bool>((IntPtr)current.closestInteractibleAddress+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-		vars.lastButton = "vannyButton";
+	if (vars.GetNameFromFName(current.closestInteractibleFName) == "DestroyVannyEndingTrigger" && old.closestInteractibleFName == 0){
+		vars.watchers[0] = new MemoryWatcher<bool>(current.closestInteractibleAddress+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+		vars.buttonName = "vannyButton";
 	}
+	if (vars.buttonName != null){
+		current.lastButton					= vars.watchers["lastButton"].Current;
+		old.lastButton						= vars.watchers["lastButton"].Old;
+	}
+	print(current.lastButton.ToString());
+	print(vars.buttonName);
 
 	//print("current.freddyThing: "+current.freddyThing);
 	//print("vars.UWorld: "+vars.UWorld.ToString("X"));
@@ -1190,7 +1197,7 @@ isLoading {
 		}
 	}
 
-	if (vars.buttonName == "elevButton" && current.lastButton) return true;
+	if (vars.buttonName == "elevButton" && !current.lastButton) return true;
 
 	if (!settings["Stop Timer When Loading"]){
 		if (vars.version < 1.05){
@@ -1704,7 +1711,7 @@ split {
 					}
 				}
 				if (settings["V_B"]){
-					if (vars.buttonName == "vannyButton" && !current.lastButton && old.lastButton){
+					if (vars.buttonName == "vannyButton" && current.lastButton && !old.lastButton){
 						return true;
 					}
 				}
