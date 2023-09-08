@@ -761,7 +761,6 @@ update {
         vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.buttonName = "vannyButton";
     }
-
     //print("vars.watchers["freddyThing"].Current: "+vars.watchers["freddyThing"].Current);
     //print("vars.UWorld: "+vars.UWorld.ToString("X"));
     //print("vars.GEngine: "+vars.GEngine.ToString("X"));
