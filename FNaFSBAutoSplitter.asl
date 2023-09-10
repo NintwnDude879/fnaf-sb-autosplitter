@@ -606,7 +606,8 @@ init {
     print("Version = " + vars.version);
 
     //Declare before usage in MemoryWatcherList
-    vars.buttonName = (string)null;
+    vars.interactibleName = (string)null;
+    vars.cachedPos = new Vector3f();
 
     //Sigscanning
     vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
@@ -699,7 +700,8 @@ init {
     }
     vars.watchers = new MemoryWatcherList {
         //Putting this at index 0 so it can be easy to find :) (i am full of hatred rn)
-        new MemoryWatcher<bool>((IntPtr)null) { Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+        new MemoryWatcher<bool>((IntPtr)null) { Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+        new MemoryWatcher<bool>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
         //Freddy's Power OR Freddy Thingie (1.11+)
         new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -730,10 +732,6 @@ init {
         new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
         new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
         new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xE0, 0x25C)) { Name = "interactionName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x248, 0xD0)) { Name = "windUp" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        //Chica's Voicebox collectible needs a different pointer, see where this pointer is used for reason
-        new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x2C8, 0xD0)) { Name = "chicaWindUp" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
         //In-Game Clock
         new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -752,34 +750,66 @@ init {
 
 update {
     vars.watchers.UpdateAll(game);
+    //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
+    if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
+        vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "elevButton";
+    }
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current) == "DestroyVannyEndingTrigger"){
+        vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "vannyButton";
+        vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+    }
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")){
+        vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x258){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "message";
+        vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+    }
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collectible")){
+        vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x258){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "collectible";
+        vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+    }
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ChicaSewer")){
+        vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x260){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<int>(vars.watchers["closestInteractibleAddress"].Current+0x330){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "chicaSewer";
+        vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+    }
 
-    if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
-        vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-        vars.buttonName = "elevButton";
+
+    //If the player is out of range of the interactable, reset cached interactable address
+    //(ensures the player doesn't get splits/pauses from the game putting something into the same spot in memory after the interactable has unloaded)
+    if (vars.interactibleName == "elevButton" && !vars.checkElevs()){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
     }
-    if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current) == "DestroyVannyEndingTrigger"){
-        vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-        vars.buttonName = "vannyButton";
+    else if (vars.interactibleName == "vannyButton" && !vars.checkSphereNoBool(vars.cachedPos)){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
     }
-    if (vars.buttonName == "elevButton" && !vars.checkElevs()){
-        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-        vars.buttonName = "";
+    else if (vars.interactibleName == "message" && !vars.checkSphereNoBool(vars.cachedPos)){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
     }
-    //print(vars.buttonName);
-    //print(curThing);
-    //print(oldThing);
-    //print(vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).ToString());
-    //print(vars.GetNameFromFName(vars.watchers["cachedInteractibleFName"].Current).ToString());
-    //print("vars.watchers["freddyThing"].Current: "+vars.watchers["freddyThing"].Current);
-    //print("vars.UWorld: "+vars.UWorld.ToString("X"));
-    //print("vars.GEngine: "+vars.GEngine.ToString("X"));
-    //print("vars.watchers["interactionName"].Current: "+vars.watchers["interactionName"].Current+"\nvars.watchers["interactionName"].Old:"+vars.watchers["interactionName"].Old);
-    //Elevator Pointer List
+    else if (vars.interactibleName == "collectible" && !vars.checkSphereNoBool(vars.cachedPos)){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
+    }
+    else if (vars.interactibleName == "chicaSewer" && !vars.checkSphereNoBool(vars.cachedPos)){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
+    }
 }
 
 start {
-    vars.buttonName = "";
-    vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+    vars.interactibleName = "";
+    vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 
     //Functions and Dictionaries
 
@@ -827,6 +857,17 @@ start {
         + (vars.watchers["pos"].Current.Z - item.Z)*(vars.watchers["pos"].Current.Z - item.Z)
         > 90000){
             print(name);
+            return true;
+        }
+        return false;
+    });
+    vars.checkSphereNoBool = (Func<Vector3f, bool>)((pos) => {
+        //checks in a sphere (radius 300u)
+        //90,000 is used at the end of calculations because 300 ^ 2 = 90,000
+        if ((vars.watchers["pos"].Current.X - pos.X)*(vars.watchers["pos"].Current.X - pos.X)
+          + (vars.watchers["pos"].Current.Y - pos.Y)*(vars.watchers["pos"].Current.Y - pos.Y)
+          + (vars.watchers["pos"].Current.Z - pos.Z)*(vars.watchers["pos"].Current.Z - pos.Z)
+          > 90000){
             return true;
         }
         return false;
@@ -1058,7 +1099,7 @@ isLoading {
         }
     }
 
-    if (vars.buttonName == "elevButton" && vars.watchers["lastButton"].Current) return true;
+    if (vars.interactibleName == "elevButton" && vars.watchers["lastButton"].Current) return true;
 
     if (!settings["Stop Timer When Loading"]){
         if (vars.version < 1.05){
@@ -1372,7 +1413,7 @@ split {
                         }
                     }
                 }
-                if (settings["V_B"] && vars.buttonName == "vannyButton" && !vars.watchers["lastButton"].Current && vars.watchers["lastButton"].Old) return true;
+                if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastButton"].Current && vars.watchers["lastButton"].Old) return true;
                 //other ending splits
                 if (settings["Afton Ending"] && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
                     var currentButton = ((750 - vars.watchers["aftonHealth"].Current) / 100);
@@ -1384,219 +1425,15 @@ split {
             }
             if (settings["Item Splits"]){
                 if (settings["Item List"]){
-                    //sets the local fazwatch name
-                    if (vars.watchers["itemCount"].Current == 0){
-                        if (vars.watchers["windUp"].Old >= 0.98){
-                            vars.fazwatchName = vars.watchers["interactionName"].Old;
-                        }
-                    }
-                    // Roxy's Eyes are special little snowflakes.
-                    // They are the only item in the game (as far as I can tell) that have this specific behaviour.
-                    // For whatever reason, the circle that fills more as you collect an item (the windup circle) on Roxy's Eyes
-                    // decides to "stick around".
-                    // On every other item, the windup circle goes away as soon as you collect the item, leading to a nice thing
-                    // for us to check (if the current windUp is 0 and the old windUp is close to full or is full, we can assume
-                    // the player just collected an item, and we can check what it was with interactionName).
-                    // Roxy's Eyes do not do this.
-                    // Here is the code for this one specific dumb little item because Roxy just had to be a special little snowflake.
-                    if (vars.watchers["windUp"].Current >= 1){
-                        if ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName == -0x25 && settings["Damaged Head"] && vars.CompletedSplits("Damaged Head")){
-                            print("Damaged Head");
-                            return true;
-                        }
-                        if ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName == 0xAE && vars.watchers["pos"].Current.X > 0 && settings["Roxy's Eyes"] && vars.CompletedSplits.Add("Roxy's Eyes")){
-                            print("Roxy's Eyes");
-                            return true;
-                        }
-                    }
-                    // UPDATE: Chica's Voicebox is actually a little bit worse.
-                    // Chica's Voicebox is also a special snowflake.
-                    // For whatever reason, the devs decided, for this ONE INSTANCE,
-                    // "Hey, we can optimize memory usage by making Chica a part of the level, and the collection of the
-                    // voicebox can actually just be interacting with the level instead of interacting with Chica as a separate object".
-                    // Because of this, the offset for the PlayerInteractHoldComponent (the component which contains information including
-                    // windUp) is different from ANY OTHER OBJECT.
-                    // Because of THAT, we need to watch an ENTIRELY DIFFERENT ADDRESS using an ENTIRELY DIFFERENT POINTER for this ONE OBJECT.
-
-                    // In addition to that, windUp doesn't go back down to 0 after collecting the voicebox, which means we need to make sure
-                    // we're not splitting multiple times. To do that, we need to unneccessarily involve also still checking the interaction name.
-                    // Yippee.
-                    // Here's the code to handle collection of Chica's voicebox.
-                    if (vars.watchers["chicaWindUp"].Current >= 1 && settings["Chica's Voicebox"]){
-                        if ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName == -0x3AC086){
+                    //Chica's voicebox is weird. Investigate yourself if you want to know more.
+                    if (vars.interactibleName == "chicaSewer"){
+                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["Chica's Voicebox"]){
                             print("Chica's Voicebox");
                             return true;
                         }
                     }
-                    //extraneous items after this if:
-                    //Fazerblasters
-                    //Daycare Pass
-                    //Cameras
-                    //Badges
-                    //Repaired Head
-                    //vars.fazwatchName = 0x3921BE;
-                    if (vars.watchers["windUp"].Current == 0 && vars.watchers["windUp"].Old >= 0.98){
-                        //Collectables, Equipment, CDs, Message Bags
-                        switch ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName){
-                            //Default (unaccounted items)
-                            default: {
-                                if ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName >= 0){
-                                    print("0x" + Convert.ToString((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName, 16));
-                                }
-                                else {
-                                    print("-0x" + Convert.ToString(Math.Abs((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName), 16));
-                                }
-                                break;
-                            }
-                            //Collectables
-                            case -0x13A: {
-                                if (vars.watchers["pos"].Current.X < 0){
-                                    if (!settings["CB_Chica Magnet"]) break;
-                                    print("CB_Chica Magnet");
-                                    return true;
-                                }
-                                else {
-                                    if (!settings["WA_Chica Magnet"]) break;
-                                    print("WA_Chica Magnet");
-                                    return true;
-                                }
-                            }
-
-                            case -0xF9:         { if (!settings["Bonnie Plush"]) break; print("Bonnie Plush"); return true; }
-                            case 0xDFFFFFFBE:   { if (!settings["Chica Balloon"]) break; print("Chica Balloon"); return true; }
-                            case 0x20000009B:   { if (!settings["Chica Mask"]) break; print("Chica Mask"); return true; }
-                            case 0x7FFFFFFBE:   { if (!settings["Chica Name Shirt"]) break; print("Chica Name Shirt"); return true; }
-                            case 0x12FFFFFFBE:  { if (!settings["Chica Piñata"]) break; print("Chica Piñata"); return true; }
-                            case -0x119:        { if (!settings["Comedy Mask"]) break; print("Comedy Mask"); return true; }
-                            case 0x11FFFFFFBE:  { if (!settings["Cupcake Piñata"]) break; print("Cupcake Piñata"); return true; }
-                            case 0xCFFFFFFBE:   { if (!settings["El Chip Piñata"]) break; print("El Chip Piñata"); return true; }
-                            case -0xCA:         { if (!settings["Four Block Shirt"]) break; print("Four Block Shirt"); return true; }
-                            case -0xF1:         { if (!settings["Foxy Plush"]) break; print("Foxy Plush"); return true; }
-                            case 0xEFFFFFFBE:   { if (!settings["Freddy Balloon"]) break; print("Freddy Balloon"); return true; }
-                            case -0xC3:         { if (!settings["Freddy Face Shirt"]) break; print("Freddy Face Shirt"); return true; }
-                            case -0xB9:         { if (!settings["Freddy Icon Shirt"]) break; print("Freddy Icon Shirt"); return true; }
-                            case -0x132:        { if (!settings["Freddy Magnet"]) break; print("Freddy Magnet"); return true; }
-                            case 0x10000009B:   { if (!settings["Freddy Mask"]) break; print("Freddy Mask"); return true; }
-                            case 0x5FFFFFFBE:   { if (!settings["Freddy Name Shirt"]) break; print("Freddy Name Shirt"); return true; }
-                            case 0x9FFFFFFBE:   { if (!settings["Freddy Piñata"]) break; print("Freddy Piñata"); return true; }
-                            case 0x3FFFFFFBE:   { if (!settings["Frozen Chica Treat"]) break; print("Frozen Chica Treat"); return true; }
-                            case 0x2FFFFFFBE:   { if (!settings["Frozen Freddy Treat"]) break; print("Frozen Freddy Treat"); return true; }
-                            case 0x1FFFFFFBE:   { if (!settings["Frozen Monty Treat"]) break; print("Frozen Monty Treat"); return true; }
-                            case 0x4FFFFFFBE:   { if (!settings["Frozen Roxy Treat"]) break; print("Frozen Roxy Treat"); return true; }
-                            case 0x70000013D:   { if (!settings["Glam Chica Figure"]) break; print("Glam Chica Figure"); return true; }
-                            case 0x20000013D:   { if (!settings["Glam Chica Plush"]) break; print("Glam Chica Plush"); return true; }
-                            case 0x60000013D:   { if (!settings["Glam Freddy Figure"]) break; print("Glam Freddy Figure"); return true; }
-                            case 0x30000013D:   { if (!settings["Glam Freddy Plush"]) break; print("Glam Freddy Plush"); return true; }
-                            case 0x80000013D:   { if (!settings["Glam Monty Figure"]) break; print("Glam Monty Figure"); return true; }
-                            case 0x40000013D:   { if (!settings["Glam Monty Plush"]) break; print("Glam Monty Plush"); return true; }
-                            case 0x90000013D:   { if (!settings["Glam Roxy Figure"]) break; print("Glam Roxy Figure"); return true; }
-                            case 0x10000013D:   { if (!settings["Glam Roxy Plush"]) break; print("Glam Roxy Plush"); return true; }
-                            case -0x18E:        { if (!settings["Go Kart"]) break; print("Go Kart"); return true; }
-                            case -0x189:        { if (!settings["Golden Chica"]) break; print("Golden Chica"); return true; }
-                            case -0x181:        { if (!settings["Golden Freddy"]) break; print("Golden Freddy"); return true; }
-                            case -0x178:        { if (!settings["Golden Monty"]) break; print("Golden Monty"); return true; }
-                            case -0x170:        { if (!settings["Golden Moon"]) break; print("Golden Moon"); return true; }
-                            case -0x168:        { if (!settings["Golden Roxy"]) break; print("Golden Roxy"); return true; }
-                            case -0x160:        { if (!settings["Golden Sun"]) break; print("Golden Sun"); return true; }
-                            case 0xFFFFFFFBE:   { if (!settings["Monty Balloon"]) break; print("Monty Balloon"); return true; }
-                            case -0x129:        { if (!settings["Monty Magnet"]) break; print("Monty Magnet"); return true; }
-                            case 0x40000009B:   { if (!settings["Monty Mask"]) break; print("Monty Mask"); return true; }
-                            case 0xBFFFFFFBE:   { if (!settings["Monty Name Shirt"]) break; print("Monty Name Shirt"); return true; }
-                            case 0x13FFFFFFBE:  { if (!settings["Monty Piñata"]) break; print("Monty Piñata"); return true; }
-                            case 0xB0000013D:   { if (!settings["Moon Figure"]) break; print("Moon Figure"); return true; }
-                            case 0x50000013D:   { if (!settings["Moon Plush"]) break; print("Moon Plush"); return true; }
-                            case -0xEA:         { if (!settings["Nightmare Plush"]) break; print("Nightmare Plush"); return true; }
-                            case -0xE2:         { if (!settings["D_Old Poster"]) break; print("D_Old Poster"); return true; }
-                            case -0xD0:         { if (!settings["F_Old Poster"]) break; print("F_Old Poster"); return true; }
-                            case -0xD6:         { if (!settings["S_Old Poster"]) break; print("S_Old Poster"); return true; }
-                            case -0xDC:         { if (!settings["L_Old Poster"]) break; print("L_Old Poster"); return true; }
-                            case -0x109:        { if (!settings["Piñata"]) break; print("Piñata"); return true; }
-                            case 0x6FFFFFFBE:   { if (!settings["Pizzaplex Logo Shirt"]) break; print("Pizzaplex Logo Shirt"); return true; }
-                            case -0x100:        { if (!settings["Plush Baby"]) break; print("Plush Baby"); return true; }
-                            case 0x10FFFFFFBE:  { if (!settings["Roxy Balloon"]) break; print("Roxy Balloon"); return true; }
-                            case -0x121:        { if (!settings["Roxy Magnet"]) break; print("Roxy Magnet"); return true; }
-                            case 0x30000009B:   { if (!settings["Roxy Mask"]) break; print("Roxy Mask"); return true; }
-                            case 0x8FFFFFFBE:   { if (!settings["Roxy Name Shirt"]) break; print("Roxy Name Shirt"); return true; }
-                            case 0xAFFFFFFBE:   { if (!settings["Roxy Piñata"]) break; print("Roxy Piñata"); return true; }
-                            case -0x159:        { if (!settings["Space Chica Keychain"]) break; print("Space Chica Keychain"); return true; }
-                            case -0x151:        { if (!settings["Space Freddy Keychain"]) break; print("Space Freddy Keychain"); return true; }
-                            case -0x149:        { if (!settings["Space Monty Keychain"]) break; print("Space Monty Keychain"); return true; }
-                            case -0x141:        { if (!settings["Space Roxy Keychain"]) break; print("Space Roxy Keychain"); return true; }
-                            case -0xAF:         { if (!settings["Star Shirt"]) break; print("Star Shirt"); return true; }
-                            case 0xA0000013D:   { if (!settings["Sun Figure"]) break; print("Sun Figure"); return true; }
-                            case 0xFFFFFFBE:    { if (!settings["Sun Plush"]) break; print("Sun Plush"); return true; }
-                            case -0x111:        { if (!settings["Tragedy Mask"]) break; print("Tragedy Mask"); return true; }
-                            //Equipment
-                            case -0x2B2A97:     { if (!settings["Backstage Pass"]) break; print("Backstage Pass"); return true; }
-                            case -0x2B29BB:     { if (!settings["Bowling Pass"]) break; print("Bowling Pass"); return true; }
-                            case 0x200000032:   { if (!settings["Chica Fizzy Faz"]) break; print("Chica Fizzy Faz"); return true; }
-                            case -0x25:         { if (!settings["Damaged Head"] || !vars.CompletedSplits("Damaged Head")) break; return true; }
-                            case -0x1E:         { if (!settings["Dance Pass"]) break; print("Dance Pass"); return true; }
-                            case -0x38:         { if (!settings["Entrance Pass"]) break; print("Entrance Pass"); return true; }
-                            case -0x384BC0:     { if (!settings["Fazcam"]) break; print("Fazcam"); return true; }
-                            case 0x0:           { if (!settings["Fazwatch"]) break; print("Fazwatch"); return true; }
-                            case -0x384BB1:     { if (!settings["Flashlight"]) break; print("Flashlight"); return true; }
-                            case 0x200000015:   { if (!settings["D_Flashlight Upgrade"]) break; print("D_Flashlight Upgrade"); return true; }
-                            case 0x300000015:   { if (!settings["B_Flashlight Upgrade"]) break; print("B_Flashlight Upgrade"); return true; }
-                            case 0x100000015:   { if (!settings["MG_Flashlight Upgrade"]) break; print("MG_Flashlight Upgrade"); return true; }
-                            case 0x300000032:   { if (!settings["Freddy Fizzy Faz"]) break; print("Freddy Fizzy Faz"); return true; }
-                            case 0x20000001F:   { if (!settings["RR_Freddy Upgrade"]) break; print("RR_Freddy Upgrade"); return true; }
-                            case 0x10000001F:   { if (!settings["MA_Freddy Upgrade"]) break; print("MA_Freddy Upgrade"); return true; }
-                            case 0x3E:          { if (!settings["Hoodie"]) break; print("Hoodie"); return true; }
-                            case -0x391FF3:     { if (!settings["MA_Mapbot's Map"]) break; print("MA_Mapbot's Map"); return true; }
-                            case 0x148:         { if (!settings["UT_Mapbot's Map"]) break; print("UT_Mapbot's Map"); return true; }
-                            case -0x2B23DE:     { if (!settings["Mazercise Control Key"]) break; print("Mazercise Control Key"); return true; }
-                            case 0x54:          { if (!settings["Mazercise Pass"]) break; print("Mazercise Pass"); return true; }
-                            case 0x400000032:   { if (!settings["Monty Fizzy Faz"]) break; print("Monty Fizzy Faz"); return true; }
-                            case -0x2B2195:     { if (!settings["Monty Mystery Mix"]) break; print("Monty Mystery Mix"); return true; }
-
-                            case 0x5D: {
-                                if (vars.watchers["pos"].Current.X <= -3000){
-                                    if (!settings["Monty's Claws"]) break;
-                                    print("Monty's Claws");
-                                    return true;
-                                }
-                                else {
-                                    if (!settings["MONTY UPGRADE"]) break;
-                                    print("MONTY UPGRADE");
-                                    return true;
-                                }
-                            }
-
-                            case -0x2B20B7:     { if (!settings["Mr. Hippo Magnet"]) break; print("Mr. Hippo Magnet"); return true; }
-                            case 0x71:          { if (!settings["Party Pass"]) break; print("Party Pass"); return true; }
-                            case 0x95:          { if (!settings["Photo Pass"]) break; print("Photo Pass"); return true; }
-                            case 0x100000032:   { if (!settings["Roxy Fizzy Faz"]) break; print("Roxy Fizzy Faz"); return true; }
-
-                            case 0xAE: {
-                                if (vars.watchers["pos"].Current.X > 0) break;
-                                if (!settings["ROXY UPGRADE"]) break;
-                                print("ROXY UPGRADE");
-                                return true;
-                            }
-
-                            case 0xB3: { if (!settings["Screwdriver"]) break; print("Screwdriver"); return true; }
-                            case 0x27: { if (!settings["Shoes"]) break; print("Shoes"); return true; }
-                            //CDs
-                            case -0x9000000A4:  { if (!settings["CD_Backstage Podium"]) break; print("CD_Backstage Podium"); return true; }
-                            case -0x8000000A4:  { if (!settings["CD_Bonnie Bowl"]) break; print("CD_Bonnie Bowl"); return true; }
-                            case -0x3000000A4:  { if (!settings["CD_Chica's Bakery"]) break; print("CD_Chica's Bakery"); return true; }
-                            case -0xF000000A4:  { if (!settings["CD_East Atrium Stage"]) break; print("CD_East Atrium Stage"); return true; }
-                            case -0x7000000A4:  { if (!settings["CD_Fazerblast"]) break; print("CD_Fazerblast"); return true; }
-                            case -0x4000000A4:  { if (!settings["CD_Kid's Cove"]) break; print("CD_Kid's Cove"); return true; }
-                            case -0xA000000A4:  { if (!settings["CD_Main Atrium"]) break; print("CD_Main Atrium"); return true; }
-                            case -0xE000000A4:  { if (!settings["CD_Mazercise"]) break; print("CD_Mazercise"); return true; }
-                            case -0xD000000A4:  { if (!settings["CD_Monty Golf"]) break; print("CD_Monty Golf"); return true; }
-                            case -0x1000000A4:  { if (!settings["CD_Rockstar Row Foxy"]) break; print("CD_Rockstar Row Foxy"); return true; }
-                            case -0xB000000A4:  { if (!settings["CD_Rockstar Row Helpy"]) break; print("CD_Rockstar Row Helpy"); return true; }
-                            case -0xC000000A4:  { if (!settings["CD_Roxy Raceway"]) break; print("CD_Roxy Raceway"); return true; }
-                            case -0x5000000A4:  { if (!settings["CD_Roxy Salon"]) break; print("CD_Roxy Salon"); return true; }
-                            case -0x2000000A4:  { if (!settings["CD_Utility Tunnels Couch"]) break; print("CD_Utility Tunnels Couch"); return true; }
-                            case -0x6000000A4:  { if (!settings["CD_Utility Tunnels Foxy Plush"]) break; print("CD_Utility Tunnels Foxy Plush"); return true; }
-                            case -0x10000000A4: { if (!settings["CD_West Arcade"]) break; print("CD_West Arcade"); return true; }
-                            //Messages
-                            //MONTY UPGRADE included with Monty's Claws equipment
-                            //ROXY UPGRADE included with Roxy's Eyes equipment
+                    if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
+                        switch ((long)vars.watchers["lastInteractible"].Old-(long)vars.fazwatchName){
                             case 0x20A: { if (!settings["AC Inspection"]) break; print("AC Inspection"); return true; }
                             case 0x272: { if (!settings["All Staff Meeting"]) break; print("All Staff Meeting"); return true; }
                             case 0x16D: { if (!settings["AR-CADE MAINT LOG"]) break; print("AR-CADE MAINT LOG"); return true; }
@@ -1644,6 +1481,163 @@ split {
                             case 0x282: { if (!settings["TORN PAPER"]) break; print("TORN PAPER"); return true; }
                             case 0x1ED: { if (!settings["ULTIMATE PARTY HOST"]) break; print("ULTIMATE PARTY HOST"); return true; }
                             case 0x1A3: { if (!settings["Understudy"]) break; print("Understudy"); return true; }
+                            case 0xAE:  { if (!settings["ROXY UPGRADE"]) break; print("ROXY UPGRADE"); return true; }
+                            case 0x5D:  { if (!settings["MONTY UPGRADE"]) break; print("MONTY UPGRADE"); return true; }
+                        }
+                    }
+                    if (vars.interactibleName == "collectible"){
+                        //sets the local fazwatch name
+                        if (vars.watchers["itemCount"].Current == 0){
+                            if (vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
+                                vars.fazwatchName = vars.watchers["lastInteractible"].Old;
+                            }
+                        }
+                        //extraneous items after this if:
+                        //Fazerblasters
+                        //Daycare Pass
+                        //Cameras
+                        //Badges
+                        //Repaired Head
+                        //vars.fazwatchName = 0x3921BE;
+                        if (vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
+                            //Collectables, Equipment, CDs, Message Bags
+                            switch ((long)vars.watchers["lastInteractible"].Old-(long)vars.fazwatchName){
+                                //Default (unaccounted items)
+                                default: {
+                                    if ((long)vars.watchers["lastInteractible"].Old-(long)vars.fazwatchName >= 0){
+                                        print("0x" + Convert.ToString((long)vars.watchers["lastInteractible"].Old-(long)vars.fazwatchName, 16));
+                                    }
+                                    else {
+                                        print("-0x" + Convert.ToString(Math.Abs((long)vars.watchers["lastInteractible"].Old-(long)vars.fazwatchName), 16));
+                                    }
+                                    break;
+                                }
+                                //Collectables
+                                case -0x13A: {
+                                    if (vars.watchers["pos"].Current.X < 0){
+                                        if (!settings["CB_Chica Magnet"]) break;
+                                        print("CB_Chica Magnet");
+                                        return true;
+                                    }
+                                    else {
+                                        if (!settings["WA_Chica Magnet"]) break;
+                                        print("WA_Chica Magnet");
+                                        return true;
+                                    }
+                                }
+                                case 0xAE:          { if (!settings["Roxy's Eyes"] || vars.watchers["pos"].Current.X > 0) break; print("Roxy's Eyes"); return true; }
+                                case -0x25:         { if (!settings["Damaged Head"]) break; print("Damaged Head"); return true; }
+                                case -0xF9:         { if (!settings["Bonnie Plush"]) break; print("Bonnie Plush"); return true; }
+                                case 0xDFFFFFFBE:   { if (!settings["Chica Balloon"]) break; print("Chica Balloon"); return true; }
+                                case 0x20000009B:   { if (!settings["Chica Mask"]) break; print("Chica Mask"); return true; }
+                                case 0x7FFFFFFBE:   { if (!settings["Chica Name Shirt"]) break; print("Chica Name Shirt"); return true; }
+                                case 0x12FFFFFFBE:  { if (!settings["Chica Piñata"]) break; print("Chica Piñata"); return true; }
+                                case -0x119:        { if (!settings["Comedy Mask"]) break; print("Comedy Mask"); return true; }
+                                case 0x11FFFFFFBE:  { if (!settings["Cupcake Piñata"]) break; print("Cupcake Piñata"); return true; }
+                                case 0xCFFFFFFBE:   { if (!settings["El Chip Piñata"]) break; print("El Chip Piñata"); return true; }
+                                case -0xCA:         { if (!settings["Four Block Shirt"]) break; print("Four Block Shirt"); return true; }
+                                case -0xF1:         { if (!settings["Foxy Plush"]) break; print("Foxy Plush"); return true; }
+                                case 0xEFFFFFFBE:   { if (!settings["Freddy Balloon"]) break; print("Freddy Balloon"); return true; }
+                                case -0xC3:         { if (!settings["Freddy Face Shirt"]) break; print("Freddy Face Shirt"); return true; }
+                                case -0xB9:         { if (!settings["Freddy Icon Shirt"]) break; print("Freddy Icon Shirt"); return true; }
+                                case -0x132:        { if (!settings["Freddy Magnet"]) break; print("Freddy Magnet"); return true; }
+                                case 0x10000009B:   { if (!settings["Freddy Mask"]) break; print("Freddy Mask"); return true; }
+                                case 0x5FFFFFFBE:   { if (!settings["Freddy Name Shirt"]) break; print("Freddy Name Shirt"); return true; }
+                                case 0x9FFFFFFBE:   { if (!settings["Freddy Piñata"]) break; print("Freddy Piñata"); return true; }
+                                case 0x3FFFFFFBE:   { if (!settings["Frozen Chica Treat"]) break; print("Frozen Chica Treat"); return true; }
+                                case 0x2FFFFFFBE:   { if (!settings["Frozen Freddy Treat"]) break; print("Frozen Freddy Treat"); return true; }
+                                case 0x1FFFFFFBE:   { if (!settings["Frozen Monty Treat"]) break; print("Frozen Monty Treat"); return true; }
+                                case 0x4FFFFFFBE:   { if (!settings["Frozen Roxy Treat"]) break; print("Frozen Roxy Treat"); return true; }
+                                case 0x70000013D:   { if (!settings["Glam Chica Figure"]) break; print("Glam Chica Figure"); return true; }
+                                case 0x20000013D:   { if (!settings["Glam Chica Plush"]) break; print("Glam Chica Plush"); return true; }
+                                case 0x60000013D:   { if (!settings["Glam Freddy Figure"]) break; print("Glam Freddy Figure"); return true; }
+                                case 0x30000013D:   { if (!settings["Glam Freddy Plush"]) break; print("Glam Freddy Plush"); return true; }
+                                case 0x80000013D:   { if (!settings["Glam Monty Figure"]) break; print("Glam Monty Figure"); return true; }
+                                case 0x40000013D:   { if (!settings["Glam Monty Plush"]) break; print("Glam Monty Plush"); return true; }
+                                case 0x90000013D:   { if (!settings["Glam Roxy Figure"]) break; print("Glam Roxy Figure"); return true; }
+                                case 0x10000013D:   { if (!settings["Glam Roxy Plush"]) break; print("Glam Roxy Plush"); return true; }
+                                case -0x18E:        { if (!settings["Go Kart"]) break; print("Go Kart"); return true; }
+                                case -0x189:        { if (!settings["Golden Chica"]) break; print("Golden Chica"); return true; }
+                                case -0x181:        { if (!settings["Golden Freddy"]) break; print("Golden Freddy"); return true; }
+                                case -0x178:        { if (!settings["Golden Monty"]) break; print("Golden Monty"); return true; }
+                                case -0x170:        { if (!settings["Golden Moon"]) break; print("Golden Moon"); return true; }
+                                case -0x168:        { if (!settings["Golden Roxy"]) break; print("Golden Roxy"); return true; }
+                                case -0x160:        { if (!settings["Golden Sun"]) break; print("Golden Sun"); return true; }
+                                case 0xFFFFFFFBE:   { if (!settings["Monty Balloon"]) break; print("Monty Balloon"); return true; }
+                                case -0x129:        { if (!settings["Monty Magnet"]) break; print("Monty Magnet"); return true; }
+                                case 0x40000009B:   { if (!settings["Monty Mask"]) break; print("Monty Mask"); return true; }
+                                case 0xBFFFFFFBE:   { if (!settings["Monty Name Shirt"]) break; print("Monty Name Shirt"); return true; }
+                                case 0x13FFFFFFBE:  { if (!settings["Monty Piñata"]) break; print("Monty Piñata"); return true; }
+                                case 0xB0000013D:   { if (!settings["Moon Figure"]) break; print("Moon Figure"); return true; }
+                                case 0x50000013D:   { if (!settings["Moon Plush"]) break; print("Moon Plush"); return true; }
+                                case -0xEA:         { if (!settings["Nightmare Plush"]) break; print("Nightmare Plush"); return true; }
+                                case -0xE2:         { if (!settings["D_Old Poster"]) break; print("D_Old Poster"); return true; }
+                                case -0xD0:         { if (!settings["F_Old Poster"]) break; print("F_Old Poster"); return true; }
+                                case -0xD6:         { if (!settings["S_Old Poster"]) break; print("S_Old Poster"); return true; }
+                                case -0xDC:         { if (!settings["L_Old Poster"]) break; print("L_Old Poster"); return true; }
+                                case -0x109:        { if (!settings["Piñata"]) break; print("Piñata"); return true; }
+                                case 0x6FFFFFFBE:   { if (!settings["Pizzaplex Logo Shirt"]) break; print("Pizzaplex Logo Shirt"); return true; }
+                                case -0x100:        { if (!settings["Plush Baby"]) break; print("Plush Baby"); return true; }
+                                case 0x10FFFFFFBE:  { if (!settings["Roxy Balloon"]) break; print("Roxy Balloon"); return true; }
+                                case -0x121:        { if (!settings["Roxy Magnet"]) break; print("Roxy Magnet"); return true; }
+                                case 0x30000009B:   { if (!settings["Roxy Mask"]) break; print("Roxy Mask"); return true; }
+                                case 0x8FFFFFFBE:   { if (!settings["Roxy Name Shirt"]) break; print("Roxy Name Shirt"); return true; }
+                                case 0xAFFFFFFBE:   { if (!settings["Roxy Piñata"]) break; print("Roxy Piñata"); return true; }
+                                case -0x159:        { if (!settings["Space Chica Keychain"]) break; print("Space Chica Keychain"); return true; }
+                                case -0x151:        { if (!settings["Space Freddy Keychain"]) break; print("Space Freddy Keychain"); return true; }
+                                case -0x149:        { if (!settings["Space Monty Keychain"]) break; print("Space Monty Keychain"); return true; }
+                                case -0x141:        { if (!settings["Space Roxy Keychain"]) break; print("Space Roxy Keychain"); return true; }
+                                case -0xAF:         { if (!settings["Star Shirt"]) break; print("Star Shirt"); return true; }
+                                case 0xA0000013D:   { if (!settings["Sun Figure"]) break; print("Sun Figure"); return true; }
+                                case 0xFFFFFFBE:    { if (!settings["Sun Plush"]) break; print("Sun Plush"); return true; }
+                                case -0x111:        { if (!settings["Tragedy Mask"]) break; print("Tragedy Mask"); return true; }
+                                //Equipment
+                                case -0x2B2A97:     { if (!settings["Backstage Pass"]) break; print("Backstage Pass"); return true; }
+                                case -0x2B29BB:     { if (!settings["Bowling Pass"]) break; print("Bowling Pass"); return true; }
+                                case 0x200000032:   { if (!settings["Chica Fizzy Faz"]) break; print("Chica Fizzy Faz"); return true; }
+                                case -0x1E:         { if (!settings["Dance Pass"]) break; print("Dance Pass"); return true; }
+                                case -0x38:         { if (!settings["Entrance Pass"]) break; print("Entrance Pass"); return true; }
+                                case -0x384BC0:     { if (!settings["Fazcam"]) break; print("Fazcam"); return true; }
+                                case 0x0:           { if (!settings["Fazwatch"]) break; print("Fazwatch"); return true; }
+                                case -0x384BB1:     { if (!settings["Flashlight"]) break; print("Flashlight"); return true; }
+                                case 0x200000015:   { if (!settings["D_Flashlight Upgrade"]) break; print("D_Flashlight Upgrade"); return true; }
+                                case 0x300000015:   { if (!settings["B_Flashlight Upgrade"]) break; print("B_Flashlight Upgrade"); return true; }
+                                case 0x100000015:   { if (!settings["MG_Flashlight Upgrade"]) break; print("MG_Flashlight Upgrade"); return true; }
+                                case 0x300000032:   { if (!settings["Freddy Fizzy Faz"]) break; print("Freddy Fizzy Faz"); return true; }
+                                case 0x20000001F:   { if (!settings["RR_Freddy Upgrade"]) break; print("RR_Freddy Upgrade"); return true; }
+                                case 0x10000001F:   { if (!settings["MA_Freddy Upgrade"]) break; print("MA_Freddy Upgrade"); return true; }
+                                case 0x3E:          { if (!settings["Hoodie"]) break; print("Hoodie"); return true; }
+                                case -0x391FF3:     { if (!settings["MA_Mapbot's Map"]) break; print("MA_Mapbot's Map"); return true; }
+                                case 0x148:         { if (!settings["UT_Mapbot's Map"]) break; print("UT_Mapbot's Map"); return true; }
+                                case -0x2B23DE:     { if (!settings["Mazercise Control Key"]) break; print("Mazercise Control Key"); return true; }
+                                case 0x54:          { if (!settings["Mazercise Pass"]) break; print("Mazercise Pass"); return true; }
+                                case 0x400000032:   { if (!settings["Monty Fizzy Faz"]) break; print("Monty Fizzy Faz"); return true; }
+                                case -0x2B2195:     { if (!settings["Monty Mystery Mix"]) break; print("Monty Mystery Mix"); return true; }
+                                case 0x5D:          { if (!settings["Monty's Claws"]) break; print("Monty's Claws"); return true; }
+                                case -0x2B20B7:     { if (!settings["Mr. Hippo Magnet"]) break; print("Mr. Hippo Magnet"); return true; }
+                                case 0x71:          { if (!settings["Party Pass"]) break; print("Party Pass"); return true; }
+                                case 0x95:          { if (!settings["Photo Pass"]) break; print("Photo Pass"); return true; }
+                                case 0x100000032:   { if (!settings["Roxy Fizzy Faz"]) break; print("Roxy Fizzy Faz"); return true; }
+                                case 0xB3:          { if (!settings["Screwdriver"]) break; print("Screwdriver"); return true; }
+                                case 0x27:          { if (!settings["Shoes"]) break; print("Shoes"); return true; }
+                                //CDs
+                                case -0x9000000A4:  { if (!settings["CD_Backstage Podium"]) break; print("CD_Backstage Podium"); return true; }
+                                case -0x8000000A4:  { if (!settings["CD_Bonnie Bowl"]) break; print("CD_Bonnie Bowl"); return true; }
+                                case -0x3000000A4:  { if (!settings["CD_Chica's Bakery"]) break; print("CD_Chica's Bakery"); return true; }
+                                case -0xF000000A4:  { if (!settings["CD_East Atrium Stage"]) break; print("CD_East Atrium Stage"); return true; }
+                                case -0x7000000A4:  { if (!settings["CD_Fazerblast"]) break; print("CD_Fazerblast"); return true; }
+                                case -0x4000000A4:  { if (!settings["CD_Kid's Cove"]) break; print("CD_Kid's Cove"); return true; }
+                                case -0xA000000A4:  { if (!settings["CD_Main Atrium"]) break; print("CD_Main Atrium"); return true; }
+                                case -0xE000000A4:  { if (!settings["CD_Mazercise"]) break; print("CD_Mazercise"); return true; }
+                                case -0xD000000A4:  { if (!settings["CD_Monty Golf"]) break; print("CD_Monty Golf"); return true; }
+                                case -0x1000000A4:  { if (!settings["CD_Rockstar Row Foxy"]) break; print("CD_Rockstar Row Foxy"); return true; }
+                                case -0xB000000A4:  { if (!settings["CD_Rockstar Row Helpy"]) break; print("CD_Rockstar Row Helpy"); return true; }
+                                case -0xC000000A4:  { if (!settings["CD_Roxy Raceway"]) break; print("CD_Roxy Raceway"); return true; }
+                                case -0x5000000A4:  { if (!settings["CD_Roxy Salon"]) break; print("CD_Roxy Salon"); return true; }
+                                case -0x2000000A4:  { if (!settings["CD_Utility Tunnels Couch"]) break; print("CD_Utility Tunnels Couch"); return true; }
+                                case -0x6000000A4:  { if (!settings["CD_Utility Tunnels Foxy Plush"]) break; print("CD_Utility Tunnels Foxy Plush"); return true; }
+                                case -0x10000000A4: { if (!settings["CD_West Arcade"]) break; print("CD_West Arcade"); return true; }
+                            }
                         }
                     }
                     //extraneous items:
