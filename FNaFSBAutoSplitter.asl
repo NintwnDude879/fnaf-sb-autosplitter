@@ -753,7 +753,7 @@ init {
 update {
     vars.watchers.UpdateAll(game);
 
-    if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current) == "Button_B_GEN_VARIABLE_ElevatorButton_C_CAT"){
+    if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
         vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.buttonName = "elevButton";
     }
@@ -761,6 +761,15 @@ update {
         vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.buttonName = "vannyButton";
     }
+    if (vars.buttonName == "elevButton" && !vars.checkElevs()){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.buttonName = "";
+    }
+    //print(vars.buttonName);
+    //print(curThing);
+    //print(oldThing);
+    //print(vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).ToString());
+    //print(vars.GetNameFromFName(vars.watchers["cachedInteractibleFName"].Current).ToString());
     //print("vars.watchers["freddyThing"].Current: "+vars.watchers["freddyThing"].Current);
     //print("vars.UWorld: "+vars.UWorld.ToString("X"));
     //print("vars.GEngine: "+vars.GEngine.ToString("X"));
@@ -769,6 +778,9 @@ update {
 }
 
 start {
+    vars.buttonName = "";
+    vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+
     //Functions and Dictionaries
 
     vars.printAllPointers = (Action)(() => {
@@ -830,17 +842,18 @@ start {
 
         // Actually calculate if you are in the bounds of the defined cuboid
         // Includes a check to see if you've already completed this split (uses HashSet<string>, initialized in startup{})
-        if (settings[name] && vars.CompletedSplits.Add(name)
+        if (settings[name]
         && LB.X <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= UB.X
         && LB.Y <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= UB.Y
-        && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z){
+        && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z
+        && vars.CompletedSplits.Add(name)){
             print(name);
             return true;
         }
         return false;
     });
 
-    vars.checkBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
+    vars.checkInverseBox = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
         /* This first section is just to allow you to pick any two points directly opposite each other
         on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
 
@@ -852,59 +865,45 @@ start {
         if (LB.X > vars.watchers["pos"].Old.X && vars.watchers["pos"].Old.X > UB.X
         &&  LB.Y > vars.watchers["pos"].Old.Y && vars.watchers["pos"].Old.Y > UB.Y
         &&  LB.Z > vars.watchers["pos"].Old.Z && vars.watchers["pos"].Old.Z > UB.Z){
+            return false;
+        }
+        return true;
+    });
+
+    vars.checkBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
+        /* This first section is just to allow you to pick any two points directly opposite each other
+        on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
+
+        // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
+        Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
+        Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
+
+        // Actually calculate if you are in the bounds of the defined cuboid
+        // Includes a check to see if you've already completed this split (uses HashSet<string>, initialized in startup{})
+        if (LB.X <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= UB.X
+        && LB.Y <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= UB.Y
+        && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z){
             return true;
         }
         return false;
     });
 
-    vars.checkPositionSlant = (Func<string, bool, double, double, double, double, double, double, double, double, bool>)((name, check, x1, y1, x2, y2, xB, yB, zLB, zUB) => {
-        if (!settings[name]) return false;
-        if (!check) return false;
-        if (zLB > vars.watchers["pos"].Current.Z) return false;
-        if (vars.watchers["pos"].Current.Z > zUB) return false;
-
-        double slope = (y1 - y2) / (x1 - x2);
-        double xAvg = (x1 + x2) / 2;
-        double yAvg = (y1 + y2) / 2;
-
-        //north
-        if (yB - yAvg >= slope * (xB - xAvg)){
-            if (vars.watchers["pos"].Current.Y - yAvg < slope * (vars.watchers["pos"].Current.X - xAvg)) return false;
-            //east
-            if (slope >= 0){
-                if (vars.watchers["pos"].Current.X < xB) return false;
-                if (vars.watchers["pos"].Current.Y > yB) return false;
-                print(name);
-                return true;
-            }
-            //west
-            else {
-                if (vars.watchers["pos"].Current.X > xB) return false;
-                if (vars.watchers["pos"].Current.Y > yB) return false;
-                print(name);
-                return true;
-            }
-        }
-        //south
-        else {
-            if (vars.watchers["pos"].Current.Y - yAvg > slope * (vars.watchers["pos"].Current.X - xAvg)) return false;
-            //west
-            if (slope >= 0){
-                if (vars.watchers["pos"].Current.X > xB) return false;
-                if (vars.watchers["pos"].Current.Y < yB) return false;
-
-                print(name);
-                return true;
-            }
-            //east
-            else {
-                if (vars.watchers["pos"].Current.X < xB) return false;
-                if (vars.watchers["pos"].Current.Y < yB) return false;
-                print(name);
-                return true;
-            }
-        }
-        return false;
+    vars.checkElevs = (Func<bool>)(() => {
+        return (vars.checkBoxNoBool(new Vector3f(24192, 49679,  360), new Vector3f(23814,  50161, 752))     //Afton
+            || vars.checkBoxNoBool(new Vector3f(328,    27856,  1421),new Vector3f(759,    27381, 1819))    //Kitchen (atrium)
+            || vars.checkBoxNoBool(new Vector3f(328,    27856, -10),  new Vector3f(759,    27381, 408))     //Kitchen (kitchen)
+            || vars.checkBoxNoBool(new Vector3f(-11670, 40159,  1461),new Vector3f(-12176, 40711, 1816))    //Monty Golf (atrium)
+            || vars.checkBoxNoBool(new Vector3f(-14204, 42656,  1474),new Vector3f(-14759, 43240, 1847))    //Monty Golf (monty golf)
+            || vars.checkBoxNoBool(new Vector3f(-2669,  28897,  2038),new Vector3f(-2108,  28359, 2408))    //Atrium/Lobby (left side from atrium pov)
+            || vars.checkBoxNoBool(new Vector3f(-1295,  28903,  2038),new Vector3f(-738,   28369, 2408))    //Atrium/Lobby 2.0 (right side from atrium pov)
+            || vars.checkBoxNoBool(new Vector3f(5446,   37421,  3212),new Vector3f(5975,   36909, 3598))    //Bonnie Bowl
+            || vars.checkBoxNoBool(new Vector3f(7725,   34759,  1450),new Vector3f(8232,   34243, 1819))    //Fazerblast
+            || vars.checkBoxNoBool(new Vector3f(4289,   29381,  3289),new Vector3f(5530,   30187, 3555))    //West Arcade (atrium)
+            || vars.checkBoxNoBool(new Vector3f(5699,   28832,  2036),new Vector3f(4640,   28066, 2407))    //West Arcade (west arcade)
+            || vars.checkBoxNoBool(new Vector3f(-5071,  52079,  1911),new Vector3f(-5584,  52281,-1160))    //Chica Room (both encompassed in big box, same for next 3)
+            || vars.checkBoxNoBool(new Vector3f(-2812,  53483,  1683),new Vector3f(-1937,  52803,-1160))    //Monty Room
+            || vars.checkBoxNoBool(new Vector3f(-370,   52814,  1920),new Vector3f(-1155,  53030,-1193))    //Roxy Room
+            || vars.checkBoxNoBool(new Vector3f(2348,   52554,  1870),new Vector3f(2073,   52156,-1179)));    //Freddy Room
     });
 
     vars.checkPQPosition = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
@@ -974,7 +973,6 @@ start {
 
         //Item Splits
         vars.nLobbyItemsUsed = 0;
-        vars.iRoxyEyes = true;
 
         vars.isLoading = false;
         vars.onMenu = false;
@@ -1039,19 +1037,19 @@ isLoading {
         }
     }
     else if (vars.arcade == "N/A"){
-        if (vars.checkBoxNoBool(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
+        if (vars.checkInverseBox(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
             vars.arcade = "BB Arcade";
         }
-        else if (vars.checkBoxNoBool(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
+        else if (vars.checkInverseBox(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
             vars.arcade = "Monty Golf";
         }
-        else if (vars.checkBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
+        else if (vars.checkInverseBox(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
             vars.arcade = "Princess Quest 1";
         }
-        else if (vars.checkBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+        else if (vars.checkInverseBox(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
             vars.arcade = "Princess Quest 2";
         }
-        else if (vars.checkBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
+        else if (vars.checkInverseBox(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
             vars.arcade = "Princess Quest 3";
         }
 
@@ -1307,10 +1305,7 @@ split {
             }
             if (settings["Deload Splits"]){
                 if (vars.watchers["pos"].Current.X != vars.watchers["pos"].Old.X || vars.watchers["pos"].Current.Y != vars.watchers["pos"].Old.Y || vars.watchers["pos"].Current.Z != vars.watchers["pos"].Old.Z){
-                    if (vars.checkPositionSlant("Foxy Cutout Deload", vars.dFoxyCutout, -4450, 53050, -5320, 52750, -5300, 53235, 1780, 2000)){
-                        vars.dFoxyCutout = false;
-                        return true;
-                    }
+                    if (vars.checkBox("Foxy Deload", new Vector3f(-4942, 53000, 1790), new Vector3f(-4769, 52900, 2000))) return true;
                     if (settings["D_Daycare"]){
                         if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75f), new Vector3f(-13300, 31800, 2000))) return true;
                         if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5f, 2516), new Vector3f(-19500, 34800, 2600))) return true;
@@ -1409,9 +1404,8 @@ split {
                             print("Damaged Head");
                             return true;
                         }
-                        if ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName == 0xAE && vars.watchers["pos"].Current.X > 0 && settings["Roxy's Eyes"] && vars.iRoxyEyes){
+                        if ((long)vars.watchers["interactionName"].Old-(long)vars.fazwatchName == 0xAE && vars.watchers["pos"].Current.X > 0 && settings["Roxy's Eyes"] && vars.CompletedSplits.Add("Roxy's Eyes")){
                             print("Roxy's Eyes");
-                            vars.iRoxyEyes = false;
                             return true;
                         }
                     }
@@ -1696,10 +1690,7 @@ split {
                     if (vars.checkBox("Enter El Chips", new Vector3f(-8700, 34600, 3200), new Vector3f(-8445, 35700, 3700))) return true;
                     if (vars.checkBox("Fazerblast Spiral Stairs", new Vector3f(13100, 31830, 350), new Vector3f(14600, 33330, 750))) return true;
                     if (vars.checkBox("Rail Outside Fazerblast", new Vector3f(6800, 35586, 1500), new Vector3f(7550, 35637.4f, 2150))) return true;
-                    if (vars.checkPositionSlant("Exit Afton Elevator", vars.pAftonElev, 24027.2, 49603.9, 24166.6, 50010.0, 24200, 49600, -6100, -5500)){
-                        vars.pAftonElev = false;
-                        return true;
-                    }
+                    if (vars.checkBox("Exit Afton Elevator", new Vector3f(24170, 49932, -6100), new Vector3f(24465, 49499, 5800))) return true;
                     if (settings["P_Utility Tunnels"]){
                         if (vars.checkBox("First Aid Vanessa Cutscene", new Vector3f(4368, 45005, -1308), new Vector3f(4370, 45007, -1306))) return true;
                         if (vars.checkBox("Freddy Rail Jump", new Vector3f(2250, 46900, 400), new Vector3f(2850, 47500, 900))) return true;
@@ -1708,12 +1699,12 @@ split {
                         if (vars.checkBox("STR-LB Stairs", new Vector3f(5000, 24500, 150), new Vector3f(6000, 25000, 400))) return true;
                     }
                     if (settings["P_West Arcade"]){
-                        if (vars.checkPositionSlant("Enter West Arcade", vars.pEnWestArcade, 5423.8, 28282.9, 5218.5, 28137.5, 5500, 28000, 2000, 2500)){
+                        if (vars.checkBox("Enter West Arcade", new Vector3f(5155, 27863, 2060), new Vector3f(5683, 28139, 2260))){
                             vars.pEnWestArcade = false;
                             vars.pExWestArcade = true;
                             return true;
                         }
-                        if (vars.checkPositionSlant("Exit West Arcade", vars.pExWestArcade, 4708.4, 29906.8, 4913.7, 30052.4, 4600, 30200, 3200, 3700)){
+                        if (vars.checkBox("Exit West Arcade", new Vector3f(4793, 30290, 3400), new Vector3f(4528, 30085, 3250))){
                             vars.pExWestArcade = false;
                             return true;
                         }
