@@ -621,13 +621,14 @@ init {
 
     vars.GetNameFromFName = (Func<long, string>) ( longKey => {
         int key = (int)(longKey & uint.MaxValue);
+        int partial = (int)(longKey >> 32);
         int chunkOffset = key >> 16;
         int nameOffset = (ushort)key;
         IntPtr namePoolChunk = memory.ReadValue<IntPtr>((IntPtr)vars.FNamePool + (chunkOffset+2) * 0x8);
         Int16 nameEntry = game.ReadValue<Int16>((IntPtr)namePoolChunk + 2 * nameOffset);
         int nameLength = nameEntry >> 6;
         string output = game.ReadString((IntPtr)namePoolChunk + 2 * nameOffset + 2, nameLength);
-        return output;
+        return (partial == 0) ? output : output + "_" + partial.ToString();
     });
 
     // Signature scans for base address of UWorld and GEngine
@@ -790,7 +791,7 @@ init {
         &&(vars.watchers["pos"].Current.X - item.X)*(vars.watchers["pos"].Current.X - item.X)
         + (vars.watchers["pos"].Current.Y - item.Y)*(vars.watchers["pos"].Current.Y - item.Y)
         + (vars.watchers["pos"].Current.Z - item.Z)*(vars.watchers["pos"].Current.Z - item.Z)
-        > 90000){
+        < 90000){
             print(name);
             return true;
         }
@@ -802,7 +803,7 @@ init {
         if ((vars.watchers["pos"].Current.X - pos.X)*(vars.watchers["pos"].Current.X - pos.X)
           + (vars.watchers["pos"].Current.Y - pos.Y)*(vars.watchers["pos"].Current.Y - pos.Y)
           + (vars.watchers["pos"].Current.Z - pos.Z)*(vars.watchers["pos"].Current.Z - pos.Z)
-          > 90000){
+          < 90000){
             return true;
         }
         return false;
@@ -972,28 +973,35 @@ init {
 update {
     vars.watchers.UpdateAll(game);
     //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
-    if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
+    if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old)
+    && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
         vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "elevButton";
     }
-    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current) == "DestroyVannyEndingTrigger"){
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old)
+    && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("DestroyVannyEndingTrigger")){
         vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "vannyButton";
         vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
     }
-    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")){
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old)
+    && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")){
         vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x258){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "message";
         vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
     }
-    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collectible")){
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old)
+    && (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collectible")
+    || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("SecurityBadge")
+    || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Ticket"))){
         vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x258){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "collectible";
         vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
     }
-    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old) && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ChicaSewer")){
+    else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old)
+    && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ChicaSewer")){
         vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x260){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.watchers[1] = new MemoryWatcher<int>(vars.watchers["closestInteractibleAddress"].Current+0x330){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "chicaSewer";
@@ -1343,7 +1351,7 @@ split {
             }
             if (settings["Deload Splits"]){
                 if (vars.watchers["pos"].Current.X != vars.watchers["pos"].Old.X || vars.watchers["pos"].Current.Y != vars.watchers["pos"].Old.Y || vars.watchers["pos"].Current.Z != vars.watchers["pos"].Old.Z){
-                    if (vars.checkBox("Foxy Deload", new Vector3f(-4942, 53000, 1790), new Vector3f(-4769, 52900, 2000))) return true;
+                    if (vars.checkBox("Foxy Cutout Deload", new Vector3f(-4942, 53000, 1790), new Vector3f(-4769, 52900, 2000))) return true;
                     if (settings["D_Daycare"]){
                         if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75f), new Vector3f(-13300, 31800, 2000))) return true;
                         if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5f, 2516), new Vector3f(-19500, 34800, 2600))) return true;
