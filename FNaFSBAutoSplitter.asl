@@ -992,9 +992,11 @@ update {
         vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
     }
     else if ((vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old)
-    && (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collectible")
+    && (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collect")
     || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("SecurityBadge")
-    || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Ticket"))){
+    || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Ticket")
+    || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Pass")
+    || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet"))){
         vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x258){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "collectible";
