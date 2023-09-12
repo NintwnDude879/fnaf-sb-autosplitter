@@ -843,9 +843,9 @@ init {
         if (LB.X > vars.watchers["pos"].Old.X && vars.watchers["pos"].Old.X > UB.X
         &&  LB.Y > vars.watchers["pos"].Old.Y && vars.watchers["pos"].Old.Y > UB.Y
         &&  LB.Z > vars.watchers["pos"].Old.Z && vars.watchers["pos"].Old.Z > UB.Z){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     });
 
     vars.checkBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
@@ -1141,7 +1141,7 @@ isLoading {
         }
     }
 
-    if (vars.interactibleName == "elevButton" && vars.watchers["lastButton"].Current) return true;
+    if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current) return true;
 
     if (!settings["Stop Timer When Loading"]){
         if (vars.version < 1.05){
@@ -1450,7 +1450,7 @@ split {
                         return true;
                     }
                 }
-                if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastButton"].Current && vars.watchers["lastButton"].Old) return true;
+                if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
                 //other ending splits
                 if (settings["Afton Ending"] && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
                     var currentButton = ((750 - vars.watchers["aftonHealth"].Current) / 100);
