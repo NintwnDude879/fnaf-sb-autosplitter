@@ -990,7 +990,7 @@ update {
         else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Clue")){
             vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(vars.watchers["closestInteractibleAddress"].Current+0x11C){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "message";
             vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
         }
@@ -1013,7 +1013,7 @@ update {
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Pass")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet"))){
             vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x258){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "collectible";
             vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
         }
@@ -1074,7 +1074,7 @@ update {
     //if (vars.watchers[1].Current != vars.watchers[1].Old){
     //    print("Current: "+vars.watchers[1].Current+"\nOld:"+vars.watchers[1].Old);
     //}
-    //print(vars.watchers["closestInteractibleAddress"].Current.ToString("X"));
+    //rint(vars.watchers["closestInteractibleAddress"].Current.ToString("X"));
 }
 
 start {
@@ -1473,15 +1473,15 @@ split {
                             return true;
                         }
                     }
-                    if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old == vars.watchers["canCollect"].Current){
-                        if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)]&& vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                    if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
+                        if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                             print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                             return true;
                         }
                     }
                     if (vars.interactibleName == "collectible"){
-                        if (vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
-                            if (vars.interactibleName == "collectible" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
+                        if (vars.watchers["canCollect"].Old >= 0.98f){
+                            if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                                 print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                                 return true;
                             }
