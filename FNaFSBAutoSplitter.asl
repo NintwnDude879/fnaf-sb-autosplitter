@@ -1445,14 +1445,9 @@ split {
                         return true;
                     }
                 }
-                if (settings["pq3_endEndings"]){
-                    if (vars.checkPQPosition(vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.X, 1800, 2200, 1635.34, 1700)){
-                        if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
-                            if (vars.checkPQPosition2("pq3_endEndings", vars.pq3_end)){
-                                vars.pq3_end = false;
-                                return true;
-                            }
-                        }
+                if (vars.checkPQPosition("pq3_endArcade", 1800, 2200, 1635.34, 1700)){
+                    if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
+                        return true;
                     }
                 }
                 if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastButton"].Current && vars.watchers["lastButton"].Old) return true;
