@@ -1070,9 +1070,6 @@ update {
             }
         }
     }
-    print(vars.GetNameFromFName(Convert.ToInt64(vars.watchers["lastInteractible"].Current)));
-    print(vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current));
-    print(vars.watchers["closestInteractibleAddress"].Current.ToString("X"));
 }
 
 start {
