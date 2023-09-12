@@ -916,7 +916,7 @@ init {
     });
 
     vars.resetVariables = (Action)(() => {
-        //These are all related to variable addresses, which change depending on what the player is interacting with.
+        //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
         //Make sure they are not garbage data when reading.
         vars.interactibleName = "";
         vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
@@ -1070,6 +1070,7 @@ update {
             }
         }
     }
+    //print stuff here (debug)
 }
 
 start {
