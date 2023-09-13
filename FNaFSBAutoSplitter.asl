@@ -416,7 +416,7 @@ startup {
     settings.Add("GregoryUpgrade_Shoes", false, "Shoes");
 
     settings.CurrentDefaultParent = "E_Sewers";
-    settings.Add("ChicaBeak", false, "Chica's Voicebox");
+    settings.Add("Chica's Voicebox", false);
 
     settings.CurrentDefaultParent = "E_Utility Tunnels";
     settings.Add("UtilityHallwayMap", false, "Mapbot's Map");
@@ -1006,7 +1006,8 @@ update {
         //Any message collectible
         else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Clue")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Bag")){
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Bag")
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Complaint")){
             vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "message";
@@ -1037,7 +1038,7 @@ update {
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Pass")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MontyMysteryMix")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MazercizeControlKey"))){
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MazerciseControlKey"))){
             vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "collectible";
@@ -1045,7 +1046,6 @@ update {
         }
         //Chica's Voicebox (specific weird edge case, don't worry about it)
         else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ChicaSewer")){
-            vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x260){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.watchers[1] = new MemoryWatcher<int>(vars.watchers["closestInteractibleAddress"].Current+0x330){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "chicaSewer";
             vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
@@ -1448,7 +1448,7 @@ split {
             if (settings["Ending Splits"]){
                 //splits based on ending cutscenes
                 if (settings["Afton Ending"]){
-                    if (vars.watchers["aftonHealth"].Old > 0 && vars.watchers["aftonHealth"].Current <= 0){
+                    if (vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Old > 0 && vars.watchers["aftonHealth"].Current <= 0){
                         print("Button 8 / End");
                         return true;
                     }
@@ -1486,7 +1486,7 @@ split {
                 }
                 if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
                 //other ending splits
-                if (settings["Afton Ending"] && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
+                if (settings["Afton Ending"] && vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
                     var currentButton = ((750 - vars.watchers["aftonHealth"].Current) / 100);
                     if (settings["Button " + currentButton]){
                         print("Button " + currentButton);
@@ -1498,7 +1498,7 @@ split {
                 if (settings["Item List"]){
                     //Chica's voicebox is weird. Investigate yourself if you want to know more.
                     if (vars.interactibleName == "chicaSewer"){
-                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["ChicaVoiceBox_C"]){
+                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["Chica's Voicebox"]){
                             print("Chica's Voicebox");
                             return true;
                         }
