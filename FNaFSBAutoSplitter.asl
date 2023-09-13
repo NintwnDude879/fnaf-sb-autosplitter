@@ -1537,7 +1537,7 @@ split {
                             }
                         }
                     }
-                    if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
+                    if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current && vars.CompletedSplits.Add("Flashlight")){
                         print("Flashlight");
                         return true;
                     }
