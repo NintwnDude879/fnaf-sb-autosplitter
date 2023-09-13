@@ -1340,14 +1340,14 @@ split {
                                 print("pq3_start");
                                 return true;
                             }
-                            if       (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)) return true;
-                            if       (vars.checkPQPosition("pq3_2",         1705, 2135,     -1340,    -895)) return true;
-                            if       (vars.checkPQPosition("pq3_3",         2445, 5210,     -1360,    -990)) return true;
-                            if       (vars.checkPQPosition("pq3_4",         4865, 5490,     -210,      365)) return true;
-                            if       (vars.checkPQPosition("pq3_5",         500,  1325,     -400,      1045)) return true;
-                            if       (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)) return true;
-                            if       (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)) return true;
-                            if (vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200,      1635.34f, 1700) && !vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current) return true;
+                            if (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)) return true;
+                            if (vars.checkPQPosition("pq3_2",         1705, 2135,     -1340,    -895)) return true;
+                            if (vars.checkPQPosition("pq3_3",         2445, 5210,     -1360,    -990)) return true;
+                            if (vars.checkPQPosition("pq3_4",         4865, 5490,     -210,      365)) return true;
+                            if (vars.checkPQPosition("pq3_5",         500,  1325,     -400,      1045)) return true;
+                            if (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)) return true;
+                            if (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)) return true;
+                            if (!vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current && vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200,      1635.34f, 1700)) return true;
                             break;
                         }
                     }
@@ -1534,9 +1534,6 @@ split {
                             else if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                                 print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                                 return true;
-                            }
-                            else {
-                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)+" is not currently a split.");
                             }
                         }
                     }
