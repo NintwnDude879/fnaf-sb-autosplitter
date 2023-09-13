@@ -1094,6 +1094,11 @@ update {
                 vars.interactibleName = "";
                 break;
             }
+            case "flashlight": {
+                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+                vars.interactibleName = "";
+                break;
+            }
         }
     }
     //print(vars.watchers["closestInteractibleAddress"].Current.ToString("X")+"\n"+vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current)+"\n"+vars.GetNameFromFName(Convert.ToInt64(vars.watchers["lastInteractible"].Current)));
