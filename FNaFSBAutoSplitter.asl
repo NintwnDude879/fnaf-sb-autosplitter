@@ -398,6 +398,7 @@ startup {
     settings.Add("FlashBeacon", false, "Fazcam");
     settings.Add("FlashlightUpgrade_1", false, "Flashlight Upgrade");
     settings.Add("MazercizeTicket", false, "Mazercise Pass");
+    settings.Add("MontyClaws_C", false, "Monty's Claws");
 
     settings.CurrentDefaultParent = "E_Rockstar Row";
     settings.Add("Fazwatch", false);
@@ -409,6 +410,7 @@ startup {
     settings.Add("DancePass", false, "Dance Pass");
     settings.Add("FreddyUpgrade_2", false, "Freddy Upgrade");
     settings.Add("GregoryUpgrade_Stamina_1", false, "Roxy Fizzy Faz");
+    settings.Add("RoxyEyes_C", false, "Roxy's Eyes");
 
     settings.CurrentDefaultParent = "E_Roxy Salon";
     settings.Add("GregoryUpgrade_Shoes", false, "Shoes");
@@ -434,7 +436,9 @@ startup {
     settings.Add("ArcadeGlitches2", false, "CFF MAINT LOG");
     settings.Add("RoxyBoss1", false, "Chasing Cars");
     settings.Add("ChicaBoss4", false, "CHICA REPORT");
-    settings.Add("ChicaVoiceBox", false, "CHICA UPGRADE");
+    settings.Add("ChicaVoiceBox_M", false, "CHICA UPGRADE");
+    settings.Add("RoxyEyes_M", false, "ROXY UPGRADE");
+    settings.Add("MontyClaws_M", false, "MONTY UPGRADE");
     settings.Add("ChicaBoss3", false, "COMPACTOR INSTRUCTIONS");
     settings.Add("StaminaBoosters", false, "Drink Fizzy Faz!!!");
     settings.Add("UpgradeMachine1", false, "Easy Money");
@@ -473,7 +477,6 @@ startup {
     settings.Add("BonnieMissing1", false, "Understudy");
 
     settings.CurrentDefaultParent = "Special Collectibles";
-    settings.Add("RoxyEyes", false, "ROXY UPGRADE (message)/Roxy's Eyes (collectible)");
     settings.Add("MontyClaws", false, "MONTY UPGRADE (message)/Monty's Claws (collectible)");
     settings.Add("c_magnet_chica", false, "Chica Magnet (West Arcade/Chica's Cakes)");
 
@@ -886,9 +889,21 @@ init {
 
     vars.checkPQPosition = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
         //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
-        if (settings[name] && vars.CompletedSplits.Add(name)
-        &&  xLB > vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y > xUB
-        &&  yLB > vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X > yUB){
+        if (settings[name]
+        &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
+        &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB
+        &&  vars.CompletedSplits.Add(name)){
+            print(name);
+            return true;
+        }
+        return false;
+    });
+
+    vars.checkPQPositionNoBool = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
+        //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
+        if (settings[name]
+        &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
+        &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB){
             print(name);
             return true;
         }
@@ -908,8 +923,9 @@ init {
     });
 
     vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
-        if (settings[name] && vars.CompletedSplits.Add(name)
-        && vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute){
+        if (settings[name]
+        && vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute
+        && vars.CompletedSplits.Add(name)){
             print(name);
             return true;
         }
@@ -989,7 +1005,8 @@ update {
         }
         //Any message collectible
         else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Clue")){
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Clue")
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Bag")){
             vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "message";
@@ -1007,12 +1024,20 @@ update {
             vars.interactibleName = "cameraButton";
             vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
         }
+        //Flashlight (daycare)
+        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Flashlight")){
+            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x298){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "flashlight";
+            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+        }
         //Collectible (equipment, etc.)
         else if ((vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collect")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("SecurityBadge")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Ticket")
         || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Pass")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet"))){
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet")
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MontyMysteryMix")
+        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MazercizeControlKey"))){
             vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "collectible";
@@ -1071,7 +1096,7 @@ update {
             }
         }
     }
-    print(vars.checkPQPosition("pq3_endArcade", 1800, 2200,      1635.34f, 1700).ToString());
+    //print(vars.watchers["closestInteractibleAddress"].Current.ToString("X")+"\n"+vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current)+"\n"+vars.GetNameFromFName(Convert.ToInt64(vars.watchers["lastInteractible"].Current)));
     //print stuff here (debug)
     //if (vars.watchers[1].Current != vars.watchers[1].Old){
     //    print("Current: "+vars.watchers[1].Current+"\nOld:"+vars.watchers[1].Old);
@@ -1315,14 +1340,14 @@ split {
                                 print("pq3_start");
                                 return true;
                             }
-                            if (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)) return true;
-                            if (vars.checkPQPosition("pq3_2",         1705, 2135,     -1340,    -895)) return true;
-                            if (vars.checkPQPosition("pq3_3",         2445, 5210,     -1360,    -990)) return true;
-                            if (vars.checkPQPosition("pq3_4",         4865, 5490,     -210,      365)) return true;
-                            if (vars.checkPQPosition("pq3_5",         500,  1325,     -400,      1045)) return true;
-                            if (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)) return true;
-                            if (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)) return true;
-                            if (vars.checkPQPosition("pq3_endArcade", 1800, 2200,      1635.34f, 1700) && vars.watchers["pq3Attack"].Current) return true;
+                            if       (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)) return true;
+                            if       (vars.checkPQPosition("pq3_2",         1705, 2135,     -1340,    -895)) return true;
+                            if       (vars.checkPQPosition("pq3_3",         2445, 5210,     -1360,    -990)) return true;
+                            if       (vars.checkPQPosition("pq3_4",         4865, 5490,     -210,      365)) return true;
+                            if       (vars.checkPQPosition("pq3_5",         500,  1325,     -400,      1045)) return true;
+                            if       (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)) return true;
+                            if       (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)) return true;
+                            if (vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200,      1635.34f, 1700) && !vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current) return true;
                             break;
                         }
                     }
@@ -1473,20 +1498,40 @@ split {
                 if (settings["Item List"]){
                     //Chica's voicebox is weird. Investigate yourself if you want to know more.
                     if (vars.interactibleName == "chicaSewer"){
-                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["Chica's Voicebox"]){
+                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["ChicaVoiceBox_C"]){
                             print("Chica's Voicebox");
                             return true;
                         }
                     }
                     if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
-                        if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                        if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
+                            print("ChicaVoiceBox_M");
+                            return true;
+                        }
+                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
+                            print("RoxyEyes_M");
+                            return true;
+                        }
+                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
+                            print("MontyClaws_M");
+                            return true;
+                        }
+                        else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                             print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                             return true;
                         }
                     }
                     if (vars.interactibleName == "collectible"){
                         if (vars.watchers["canCollect"].Old >= 0.98f){
-                            if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                            if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
+                                print("RoxyEyes_C");
+                                return true;
+                            }
+                            else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
+                                print("MontyClaws_C");
+                                return true;
+                            }
+                            else if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                                 print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                                 return true;
                             }
@@ -1494,6 +1539,10 @@ split {
                                 print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)+" is not currently a split.");
                             }
                         }
+                    }
+                    if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current){
+                        print("Flashlight");
+                        return true;
                     }
                     //extraneous items:
                     //Fazerblasters
@@ -1503,10 +1552,8 @@ split {
                     //Badges
                     if (settings["Equipment"]){
                         if (vars.watchers["itemCount"].Current > vars.watchers["itemCount"].Old){
-                            if (settings["E_Fazerblast"]){
-                                if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old) == "LaserGunCollectible_Game") return true;
-                                if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old) == "LaserGunCollectible_Prize") return true;
-                            }
+                            if (settings["Grey Fazerblaster"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old).Contains("LaserGunCollectible_Game")) return true;
+                            if (settings["Golden Fazerblaster"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old).Contains("LaserGunCollectible_Prize")) return true;
                             if (settings["E_Utility Tunnels"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old) == "BB_UtilityStart") return true;
                         }
                         if (settings["Daycare Pass"] && vars.interactibleName == "daycareMachine" && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
