@@ -1096,7 +1096,6 @@ update {
             }
         }
     }
-    print("This message baoihweoifhwoefginwg");
     //print(vars.watchers["closestInteractibleAddress"].Current.ToString("X")+"\n"+vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current)+"\n"+vars.GetNameFromFName(Convert.ToInt64(vars.watchers["lastInteractible"].Current)));
     //print stuff here (debug)
     //if (vars.watchers[1].Current != vars.watchers[1].Old){
