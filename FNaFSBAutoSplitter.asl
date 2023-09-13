@@ -1486,7 +1486,7 @@ split {
                                 return true;
                             }
                             else {
-                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current+" is not currently a split."));
+                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)+" is not currently a split.");
                             }
                         }
                     }
