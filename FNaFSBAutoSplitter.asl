@@ -831,7 +831,7 @@ init {
         return false;
     });
 
-    vars.checkInverseBox = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
+    vars.checkOldBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
         /* This first section is just to allow you to pick any two points directly opposite each other
         on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
 
@@ -840,9 +840,9 @@ init {
         Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
 
         //Checks to see if the old position is outside a cuboid
-        if (LB.X > vars.watchers["pos"].Old.X && vars.watchers["pos"].Old.X > UB.X
-        &&  LB.Y > vars.watchers["pos"].Old.Y && vars.watchers["pos"].Old.Y > UB.Y
-        &&  LB.Z > vars.watchers["pos"].Old.Z && vars.watchers["pos"].Old.Z > UB.Z){
+        if (LB.X <= vars.watchers["pos"].Old.X && vars.watchers["pos"].Old.X <= UB.X
+        &&  LB.Y <= vars.watchers["pos"].Old.Y && vars.watchers["pos"].Old.Y <= UB.Y
+        &&  LB.Z <= vars.watchers["pos"].Old.Z && vars.watchers["pos"].Old.Z <= UB.Z){
             return true;
         }
         return false;
@@ -885,9 +885,10 @@ init {
     });
 
     vars.checkPQPosition = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
+        //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
         if (settings[name] && vars.CompletedSplits.Add(name)
-        &&  xLB > vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X > xUB
-        &&  yLB > vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y > yUB){
+        &&  xLB > vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y > xUB
+        &&  yLB > vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X > yUB){
             print(name);
             return true;
         }
@@ -1070,6 +1071,7 @@ update {
             }
         }
     }
+    print(vars.checkPQPosition("pq3_endArcade", 1800, 2200,      1635.34f, 1700).ToString());
     //print stuff here (debug)
     //if (vars.watchers[1].Current != vars.watchers[1].Old){
     //    print("Current: "+vars.watchers[1].Current+"\nOld:"+vars.watchers[1].Old);
@@ -1124,19 +1126,22 @@ isLoading {
         }
     }
     else if (vars.arcade == "N/A"){
-        if (vars.checkInverseBox(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
+        if (vars.checkOldBoxNoBool(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
             vars.arcade = "BB Arcade";
         }
-        else if (vars.checkInverseBox(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
+        else if (vars.checkOldBoxNoBool(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
             vars.arcade = "Monty Golf";
         }
-        else if (vars.checkInverseBox(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
+        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
+        && vars.checkOldBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
             vars.arcade = "Princess Quest 1";
         }
-        else if (vars.checkInverseBox(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
+        && vars.checkOldBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
             vars.arcade = "Princess Quest 2";
         }
-        else if (vars.checkInverseBox(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
+        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
+        && vars.checkOldBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
             vars.arcade = "Princess Quest 3";
         }
 
