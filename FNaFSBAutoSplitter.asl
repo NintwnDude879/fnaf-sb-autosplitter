@@ -587,7 +587,7 @@ startup {
     settings.CurrentDefaultParent = "Reset Settings";
     settings.Add("Reset On New Game", false);
 
-    setting.CurrentDefaultParent = null;
+    settings.CurrentDefaultParent = null;
     settings.Add("Unsupported version warning", true);
 }
 
