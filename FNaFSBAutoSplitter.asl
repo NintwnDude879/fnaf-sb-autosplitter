@@ -586,6 +586,9 @@ startup {
 
     settings.CurrentDefaultParent = "Reset Settings";
     settings.Add("Reset On New Game", false);
+
+    setting.CurrentDefaultParent = null;
+    settings.Add("Unsupported version warning", true);
 }
 
 init {
@@ -597,7 +600,10 @@ init {
 
     switch (gameSize){
         default: {
-            MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+            if (!settings["Unsupported version warning"]) break;
+            MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\n"+
+            "If this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\n"+
+            "Sorry for the inconvenience.", "Warning: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
             vars.version = 0; // Unsupported
             break;
         }
