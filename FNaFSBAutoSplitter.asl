@@ -589,407 +589,380 @@ startup {
 }
 
 init {
-    //Sets the version of the game upon startup
-    int gameSize = modules.First().ModuleMemorySize;
-    refreshRate = 60;
+    #region Set version
+        //Sets the version of the game upon startup
+        int gameSize = modules.First().ModuleMemorySize;
+        refreshRate = 60;
 
-    print("Size = " + gameSize.ToString());
+        print("Size = " + gameSize.ToString());
 
-    switch (gameSize){
-        default: {
-            MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
-            vars.version = 0; // Unsupported
-            break;
+        switch (gameSize){
+            default: {
+                MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\nIf this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\nSorry for the inconvenience.", "Error: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+                vars.version = 0; // Unsupported
+                break;
+            }
+            case 76210176: vars.version = 1.04; break;
+            case 76214272: vars.version = 1.05; break;
+            case 76218368: vars.version = 1.07; break;
+            case 76251136: vars.version = 1.11; break;
         }
-        case 76210176: vars.version = 1.04; break;
-        case 76214272: vars.version = 1.05; break;
-        case 76218368: vars.version = 1.07; break;
-        case 76251136: vars.version = 1.11; break;
-    }
 
-    print("Version = " + vars.version);
+        print("Version = " + vars.version);
+    #endregion
 
-    //Declare before usage in MemoryWatcherList
-    vars.interactibleName = (string)null;
-    vars.cachedPos = new Vector3f();
+    #region Declare functions
 
-    //Sigscanning
-    vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
-        var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
-        var pattern = new SigScanTarget(signature);
-        var location = scanner.Scan(pattern);
-        if (location == IntPtr.Zero) return IntPtr.Zero;
-        int offset = game.ReadValue<int>((IntPtr)location + instructionOffset);
-        return (IntPtr)location + offset + instructionOffset + 0x4;
-    });
+        #region Sigscan adjacent/Unreal Engine introspection related funcs
+            vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
+                var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
+                var pattern = new SigScanTarget(signature);
+                var location = scanner.Scan(pattern);
+                if (location == IntPtr.Zero) return IntPtr.Zero;
+                int offset = game.ReadValue<int>((IntPtr)location + instructionOffset);
+                return (IntPtr)location + offset + instructionOffset + 0x4;
+            });
 
-    vars.GetNameFromFName = (Func<long, string>) ( longKey => {
-        int key = (int)(longKey & uint.MaxValue);
-        int partial = (int)(longKey >> 32);
-        int chunkOffset = key >> 16;
-        int nameOffset = (ushort)key;
-        IntPtr namePoolChunk = memory.ReadValue<IntPtr>((IntPtr)vars.FNamePool + (chunkOffset+2) * 0x8);
-        Int16 nameEntry = game.ReadValue<Int16>((IntPtr)namePoolChunk + 2 * nameOffset);
-        int nameLength = nameEntry >> 6;
-        string output = game.ReadString((IntPtr)namePoolChunk + 2 * nameOffset + 2, nameLength);
-        return (partial == 0) ? output : output + "_" + partial.ToString();
-    });
+            vars.GetNameFromFName = (Func<long, string>) ( longKey => {
+                int key = (int)(longKey & uint.MaxValue);
+                int partial = (int)(longKey >> 32);
+                int chunkOffset = key >> 16;
+                int nameOffset = (ushort)key;
+                IntPtr namePoolChunk = memory.ReadValue<IntPtr>((IntPtr)vars.FNamePool + (chunkOffset+2) * 0x8);
+                Int16 nameEntry = game.ReadValue<Int16>((IntPtr)namePoolChunk + 2 * nameOffset);
+                int nameLength = nameEntry >> 6;
+                string output = game.ReadString((IntPtr)namePoolChunk + 2 * nameOffset + 2, nameLength);
+                return (partial == 0) ? output : output + "_" + partial.ToString();
+            });
+        #endregion
 
-    // Signature scans for base address of UWorld and GEngine
-    // MAKE SURE TO CONVERT FROM DECIMAL IF YOU WANT TO USE A HEX OFFSET OF BYTES
-    // There was a bug with UWorld where the offset for the sig was 0x15, which is 21 in decimal
-    // 0x15 =/= 15!!!!!!
-    // FNamePool's base address doesn't get accessed at all (for some reason) but it's base address + 8 does
-    // Because of this, you can just sigscan for the base address + 8 and then subtract the 8 to get the real pointer
-    vars.badFNamePool = vars.GetStaticPointerFromSig("8B 05 ??????03 FF C0 C1 E9 10 3B C8 0F 92 C0 C3 CC", 2);
-    vars.FNamePool = IntPtr.Add(vars.badFNamePool, -8);
-    vars.UWorld = vars.GetStaticPointerFromSig("E8 ???????? 48 8B 88 ??0?0000 48 89 0D ??????02", 15);
-    vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F80A0000 48 85 C9 74 07 48 8B 01 48 FF 60 40", 3);
+        #region Player state related funcs
+            vars.checkItem = (Func<string, Vector3f, bool>)((name, item) => {
+                //checks in a sphere (radius 300u)
+                //90,000 is used at the end of calculations because 300 ^ 2 = 90,000
+                if (settings[name]
+                &&(vars.watchers["pos"].Current.X - item.X)*(vars.watchers["pos"].Current.X - item.X)
+                + (vars.watchers["pos"].Current.Y - item.Y)*(vars.watchers["pos"].Current.Y - item.Y)
+                + (vars.watchers["pos"].Current.Z - item.Z)*(vars.watchers["pos"].Current.Z - item.Z)
+                < 90000){
+                    print(name);
+                    return true;
+                }
+                return false;
+            });
+            vars.checkSphereNoBool = (Func<Vector3f, bool>)((pos) => {
+                //checks in a sphere (radius 300u)
+                //90,000 is used at the end of calculations because 300 ^ 2 = 90,000
+                if ((vars.watchers["pos"].Current.X - pos.X)*(vars.watchers["pos"].Current.X - pos.X)
+                  + (vars.watchers["pos"].Current.Y - pos.Y)*(vars.watchers["pos"].Current.Y - pos.Y)
+                  + (vars.watchers["pos"].Current.Z - pos.Z)*(vars.watchers["pos"].Current.Z - pos.Z)
+                  < 90000){
+                    return true;
+                }
+                return false;
+            });
 
-    if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero){
-        throw new Exception("UWorld/GameEngine/FNamePool not initialized - trying again");
-    }
+            vars.checkBox = (Func<string, Vector3f, Vector3f, bool>)((name, point1, point2) => {
+                /* This first section is just to allow you to pick any two points directly opposite each other
+                on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
 
-    //Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
-    if (vars.version < 1.05){
-        vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-        vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
-        vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-        vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
-        vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
-        vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
-        vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
-        vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-        vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-        vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-        vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
-    }
-    if (vars.version == 1.05){
-        vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-        vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-        vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-        vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-        vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
-        vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
-        vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-        vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-        vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-        vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-        vars.hasLoaded                   = new DeepPointer(0x444C568, 0x184);
-    }
-    if (vars.version == 1.07){
-        vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-        vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-        vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-        vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-        vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
-        vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-        vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
-        vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-        vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
-        vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
-        vars.hasLoaded                   = new DeepPointer(0x444C6B0, 0x184);
-    }
-    if (vars.version == 1.11){
-        vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
-        vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
-        vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
-        vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
-        vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
-        vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
-        vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
-        vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
-        vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
-        vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
-        vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
-    }
-    vars.watchers = new MemoryWatcherList {
-        //These are at the top so they will always be index 0 or 1 in this list. DO NOT CHANGE UNLESS YOU KNOW THE RAMIFICATIONS.
-        new MemoryWatcher<bool>((IntPtr)null) { Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<bool>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+                // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
+                Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
+                Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
 
-        //Freddy's Power OR Freddy Thingie (1.11+)
-        new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+                // Actually calculate if you are in the bounds of the defined cuboid
+                // Includes a check to see if you've already completed this split (uses HashSet<string>, initialized in startup{})
+                if (settings[name]
+                && LB.X <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= UB.X
+                && LB.Y <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= UB.Y
+                && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z
+                && vars.CompletedSplits.Add(name)){
+                    print(name);
+                    return true;
+                }
+                return false;
+            });
 
-        //Player Info
-        new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            vars.checkOldBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
+                /* This first section is just to allow you to pick any two points directly opposite each other
+                on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
 
-        //Arcade pointers
-        new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+                // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
+                Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
+                Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
 
-        //Counter pointers
-        new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+                //Checks to see if the old position is outside a cuboid
+                if (LB.X <= vars.watchers["pos"].Old.X && vars.watchers["pos"].Old.X <= UB.X
+                &&  LB.Y <= vars.watchers["pos"].Old.Y && vars.watchers["pos"].Old.Y <= UB.Y
+                &&  LB.Z <= vars.watchers["pos"].Old.Z && vars.watchers["pos"].Old.Z <= UB.Z){
+                    return true;
+                }
+                return false;
+            });
 
-        //Buttons that start cutscenes (pressed = 0)
-        new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            vars.checkBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
+                /* This first section is just to allow you to pick any two points directly opposite each other
+                on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
 
-        //Afton's health (starts at 750, -100 per button)
-        new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+                // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
+                Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
+                Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
 
-        //Keeps track of items
-        new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
-        new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+                // Actually calculate if you are in the bounds of the defined cuboid
+                // Includes a check to see if you've already completed this split (uses HashSet<string>, initialized in startup{})
+                if (LB.X <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= UB.X
+                && LB.Y <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= UB.Y
+                && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z){
+                    return true;
+                }
+                return false;
+            });
 
-        //In-Game Clock
-        new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            vars.checkElevs = (Func<bool>)(() => {
+                return (vars.checkBoxNoBool(new Vector3f(24192, 49679,  360), new Vector3f(23814,  50161, 752))     //Afton
+                    || vars.checkBoxNoBool(new Vector3f(328,    27856,  1421),new Vector3f(759,    27381, 1819))    //Kitchen (atrium)
+                    || vars.checkBoxNoBool(new Vector3f(328,    27856, -10),  new Vector3f(759,    27381, 408))     //Kitchen (kitchen)
+                    || vars.checkBoxNoBool(new Vector3f(-11670, 40159,  1461),new Vector3f(-12176, 40711, 1816))    //Monty Golf (atrium)
+                    || vars.checkBoxNoBool(new Vector3f(-14204, 42656,  1474),new Vector3f(-14759, 43240, 1847))    //Monty Golf (monty golf)
+                    || vars.checkBoxNoBool(new Vector3f(-2669,  28897,  2038),new Vector3f(-2108,  28359, 2408))    //Atrium/Lobby (left side from atrium pov)
+                    || vars.checkBoxNoBool(new Vector3f(-1295,  28903,  2038),new Vector3f(-738,   28369, 2408))    //Atrium/Lobby 2.0 (right side from atrium pov)
+                    || vars.checkBoxNoBool(new Vector3f(5446,   37421,  3212),new Vector3f(5975,   36909, 3598))    //Bonnie Bowl
+                    || vars.checkBoxNoBool(new Vector3f(7725,   34759,  1450),new Vector3f(8232,   34243, 1819))    //Fazerblast
+                    || vars.checkBoxNoBool(new Vector3f(4289,   29381,  3289),new Vector3f(5530,   30187, 3555))    //West Arcade (atrium)
+                    || vars.checkBoxNoBool(new Vector3f(5699,   28832,  2036),new Vector3f(4640,   28066, 2407))    //West Arcade (west arcade)
+                    || vars.checkBoxNoBool(new Vector3f(-5071,  52079,  1911),new Vector3f(-5584,  52281,-1160))    //Chica Room (both encompassed in big box, same for next 3)
+                    || vars.checkBoxNoBool(new Vector3f(-2812,  53483,  1683),new Vector3f(-1937,  52803,-1160))    //Monty Room
+                    || vars.checkBoxNoBool(new Vector3f(-370,   52814,  1920),new Vector3f(-1155,  53030,-1193))    //Roxy Room
+                    || vars.checkBoxNoBool(new Vector3f(2348,   52554,  1870),new Vector3f(2073,   52156,-1179)));  //Freddy Room
+            });
 
-        //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
-        new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            vars.checkPQPosition = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
+                //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
+                if (settings[name]
+                &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
+                &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB
+                &&  vars.CompletedSplits.Add(name)){
+                    print(name);
+                    return true;
+                }
+                return false;
+            });
 
-        //Experimental elevator fix that only requires 3 pointers (instead of 12)
-        new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-        new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-    };
+            vars.checkPQPositionNoBool = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
+                //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
+                if (settings[name]
+                &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
+                &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB){
+                    print(name);
+                    return true;
+                }
+                return false;
+            });
 
-    //Functions and Dictionaries
-    vars.printAllPointers = (Action)(() => {
-        if (vars.version < 1.11){
-            print("freddyPower: " + vars.watchers["freddyThing"].Old.ToString() + " => " + vars.watchers["freddyThing"].Current.ToString());
-        }
-        else {
-            print("freddyThing: " + vars.watchers["freddyThing"].Old.ToString() + " => " + vars.watchers["freddyThing"].Current.ToString());
-        }
-        print("golfStrokeCount: " + vars.watchers["golfStrokeCount"].Old.ToString() + " => " + vars.watchers["golfStrokeCount"].Current.ToString());
-        print("pq3Attack: " + vars.watchers["pq3Attack"].Old.ToString() + " => " + vars.watchers["pq3Attack"].Current.ToString());
-        print("DGens: " + vars.watchers["DGens"].Old.ToString() + " => " + vars.watchers["DGens"].Current.ToString());
-        print("MGBucket: " + vars.watchers["MGBucket"].Old.ToString() + " => " + vars.watchers["MGBucket"].Current.ToString());
-        print("FBFlags: " + vars.watchers["FBFlags"].Old.ToString() + " => " + vars.watchers["FBFlags"].Current.ToString());
-        print("worldCheck: " + vars.watchers["worldCheck"].Old.ToString() + " => " + vars.watchers["worldCheck"].Current.ToString());
-        print("pos.X: " + vars.watchers["pos"].Old.X.ToString() + " => " + vars.watchers["pos"].Current.X.ToString());
-        print("pos.Y: " + vars.watchers["pos"].Old.Y.ToString() + " => " + vars.watchers["pos"].Current.Y.ToString());
-        print("pos.Z: " + vars.watchers["pos"].Old.Z.ToString() + " => " + vars.watchers["pos"].Current.Z.ToString());
-        print("escapeEndLeaveButtonEast: " + vars.watchers["escapeEndLeaveButtonEast"].Old.ToString() + " => " + vars.watchers["escapeEndLeaveButtonEast"].Current.ToString());
-        print("carEndLeaveButton: " + vars.watchers["carEndLeaveButton"].Old.ToString() + " => " + vars.watchers["carEndLeaveButton"].Current.ToString());
-        print("fireEndLeaveButton: " + vars.watchers["fireEndLeaveButton"].Old.ToString() + " => " + vars.watchers["fireEndLeaveButton"].Current.ToString());
-        print("escapeEndLeaveButtonWest: " + vars.watchers["escapeEndLeaveButtonWest"].Old.ToString() + " => " + vars.watchers["escapeEndLeaveButtonWest"].Current.ToString());
-        print("aftonHealth: " + vars.watchers["aftonHealth"].Old.ToString() + " => " + vars.watchers["aftonHealth"].Current.ToString());
-        print("securityBadgeCount: " + vars.watchers["securityBadgeCount"].Old.ToString() + " => " + vars.watchers["securityBadgeCount"].Current.ToString());
-        print("itemCount: " + vars.watchers["itemCount"].Old.ToString() + " => " + vars.watchers["itemCount"].Current.ToString());
-        print("splashScreen: " + vars.watchers["splashScreen"].Old.ToString() + " => " + vars.watchers["splashScreen"].Current.ToString());
-        print("hourClock: " + vars.watchers["hourClock"].Old.ToString() + " => " + vars.watchers["hourClock"].Current.ToString());
-        print("minuteClock: " + vars.watchers["minuteClock"].Old.ToString() + " => " + vars.watchers["minuteClock"].Current.ToString());
-        print("pause: " + vars.watchers["pause"].Old.ToString() + " => " + vars.watchers["pause"].Current.ToString());
-        if (vars.version < 1.05){
-            print("hasLoaded: " + vars.watchers["hasLoaded"].Old.ToString() + " => " + vars.watchers["hasLoaded"].Current.ToString());
-        }
-        else {
-            print("blackScreen: " + vars.watchers["hasLoaded"].Old.ToString() + " => " + vars.watchers["hasLoaded"].Current.ToString());
-        }
-    });
+            vars.checkGen = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, x, y, zLB, zUB, oldPositionX, oldPositionY) => {
+                //checks in a circle (radius 200)
+                if (!settings[name]) return false;
+                if (!check) return false;
+                if (zLB > vars.watchers["pos"].Current.Z) return false;
+                if (vars.watchers["pos"].Current.Z > zUB) return false;
+                if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) > Math.Pow(200, 2)) return false;
+                if (Math.Pow(vars.watchers["pos"].Current.X - x, 2) + Math.Pow(vars.watchers["pos"].Current.Y - y, 2) <= Math.Pow(200, 2)) return false;
+                print(name);
+                return true;
+            });
 
-    vars.checkItem = (Func<string, Vector3f, bool>)((name, item) => {
-        //checks in a sphere (radius 300u)
-        //90,000 is used at the end of calculations because 300 ^ 2 = 90,000
-        if (settings[name]
-        &&(vars.watchers["pos"].Current.X - item.X)*(vars.watchers["pos"].Current.X - item.X)
-        + (vars.watchers["pos"].Current.Y - item.Y)*(vars.watchers["pos"].Current.Y - item.Y)
-        + (vars.watchers["pos"].Current.Z - item.Z)*(vars.watchers["pos"].Current.Z - item.Z)
-        < 90000){
-            print(name);
-            return true;
-        }
-        return false;
-    });
-    vars.checkSphereNoBool = (Func<Vector3f, bool>)((pos) => {
-        //checks in a sphere (radius 300u)
-        //90,000 is used at the end of calculations because 300 ^ 2 = 90,000
-        if ((vars.watchers["pos"].Current.X - pos.X)*(vars.watchers["pos"].Current.X - pos.X)
-          + (vars.watchers["pos"].Current.Y - pos.Y)*(vars.watchers["pos"].Current.Y - pos.Y)
-          + (vars.watchers["pos"].Current.Z - pos.Z)*(vars.watchers["pos"].Current.Z - pos.Z)
-          < 90000){
-            return true;
-        }
-        return false;
-    });
+            vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
+                if (settings[name]
+                && vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute
+                && vars.CompletedSplits.Add(name)){
+                    print(name);
+                    return true;
+                }
+                return false;
+            });
+        #endregion
 
-    vars.checkBox = (Func<string, Vector3f, Vector3f, bool>)((name, point1, point2) => {
-        /* This first section is just to allow you to pick any two points directly opposite each other
-        on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
+        #region Miscellaneous functions
+        vars.resetVariables = (Action)(() => {
+            //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
+            //Make sure they are not garbage data when reading.
+            vars.interactibleName = "";
+            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 
-        // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
-        Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
-        Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
+            //Used to keep certain splits from repeating (reset)
+            vars.CompletedSplits.Clear();
 
-        // Actually calculate if you are in the bounds of the defined cuboid
-        // Includes a check to see if you've already completed this split (uses HashSet<string>, initialized in startup{})
-        if (settings[name]
-        && LB.X <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= UB.X
-        && LB.Y <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= UB.Y
-        && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z
-        && vars.CompletedSplits.Add(name)){
-            print(name);
-            return true;
-        }
-        return false;
-    });
+            //Arcade Splits
+            vars.arcade = "N/A";
+            //bb
+            vars.bb_start = true;
+            vars.bb_end = false;
+            //monty golf
+            vars.mg_start = true;
+            vars.nHole = 0;
+            vars.mg_end = false;
+            //pq1
+            vars.pq1_start = true;
+            vars.pq1_end = false;
+            //pq2
+            vars.pq2_start = true;
+            vars.pq2_8 = false;
+            vars.pq2_end = false;
+            //pq3
+            vars.pq3_start = true;
+            vars.pq3_end = true;
 
-    vars.checkOldBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
-        /* This first section is just to allow you to pick any two points directly opposite each other
-        on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
+            //Counter Splits
+            vars.cSewerGen1 = true;
+            vars.cSewerGen2 = true;
+            vars.cSewerGen3 = true;
+            vars.cWAGen1 = true;
+            vars.cWAGen2 = true;
+            vars.cWAGen3 = true;
+            vars.cWAGen4 = true;
+            vars.cWAGen5 = true;
 
-        // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
-        Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
-        Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
+            //Item Splits
+            vars.nLobbyItemsUsed = 0;
 
-        //Checks to see if the old position is outside a cuboid
-        if (LB.X <= vars.watchers["pos"].Old.X && vars.watchers["pos"].Old.X <= UB.X
-        &&  LB.Y <= vars.watchers["pos"].Old.Y && vars.watchers["pos"].Old.Y <= UB.Y
-        &&  LB.Z <= vars.watchers["pos"].Old.Z && vars.watchers["pos"].Old.Z <= UB.Z){
-            return true;
-        }
-        return false;
-    });
-
-    vars.checkBoxNoBool = (Func<Vector3f, Vector3f, bool>)((point1, point2) => {
-        /* This first section is just to allow you to pick any two points directly opposite each other
-        on a cuboid and still allow for the rest of the code to work, it's really just for convenience's sake*/
-
-        // Calculate which X/Y/Z is the lower of the two points, and set the upper/lower bound point along that axis accordingly
-        Vector3f LB = new Vector3f(Math.Min(point1.X, point2.X), Math.Min(point1.Y, point2.Y), Math.Min(point1.Z, point2.Z));
-        Vector3f UB = new Vector3f(Math.Max(point1.X, point2.X), Math.Max(point1.Y, point2.Y), Math.Max(point1.Z, point2.Z));
-
-        // Actually calculate if you are in the bounds of the defined cuboid
-        // Includes a check to see if you've already completed this split (uses HashSet<string>, initialized in startup{})
-        if (LB.X <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= UB.X
-        && LB.Y <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= UB.Y
-        && LB.Z <= vars.watchers["pos"].Current.Z && vars.watchers["pos"].Current.Z <= UB.Z){
-            return true;
-        }
-        return false;
-    });
-
-    vars.checkElevs = (Func<bool>)(() => {
-        return (vars.checkBoxNoBool(new Vector3f(24192, 49679,  360), new Vector3f(23814,  50161, 752))     //Afton
-            || vars.checkBoxNoBool(new Vector3f(328,    27856,  1421),new Vector3f(759,    27381, 1819))    //Kitchen (atrium)
-            || vars.checkBoxNoBool(new Vector3f(328,    27856, -10),  new Vector3f(759,    27381, 408))     //Kitchen (kitchen)
-            || vars.checkBoxNoBool(new Vector3f(-11670, 40159,  1461),new Vector3f(-12176, 40711, 1816))    //Monty Golf (atrium)
-            || vars.checkBoxNoBool(new Vector3f(-14204, 42656,  1474),new Vector3f(-14759, 43240, 1847))    //Monty Golf (monty golf)
-            || vars.checkBoxNoBool(new Vector3f(-2669,  28897,  2038),new Vector3f(-2108,  28359, 2408))    //Atrium/Lobby (left side from atrium pov)
-            || vars.checkBoxNoBool(new Vector3f(-1295,  28903,  2038),new Vector3f(-738,   28369, 2408))    //Atrium/Lobby 2.0 (right side from atrium pov)
-            || vars.checkBoxNoBool(new Vector3f(5446,   37421,  3212),new Vector3f(5975,   36909, 3598))    //Bonnie Bowl
-            || vars.checkBoxNoBool(new Vector3f(7725,   34759,  1450),new Vector3f(8232,   34243, 1819))    //Fazerblast
-            || vars.checkBoxNoBool(new Vector3f(4289,   29381,  3289),new Vector3f(5530,   30187, 3555))    //West Arcade (atrium)
-            || vars.checkBoxNoBool(new Vector3f(5699,   28832,  2036),new Vector3f(4640,   28066, 2407))    //West Arcade (west arcade)
-            || vars.checkBoxNoBool(new Vector3f(-5071,  52079,  1911),new Vector3f(-5584,  52281,-1160))    //Chica Room (both encompassed in big box, same for next 3)
-            || vars.checkBoxNoBool(new Vector3f(-2812,  53483,  1683),new Vector3f(-1937,  52803,-1160))    //Monty Room
-            || vars.checkBoxNoBool(new Vector3f(-370,   52814,  1920),new Vector3f(-1155,  53030,-1193))    //Roxy Room
-            || vars.checkBoxNoBool(new Vector3f(2348,   52554,  1870),new Vector3f(2073,   52156,-1179)));  //Freddy Room
-    });
-
-    vars.checkPQPosition = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
-        //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
-        if (settings[name]
-        &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
-        &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB
-        &&  vars.CompletedSplits.Add(name)){
-            print(name);
-            return true;
-        }
-        return false;
-    });
-
-    vars.checkPQPositionNoBool = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB) => {
-        //PQ Position Goes Y, X, Z, as opposed to Gregory position (X, Y, Z)
-        if (settings[name]
-        &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
-        &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB){
-            print(name);
-            return true;
-        }
-        return false;
-    });
-
-    vars.checkGen = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, x, y, zLB, zUB, oldPositionX, oldPositionY) => {
-        //checks in a circle (radius 200)
-        if (!settings[name]) return false;
-        if (!check) return false;
-        if (zLB > vars.watchers["pos"].Current.Z) return false;
-        if (vars.watchers["pos"].Current.Z > zUB) return false;
-        if (Math.Pow(oldPositionX - x, 2) + Math.Pow(oldPositionY - y, 2) > Math.Pow(200, 2)) return false;
-        if (Math.Pow(vars.watchers["pos"].Current.X - x, 2) + Math.Pow(vars.watchers["pos"].Current.Y - y, 2) <= Math.Pow(200, 2)) return false;
-        print(name);
-        return true;
-    });
-
-    vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
-        if (settings[name]
-        && vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute
-        && vars.CompletedSplits.Add(name)){
-            print(name);
-            return true;
-        }
-        return false;
-    });
-
-    vars.resetVariables = (Action)(() => {
-        //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
-        //Make sure they are not garbage data when reading.
-        vars.interactibleName = "";
-        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-        vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-
-        //Used to keep certain splits from repeating (reset)
-        vars.CompletedSplits.Clear();
-
-        //Arcade Splits
-        vars.arcade = "N/A";
-        //bb
-        vars.bb_start = true;
-        vars.bb_end = false;
-        //monty golf
-        vars.mg_start = true;
-        vars.nHole = 0;
-        vars.mg_end = false;
-        //pq1
-        vars.pq1_start = true;
-        vars.pq1_end = false;
-        //pq2
-        vars.pq2_start = true;
-        vars.pq2_8 = false;
-        vars.pq2_end = false;
-        //pq3
-        vars.pq3_start = true;
-        vars.pq3_end = true;
-
-        //Counter Splits
-        vars.cSewerGen1 = true;
-        vars.cSewerGen2 = true;
-        vars.cSewerGen3 = true;
-        vars.cWAGen1 = true;
-        vars.cWAGen2 = true;
-        vars.cWAGen3 = true;
-        vars.cWAGen4 = true;
-        vars.cWAGen5 = true;
-
-        //Item Splits
-        vars.nLobbyItemsUsed = 0;
-
-        vars.isLoading = false;
-        vars.onMenu = false;
-        if (vars.version >= 1.05) {
-            if (vars.watchers["worldCheck"].Current != 0){
-                if (vars.watchers["worldCheck"].Old == 0){
-                    vars.loadingConstant = vars.watchers["hasLoaded"].Current;
-                    print("Loading Constant: " + vars.loadingConstant.ToString());
+            vars.isLoading = false;
+            vars.onMenu = false;
+            if (vars.version >= 1.05) {
+                if (vars.watchers["worldCheck"].Current != 0){
+                    if (vars.watchers["worldCheck"].Old == 0){
+                        vars.loadingConstant = vars.watchers["hasLoaded"].Current;
+                        print("Loading Constant: " + vars.loadingConstant.ToString());
+                    }
                 }
             }
+        });
+    #endregion
+
+    #endregion
+
+    #region Sigscanning
+        // FNamePool's base address doesn't get accessed at all (for some reason) but it's base address + 8 does
+        // Because of this, you can just sigscan for the base address + 8 and then subtract the 8 to get the real pointer
+        vars.badFNamePool = vars.GetStaticPointerFromSig("8B 05 ??????03 FF C0 C1 E9 10 3B C8 0F 92 C0 C3 CC", 2);
+        vars.FNamePool = IntPtr.Add(vars.badFNamePool, -8);
+        vars.UWorld = vars.GetStaticPointerFromSig("E8 ???????? 48 8B 88 ??0?0000 48 89 0D ??????02", 15);
+        vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F80A0000 48 85 C9 74 07 48 8B 01 48 FF 60 40", 3);
+
+        if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero){
+            throw new Exception("UWorld/GameEngine/FNamePool not initialized - trying again");
         }
-    });
+
+        //Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
+        if (vars.version < 1.05){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
+            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
+            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
+            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
+            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
+            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
+            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
+        }
+        if (vars.version == 1.05){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
+            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
+            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
+            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
+            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
+            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
+            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
+            vars.hasLoaded                   = new DeepPointer(0x444C568, 0x184);
+        }
+        if (vars.version == 1.07){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
+            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
+            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
+            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
+            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
+            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
+            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
+            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
+            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
+            vars.hasLoaded                   = new DeepPointer(0x444C6B0, 0x184);
+        }
+        if (vars.version == 1.11){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
+            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
+            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
+            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
+            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
+            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
+            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
+            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
+            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
+            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
+            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
+        }
+    #endregion
+
+    #region Declare MemoryWatcherList
+        vars.watchers = new MemoryWatcherList {
+            //These are at the top so they will always be index 0 or 1 in this list. DO NOT CHANGE UNLESS YOU KNOW THE RAMIFICATIONS.
+            new MemoryWatcher<bool>((IntPtr)null) { Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Freddy's Power OR Freddy Thingie (1.11+)
+            new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Player Info
+            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Arcade pointers
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Counter pointers
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Buttons that start cutscenes (pressed = 0)
+            new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Afton's health (starts at 750, -100 per button)
+            new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Keeps track of items
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //In-Game Clock
+            new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
+            //Experimental elevator fix that only requires 3 pointers (instead of 12)
+            new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+        };
+    #endregion
 }
 
 update {
     vars.watchers.UpdateAll(game);
+    #region Change lastInteractible watcher based on what you last interacted with
     //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
     if (vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old){
         //Any elevator button
@@ -1101,18 +1074,10 @@ update {
             }
         }
     }
-    //print(vars.watchers["closestInteractibleAddress"].Current.ToString("X")+"\n"+vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current)+"\n"+vars.GetNameFromFName(Convert.ToInt64(vars.watchers["lastInteractible"].Current)));
-    //print stuff here (debug)
-    //if (vars.watchers[1].Current != vars.watchers[1].Old){
-    //    print("Current: "+vars.watchers[1].Current+"\nOld:"+vars.watchers[1].Old);
-    //}
-    //rint(vars.watchers["closestInteractibleAddress"].Current.ToString("X"));
+    #endregion
 }
 
 start {
-    //Resets variables upon stopping timer
-    vars.resetVariables();
-
     //Start conditions (time, Freddy power, freddyThing)
     if (vars.watchers["hourClock"].Current == -1 && vars.watchers["minuteClock"].Current == 0){
         if (vars.version < 1.11){
@@ -1128,6 +1093,10 @@ start {
             }
         }
     }
+}
+
+onStart {
+    vars.resetVariables();
 }
 
 reset {
@@ -1155,6 +1124,8 @@ isLoading {
             }
         }
     }
+
+    #region Check whether you just entered an arcade
     else if (vars.arcade == "N/A"){
         if (vars.checkOldBoxNoBool(new Vector3f(-17000, 27200, 2000), new Vector3f(-16500, 27600, 2300))){
             vars.arcade = "BB Arcade";
@@ -1179,6 +1150,7 @@ isLoading {
             print("Arcade: " + vars.arcade);
         }
     }
+    #endregion
 
     if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current) return true;
 
@@ -1204,9 +1176,10 @@ isLoading {
         }
     }
 
-    do {
-        if (!settings["Stop Timer On Menu"]) break;
-
+    if (!settings["Stop Timer On Menu"]){
+        if (vars.onMenu){
+            return true;
+        }
         if (vars.watchers["pos"].Current.Y == 0 && vars.arcade == "N/A"){
             if (!vars.onMenu){
                 print("Stop Timer On Menu");
@@ -1216,30 +1189,19 @@ isLoading {
         else if (vars.watchers["worldCheck"].Current != 0 || vars.arcade != "N/A"){
             vars.onMenu = false;
         }
+    }
 
-        if (vars.onMenu){
-            return true;
-        }
-    } while (false);
-
-    do {
-        if (!settings["Stop Timer When Paused"]) break;
-        if (!vars.watchers["pause"].Current) break;
-        if (vars.watchers["worldCheck"].Current == 0) break;
-
-        if (!vars.watchers["pause"].Old){
-            print("Stop Timer When Paused");
-        }
-
+    if (!settings["Stop Timer When Paused"] && !vars.watchers["pause"].Current && vars.watchers["worldCheck"].Current == 0 && !vars.watchers["pause"].Old){
+        print("Stop Timer When Paused");
         return true;
-    } while (false);
-
+    }
     return false;
 }
 
 split {
     if (!settings["Split Settings"]) return false;
 
+    #region Arcade exit splits
     if (vars.bb_end && vars.arcade == "N/A"){
         print("bb_end");
         vars.bb_end = false;
@@ -1260,11 +1222,305 @@ split {
         vars.pq2_end = false;
         return true;
     }
+    #endregion
 
     switch ((string)vars.arcade){
+        case "N/A": {
+            #region Counter splits
+            if (settings["Counting Splits"]){
+                if (vars.watchers["DGens"].Current > vars.watchers["DGens"].Old){
+                    if (settings["Daycare Generators"]){
+                        if (settings["D_Generator " + vars.watchers["DGens"].Current]){
+                            print("DGen " + vars.watchers["DGens"].Current);
+                            return true;
+                        }
+                    }
+                }
+                if (vars.watchers["FBFlags"].Current > vars.watchers["FBFlags"].Old){
+                    if (settings["Fazerblast Flags"]){
+                        if (settings["Flag " + vars.watchers["FBFlags"].Current]){
+                            print("Flag " + vars.watchers["FBFlags"].Current);
+                            return true;
+                        }
+                    }
+                }
+                if (vars.watchers["MGBucket"].Current > vars.watchers["MGBucket"].Old){
+                    if (settings["Monty Bucket Count"]){
+                        if (settings[vars.watchers["MGBucket"].Current + " Balls"]){
+                            print(vars.watchers["MGBucket"].Current + " Balls");
+                            return true;
+                        }
+                    }
+                }
+                if (settings["Sewer Generators"]){
+                    if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cSewerGen1 = false;
+                        return true;
+                    }
+                    if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cSewerGen2 = false;
+                        return true;
+                    }
+                    if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cSewerGen3 = false;
+                        return true;
+                    }
+                }
+                if (settings["West Arcade Generators"]){
+                    if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cWAGen1 = false;
+                        return true;
+                    }
+                    if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cWAGen2 = false;
+                        return true;
+                    }
+                    if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cWAGen3 = false;
+                        return true;
+                    }
+                    if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cWAGen4 = false;
+                        return true;
+                    }
+                    if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
+                        vars.cWAGen5 = false;
+                        return true;
+                    }
+                }
+            }
+            #endregion
+
+            #region Deload splits
+            if (settings["Deload Splits"]){
+                if (vars.watchers["pos"].Current.X != vars.watchers["pos"].Old.X || vars.watchers["pos"].Current.Y != vars.watchers["pos"].Old.Y || vars.watchers["pos"].Current.Z != vars.watchers["pos"].Old.Z){
+                    if (vars.checkBox("Foxy Cutout Deload", new Vector3f(-4942, 53000, 1790), new Vector3f(-4769, 52900, 2000))) return true;
+                    if (settings["D_Daycare"]){
+                        if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75f), new Vector3f(-13300, 31800, 2000))) return true;
+                        if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5f, 2516), new Vector3f(-19500, 34800, 2600))) return true;
+                    }
+                    if (vars.checkBox("KCD_Fence Deload", new Vector3f(-10270, 31000, 2062), new Vector3f(-9038, 36403, 3000))) return true;
+                    if (vars.checkBox("MGD_Fence Deload", new Vector3f(-10270, 38460, 2062), new Vector3f(-9038, 42100, 3000))) return true;
+                    if (vars.checkBox("Counter Deload", new Vector3f(-3750, 28250, 3750), new Vector3f(-3250, 28750, 4000))) return true;
+                    if (settings["D_Rockstar Row"]){
+                        if (vars.checkBox("Chica Greenroom Deload", new Vector3f(-4700, 52300, 1993), new Vector3f(-4200, 52700, 2500))) return true;
+                        if (vars.checkBox("Curtain Deload", new Vector3f(5150, 44450, 1960), new Vector3f(5350, 44650, 2100))) return true;
+                        if (vars.checkBox("Roxy Cutout Deload", new Vector3f(3700, 44300, 1877), new Vector3f(3850, 44700, 1950))) return true;
+                        if (vars.checkBox("Tunnel Door Deload", new Vector3f(-1500, 49250, 1750), new Vector3f(-1300, 49492, 1900))) return true;
+                    }
+                    if (settings["D_Roxy Raceway"]){
+                        if (vars.checkBox("Afton Rock Column Deload", new Vector3f(24000, 48000, 2411.5f), new Vector3f(25500, 49500, 2800))) return true;
+                        if (vars.checkBox("Garage Fence Jump", new Vector3f(18000, 38800, 2411.5f), new Vector3f(19500, 39100, 2800))) return true;
+                        if (vars.checkBox("Roxy's Eyes Deload", new Vector3f(19500, 50750, 988), new Vector3f(20500, 51150, 1100))) return true;
+                    }
+                    if (vars.checkBox("Balloon Deload", new Vector3f(8300, 38000, 2708), new Vector3f(9000, 39000, 3000))) return true;
+                    if (vars.checkBox("Plant Deload", new Vector3f(9000, 41800, 2708), new Vector3f(10500, 42000, 3000))) return true;
+                }
+            }
+            #endregion
+
+            #region Ending splits
+            if (settings["Ending Splits"]){
+                //splits based on ending cutscenes
+                if (settings["Afton Ending"]){
+                    if (vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Old > 0 && vars.watchers["aftonHealth"].Current <= 0){
+                        print("Button 8 / End");
+                        return true;
+                    }
+                }
+                if (settings["CB_B"] && vars.watchers["carEndLeaveButton"].Current == 0 && vars.watchers["carEndLeaveButton"].Old != 0){
+                    if (vars.watchers["worldCheck"].Current != 0){
+                        print("Car Battery Button");
+                        return true;
+                    }
+                }
+                if (settings["E_B"]){
+                    if (vars.watchers["escapeEndLeaveButtonEast"].Current == 0 && vars.watchers["escapeEndLeaveButtonEast"].Old != 0){
+                        if (vars.watchers["worldCheck"].Current != 0){
+                            print("Escape (East) Button");
+                            return true;
+                        }
+                    }
+                    if (vars.watchers["escapeEndLeaveButtonWest"].Current == 0 && vars.watchers["escapeEndLeaveButtonWest"].Old != 0){
+                        if (vars.watchers["worldCheck"].Current != 0){
+                            print("Escape (West) Button");
+                            return true;
+                        }
+                    }
+                }
+                if (settings["F_B"] && vars.watchers["fireEndLeaveButton"].Current == 0 && vars.watchers["fireEndLeaveButton"].Old != 0){
+                    if (vars.watchers["worldCheck"].Current != 0){
+                        print("Fire Escape Button");
+                        return true;
+                    }
+                }
+                if (vars.checkPQPosition("pq3_endArcade", 1800, 2200, 1635.34, 1700)){
+                    if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
+                        return true;
+                    }
+                }
+                if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
+                //other ending splits
+                if (settings["Afton Ending"] && vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
+                    var currentButton = ((750 - vars.watchers["aftonHealth"].Current) / 100);
+                    if (settings["Button " + currentButton]){
+                        print("Button " + currentButton);
+                        return true;
+                    }
+                }
+            }
+            #endregion
+
+            #region Item splits
+            if (settings["Item Splits"]){
+                if (settings["Item List"]){
+                    //Chica's voicebox is weird. Investigate yourself if you want to know more.
+                    if (vars.interactibleName == "chicaSewer"){
+                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["Chica's Voicebox"]){
+                            print("Chica's Voicebox");
+                            return true;
+                        }
+                    }
+                    if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
+                        if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
+                            print("ChicaVoiceBox_M");
+                            return true;
+                        }
+                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
+                            print("RoxyEyes_M");
+                            return true;
+                        }
+                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
+                            print("MontyClaws_M");
+                            return true;
+                        }
+                        else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                            print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
+                            return true;
+                        }
+                    }
+                    if (vars.interactibleName == "collectible"){
+                        if (vars.watchers["canCollect"].Old >= 0.98f){
+                            if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
+                                print("RoxyEyes_C");
+                                return true;
+                            }
+                            else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
+                                print("MontyClaws_C");
+                                return true;
+                            }
+                            else if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
+                                return true;
+                            }
+                        }
+                    }
+                    if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current && vars.CompletedSplits.Add("Flashlight")){
+                        print("Flashlight");
+                        return true;
+                    }
+                    //extraneous items:
+                    //Fazerblasters
+                    //Daycare Pass
+                    //Cameras
+                    //Repaired Head
+                    //Badges
+                    if (settings["Equipment"]){
+                        if (vars.watchers["itemCount"].Current > vars.watchers["itemCount"].Old){
+                            if (settings["Grey Fazerblaster"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old).Contains("LaserGunCollectible_Game")) return true;
+                            if (settings["Golden Fazerblaster"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old).Contains("LaserGunCollectible_Prize")) return true;
+                            if (settings["E_Utility Tunnels"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old) == "BB_UtilityStart") return true;
+                        }
+                        if (settings["Daycare Pass"] && vars.interactibleName == "daycareMachine" && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
+                        if (settings["E_West Arcade"] && vars.checkTime("Repaired Head", 5, 30)) return true;
+                        if (settings["Pizzaplex Cameras"] && vars.interactibleName == "cameraButton" && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
+                    }
+                    if (settings["Security Badges"]){
+                        if (vars.watchers["securityBadgeCount"].Current > vars.watchers["securityBadgeCount"].Old){
+                            if (settings["Security Badge " + vars.watchers["securityBadgeCount"].Current]){
+                                print("Security Badge " + vars.watchers["securityBadgeCount"].Current);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Positional splits
+            if (settings["Positional Splits"]){
+                if (vars.watchers["pos"].Current.X != vars.watchers["pos"].Old.X){
+                    if (vars.checkBox("Enter Bonnie Bowl", new Vector3f(5970, 37000, 3200), new Vector3f(6280, 37300, 3700))) return true;
+                    if (vars.checkTime("Enter Daycare", 0, 30)) return true;
+                    if (vars.checkBox("Enter El Chips", new Vector3f(-8700, 34600, 3200), new Vector3f(-8445, 35700, 3700))) return true;
+                    if (vars.checkBox("Fazerblast Spiral Stairs", new Vector3f(13100, 31830, 350), new Vector3f(14600, 33330, 750))) return true;
+                    if (vars.checkBox("Rail Outside Fazerblast", new Vector3f(6800, 35586, 1500), new Vector3f(7550, 35637.4f, 2150))) return true;
+                    if (vars.checkBox("Exit Afton Elevator", new Vector3f(24170, 49932, -6100), new Vector3f(24465, 49499, 5800))) return true;
+                    if (settings["P_Utility Tunnels"]){
+                        if (vars.checkBox("First Aid Vanessa Cutscene", new Vector3f(4368, 45005, -1308), new Vector3f(4370, 45007, -1306))) return true;
+                        if (vars.checkBox("Freddy Rail Jump", new Vector3f(2250, 46900, 400), new Vector3f(2850, 47500, 900))) return true;
+                        if (vars.checkBox("Monty Chase", new Vector3f(2900, 29898.825f, 0), new Vector3f(3400, 29500, 300))) return true;
+                        if (vars.checkBox("STR-ATR-W Stairs", new Vector3f(5400, 37500, -1230), new Vector3f(6000, 38000, -1150))) return true;
+                        if (vars.checkBox("STR-LB Stairs", new Vector3f(5000, 24500, 150), new Vector3f(6000, 25000, 400))) return true;
+                    }
+                    if (settings["P_West Arcade"]){
+                        if (vars.checkBox("Enter West Arcade", new Vector3f(5155, 27863, 2060), new Vector3f(5683, 28139, 2260))){
+                            vars.pEnWestArcade = false;
+                            vars.pExWestArcade = true;
+                            return true;
+                        }
+                        if (vars.checkBox("Exit West Arcade", new Vector3f(4793, 30290, 3400), new Vector3f(4528, 30085, 3250))){
+                            vars.pExWestArcade = false;
+                            return true;
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Time splits
+            if (settings["Time Splits"] && !vars.onMenu){
+                if (vars.watchers["hourClock"].Current != vars.watchers["hourClock"].Old || vars.watchers["minuteClock"].Current != vars.watchers["minuteClock"].Old){
+                    if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
+                    if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
+                    if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 23100){
+                        if (vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
+                        if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
+                        if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
+                    }
+                    if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", 1, 0)) return true;
+                    if (vars.checkTime("Mini Music Man Chase (1:15AM)", 1, 15)) return true;
+                    if (vars.checkTime("Pizzabot (1:30AM)", 1, 30)) return true;
+                    if (vars.checkTime("White Woman Abduction (2:00AM)", 2, 0)) return true;
+                    if (vars.checkTime("Dead Fred (2:15AM)", 2, 15)) return true;
+                    if (vars.checkTime("Backstage Pass (2:30AM)", 2, 30)) return true;
+                    if (vars.checkTime("Use Showtime Disk (2:45AM)", 2, 45)) return true;
+                    if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 1)) return true;
+                    if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", 3, 15)) return true;
+                    if (vars.checkTime("Freddy Power Upgrade (3:30AM)", 3, 30)) return true;
+                    if (vars.checkTime("Party Pass Recharge (4:00AM)", 4, 0)) return true;
+                    if (vars.checkTime("Golden Fazerblaster (4:15AM)", 4, 15)) return true;
+                    if (settings["Monty Mix / Mazercise Key (4:30AM)"]){
+                        if (vars.watchers["splashScreen"].Current > vars.watchers["splashScreen"].Old){
+                            if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(15060, 30205, 3425))) return true;
+                            if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(-17450, 31605, 70))) return true;
+                        }
+                    }
+                    if (vars.checkTime("Leave Sewers (4:40AM)", 4, 40)) return true;
+                    if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", 5, 0)) return true;
+                    if (vars.checkTime("Damaged Head (5:15AM)", 5, 15)) return true;
+                    if (vars.checkTime("Repaired Head (5:30AM)", 5, 30)) return true;
+                    if (vars.checkTime("Finish Roxy Sequence (5:40AM)", 5, 40)) return true;
+                    if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", 5, 50))return true;
+                    if (vars.checkTime("Reach Exit Door (6:00AM)", 6, 0)) return true;
+                }
+            }
+            #endregion
+            break;
+        }
+        #region Arcade splits
         default: {
             if (!settings[vars.arcade]) break;
-
             switch ((string)vars.arcade){
                 case "BB Arcade": {
                     if (!settings["bb_start"]) break;
@@ -1361,282 +1617,6 @@ split {
             }
             break;
         }
-
-        case "N/A": {
-            if (settings["Counting Splits"]){
-                if (vars.watchers["DGens"].Current > vars.watchers["DGens"].Old){
-                    if (settings["Daycare Generators"]){
-                        if (settings["D_Generator " + vars.watchers["DGens"].Current]){
-                            print("DGen " + vars.watchers["DGens"].Current);
-                            return true;
-                        }
-                    }
-                }
-                if (vars.watchers["FBFlags"].Current > vars.watchers["FBFlags"].Old){
-                    if (settings["Fazerblast Flags"]){
-                        if (settings["Flag " + vars.watchers["FBFlags"].Current]){
-                            print("Flag " + vars.watchers["FBFlags"].Current);
-                            return true;
-                        }
-                    }
-                }
-                if (vars.watchers["MGBucket"].Current > vars.watchers["MGBucket"].Old){
-                    if (settings["Monty Bucket Count"]){
-                        if (settings[vars.watchers["MGBucket"].Current + " Balls"]){
-                            print(vars.watchers["MGBucket"].Current + " Balls");
-                            return true;
-                        }
-                    }
-                }
-                if (settings["Sewer Generators"]){
-                    if (vars.checkGen("S_Generator 1", vars.cSewerGen1, -1515, 16575, -10000, -2500, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cSewerGen1 = false;
-                        return true;
-                    }
-                    if (vars.checkGen("S_Generator 2", vars.cSewerGen2, -10525, 21155, -10000, -2500, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cSewerGen2 = false;
-                        return true;
-                    }
-                    if (vars.checkGen("S_Generator 3", vars.cSewerGen3, -3785, 16480, -10000, -2500, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cSewerGen3 = false;
-                        return true;
-                    }
-                }
-                if (settings["West Arcade Generators"]){
-                    if (vars.checkGen("WA_Generator 1", vars.cWAGen1, 10440, 28375, 2140, 2290, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cWAGen1 = false;
-                        return true;
-                    }
-                    if (vars.checkGen("WA_Generator 2", vars.cWAGen2, 8920, 23075, 2100, 2250, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cWAGen2 = false;
-                        return true;
-                    }
-                    if (vars.checkGen("WA_Generator 3", vars.cWAGen3, 2125, 25970, 2150, 2300, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cWAGen3 = false;
-                        return true;
-                    }
-                    if (vars.checkGen("WA_Generator 4", vars.cWAGen4, 3030, 27210, 3290, 3440, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cWAGen4 = false;
-                        return true;
-                    }
-                    if (vars.checkGen("WA_Generator 5", vars.cWAGen5, 9205, 20770, 3290, 3440, vars.watchers["pos"].Old.X, vars.watchers["pos"].Old.Y)){
-                        vars.cWAGen5 = false;
-                        return true;
-                    }
-                }
-            }
-            if (settings["Deload Splits"]){
-                if (vars.watchers["pos"].Current.X != vars.watchers["pos"].Old.X || vars.watchers["pos"].Current.Y != vars.watchers["pos"].Old.Y || vars.watchers["pos"].Current.Z != vars.watchers["pos"].Old.Z){
-                    if (vars.checkBox("Foxy Cutout Deload", new Vector3f(-4942, 53000, 1790), new Vector3f(-4769, 52900, 2000))) return true;
-                    if (settings["D_Daycare"]){
-                        if (vars.checkBox("Arcade Deload", new Vector3f(-13600, 30000, 1821.75f), new Vector3f(-13300, 31800, 2000))) return true;
-                        if (vars.checkBox("Theatre Deload", new Vector3f(-20000, 32377.5f, 2516), new Vector3f(-19500, 34800, 2600))) return true;
-                    }
-                    if (vars.checkBox("KCD_Fence Deload", new Vector3f(-10270, 31000, 2062), new Vector3f(-9038, 36403, 3000))) return true;
-                    if (vars.checkBox("MGD_Fence Deload", new Vector3f(-10270, 38460, 2062), new Vector3f(-9038, 42100, 3000))) return true;
-                    if (vars.checkBox("Counter Deload", new Vector3f(-3750, 28250, 3750), new Vector3f(-3250, 28750, 4000))) return true;
-                    if (settings["D_Rockstar Row"]){
-                        if (vars.checkBox("Chica Greenroom Deload", new Vector3f(-4700, 52300, 1993), new Vector3f(-4200, 52700, 2500))) return true;
-                        if (vars.checkBox("Curtain Deload", new Vector3f(5150, 44450, 1960), new Vector3f(5350, 44650, 2100))) return true;
-                        if (vars.checkBox("Roxy Cutout Deload", new Vector3f(3700, 44300, 1877), new Vector3f(3850, 44700, 1950))) return true;
-                        if (vars.checkBox("Tunnel Door Deload", new Vector3f(-1500, 49250, 1750), new Vector3f(-1300, 49492, 1900))) return true;
-                    }
-                    if (settings["D_Roxy Raceway"]){
-                        if (vars.checkBox("Afton Rock Column Deload", new Vector3f(24000, 48000, 2411.5f), new Vector3f(25500, 49500, 2800))) return true;
-                        if (vars.checkBox("Garage Fence Jump", new Vector3f(18000, 38800, 2411.5f), new Vector3f(19500, 39100, 2800))) return true;
-                        if (vars.checkBox("Roxy's Eyes Deload", new Vector3f(19500, 50750, 988), new Vector3f(20500, 51150, 1100))) return true;
-                    }
-                    if (vars.checkBox("Balloon Deload", new Vector3f(8300, 38000, 2708), new Vector3f(9000, 39000, 3000))) return true;
-                    if (vars.checkBox("Plant Deload", new Vector3f(9000, 41800, 2708), new Vector3f(10500, 42000, 3000))) return true;
-                }
-            }
-            if (settings["Ending Splits"]){
-                //splits based on ending cutscenes
-                if (settings["Afton Ending"]){
-                    if (vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Old > 0 && vars.watchers["aftonHealth"].Current <= 0){
-                        print("Button 8 / End");
-                        return true;
-                    }
-                }
-                if (settings["CB_B"] && vars.watchers["carEndLeaveButton"].Current == 0 && vars.watchers["carEndLeaveButton"].Old != 0){
-                    if (vars.watchers["worldCheck"].Current != 0){
-                        print("Car Battery Button");
-                        return true;
-                    }
-                }
-                if (settings["E_B"]){
-                    if (vars.watchers["escapeEndLeaveButtonEast"].Current == 0 && vars.watchers["escapeEndLeaveButtonEast"].Old != 0){
-                        if (vars.watchers["worldCheck"].Current != 0){
-                            print("Escape (East) Button");
-                            return true;
-                        }
-                    }
-                    if (vars.watchers["escapeEndLeaveButtonWest"].Current == 0 && vars.watchers["escapeEndLeaveButtonWest"].Old != 0){
-                        if (vars.watchers["worldCheck"].Current != 0){
-                            print("Escape (West) Button");
-                            return true;
-                        }
-                    }
-                }
-                if (settings["F_B"] && vars.watchers["fireEndLeaveButton"].Current == 0 && vars.watchers["fireEndLeaveButton"].Old != 0){
-                    if (vars.watchers["worldCheck"].Current != 0){
-                        print("Fire Escape Button");
-                        return true;
-                    }
-                }
-                if (vars.checkPQPosition("pq3_endArcade", 1800, 2200, 1635.34, 1700)){
-                    if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
-                        return true;
-                    }
-                }
-                if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
-                //other ending splits
-                if (settings["Afton Ending"] && vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
-                    var currentButton = ((750 - vars.watchers["aftonHealth"].Current) / 100);
-                    if (settings["Button " + currentButton]){
-                        print("Button " + currentButton);
-                        return true;
-                    }
-                }
-            }
-            if (settings["Item Splits"]){
-                if (settings["Item List"]){
-                    //Chica's voicebox is weird. Investigate yourself if you want to know more.
-                    if (vars.interactibleName == "chicaSewer"){
-                        if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["Chica's Voicebox"]){
-                            print("Chica's Voicebox");
-                            return true;
-                        }
-                    }
-                    if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
-                        if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
-                            print("ChicaVoiceBox_M");
-                            return true;
-                        }
-                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
-                            print("RoxyEyes_M");
-                            return true;
-                        }
-                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
-                            print("MontyClaws_M");
-                            return true;
-                        }
-                        else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
-                            print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
-                            return true;
-                        }
-                    }
-                    if (vars.interactibleName == "collectible"){
-                        if (vars.watchers["canCollect"].Old >= 0.98f){
-                            if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
-                                print("RoxyEyes_C");
-                                return true;
-                            }
-                            else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
-                                print("MontyClaws_C");
-                                return true;
-                            }
-                            else if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
-                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
-                                return true;
-                            }
-                        }
-                    }
-                    if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current && vars.CompletedSplits.Add("Flashlight")){
-                        print("Flashlight");
-                        return true;
-                    }
-                    //extraneous items:
-                    //Fazerblasters
-                    //Daycare Pass
-                    //Cameras
-                    //Repaired Head
-                    //Badges
-                    if (settings["Equipment"]){
-                        if (vars.watchers["itemCount"].Current > vars.watchers["itemCount"].Old){
-                            if (settings["Grey Fazerblaster"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old).Contains("LaserGunCollectible_Game")) return true;
-                            if (settings["Golden Fazerblaster"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old).Contains("LaserGunCollectible_Prize")) return true;
-                            if (settings["E_Utility Tunnels"] && vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Old) == "BB_UtilityStart") return true;
-                        }
-                        if (settings["Daycare Pass"] && vars.interactibleName == "daycareMachine" && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
-                        if (settings["E_West Arcade"] && vars.checkTime("Repaired Head", 5, 30)) return true;
-                        if (settings["Pizzaplex Cameras"] && vars.interactibleName == "cameraButton" && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
-                    }
-                    if (settings["Security Badges"]){
-                        if (vars.watchers["securityBadgeCount"].Current > vars.watchers["securityBadgeCount"].Old){
-                            if (settings["Security Badge " + vars.watchers["securityBadgeCount"].Current]){
-                                print("Security Badge " + vars.watchers["securityBadgeCount"].Current);
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            if (settings["Positional Splits"]){
-                if (vars.watchers["pos"].Current.X != vars.watchers["pos"].Old.X){
-                    if (vars.checkBox("Enter Bonnie Bowl", new Vector3f(5970, 37000, 3200), new Vector3f(6280, 37300, 3700))) return true;
-                    if (vars.checkTime("Enter Daycare", 0, 30)) return true;
-                    if (vars.checkBox("Enter El Chips", new Vector3f(-8700, 34600, 3200), new Vector3f(-8445, 35700, 3700))) return true;
-                    if (vars.checkBox("Fazerblast Spiral Stairs", new Vector3f(13100, 31830, 350), new Vector3f(14600, 33330, 750))) return true;
-                    if (vars.checkBox("Rail Outside Fazerblast", new Vector3f(6800, 35586, 1500), new Vector3f(7550, 35637.4f, 2150))) return true;
-                    if (vars.checkBox("Exit Afton Elevator", new Vector3f(24170, 49932, -6100), new Vector3f(24465, 49499, 5800))) return true;
-                    if (settings["P_Utility Tunnels"]){
-                        if (vars.checkBox("First Aid Vanessa Cutscene", new Vector3f(4368, 45005, -1308), new Vector3f(4370, 45007, -1306))) return true;
-                        if (vars.checkBox("Freddy Rail Jump", new Vector3f(2250, 46900, 400), new Vector3f(2850, 47500, 900))) return true;
-                        if (vars.checkBox("Monty Chase", new Vector3f(2900, 29898.825f, 0), new Vector3f(3400, 29500, 300))) return true;
-                        if (vars.checkBox("STR-ATR-W Stairs", new Vector3f(5400, 37500, -1230), new Vector3f(6000, 38000, -1150))) return true;
-                        if (vars.checkBox("STR-LB Stairs", new Vector3f(5000, 24500, 150), new Vector3f(6000, 25000, 400))) return true;
-                    }
-                    if (settings["P_West Arcade"]){
-                        if (vars.checkBox("Enter West Arcade", new Vector3f(5155, 27863, 2060), new Vector3f(5683, 28139, 2260))){
-                            vars.pEnWestArcade = false;
-                            vars.pExWestArcade = true;
-                            return true;
-                        }
-                        if (vars.checkBox("Exit West Arcade", new Vector3f(4793, 30290, 3400), new Vector3f(4528, 30085, 3250))){
-                            vars.pExWestArcade = false;
-                            return true;
-                        }
-                    }
-                }
-            }
-            if (settings["Time Splits"] && !vars.onMenu){
-                if (vars.watchers["hourClock"].Current != vars.watchers["hourClock"].Old || vars.watchers["minuteClock"].Current != vars.watchers["minuteClock"].Old){
-                    if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
-                    if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
-                    if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 23100){
-                        if (vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
-                        if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
-                        if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
-                    }
-                    if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", 1, 0)) return true;
-                    if (vars.checkTime("Mini Music Man Chase (1:15AM)", 1, 15)) return true;
-                    if (vars.checkTime("Pizzabot (1:30AM)", 1, 30)) return true;
-                    if (vars.checkTime("White Woman Abduction (2:00AM)", 2, 0)) return true;
-                    if (vars.checkTime("Dead Fred (2:15AM)", 2, 15)) return true;
-                    if (vars.checkTime("Backstage Pass (2:30AM)", 2, 30)) return true;
-                    if (vars.checkTime("Use Showtime Disk (2:45AM)", 2, 45)) return true;
-                    if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 1)) return true;
-                    if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", 3, 15)) return true;
-                    if (vars.checkTime("Freddy Power Upgrade (3:30AM)", 3, 30)) return true;
-                    if (vars.checkTime("Party Pass Recharge (4:00AM)", 4, 0)) return true;
-                    if (vars.checkTime("Golden Fazerblaster (4:15AM)", 4, 15)) return true;
-                    if (settings["Monty Mix / Mazercise Key (4:30AM)"]){
-                        if (vars.watchers["splashScreen"].Current > vars.watchers["splashScreen"].Old){
-                            if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(15060, 30205, 3425))) return true;
-                            if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(-17450, 31605, 70))) return true;
-                        }
-                    }
-                    if (vars.checkTime("Leave Sewers (4:40AM)", 4, 40)) return true;
-                    if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", 5, 0)) return true;
-                    if (vars.checkTime("Damaged Head (5:15AM)", 5, 15)) return true;
-                    if (vars.checkTime("Repaired Head (5:30AM)", 5, 30)) return true;
-                    if (vars.checkTime("Finish Roxy Sequence (5:40AM)", 5, 40)) return true;
-                    if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", 5, 50))return true;
-                    if (vars.checkTime("Reach Exit Door (6:00AM)", 6, 0)) return true;
-                }
-            }
-            break;
-        }
+        #endregion
     }
 }
