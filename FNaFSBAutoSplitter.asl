@@ -592,7 +592,7 @@ startup {
 }
 
 init {
-    #region Set version
+    #region Set version (and a few variables)
         //Sets the version of the game upon startup
         int gameSize = modules.First().ModuleMemorySize;
         refreshRate = 60;
@@ -614,7 +614,17 @@ init {
         case 76251136: vars.version = 1.11; break;
     }
 
-        print("Version = " + vars.version);
+    print("Version = " + vars.version);
+
+    const int CLASS_OFFSET = 0x10;
+    const int CHILD_OFFSET = 0x50;
+    const int NEXT_OFFSET = 0x28;
+    vars.NAME_OFFSET = (vars.version < 1.11) ? (int)0x28 : (int)0x18;
+    const int INTERNAL_OFFSET = 0x4C;
+    vars.offsets = new Dictionary<string, int>();
+    vars.fnames = new Dictionary<long, string>();
+    vars.interactibleName = "";
+    vars.cachedPos = new Vector3f();
     #endregion
 
     #region Declare functions
@@ -630,6 +640,7 @@ init {
             });
 
             vars.GetNameFromFName = (Func<long, string>) ( longKey => {
+                if (vars.fnames.ContainsKey(longKey)) return vars.fnames[longKey];
                 int key = (int)(longKey & uint.MaxValue);
                 int partial = (int)(longKey >> 32);
                 int chunkOffset = key >> 16;
@@ -638,8 +649,36 @@ init {
                 Int16 nameEntry = game.ReadValue<Int16>((IntPtr)namePoolChunk + 2 * nameOffset);
                 int nameLength = nameEntry >> 6;
                 string output = game.ReadString((IntPtr)namePoolChunk + 2 * nameOffset + 2, nameLength);
-                return (partial == 0) ? output : output + "_" + partial.ToString();
+                string outputParsed = (partial == 0) ? output : output + "_" + partial.ToString();
+                vars.fnames[longKey] = outputParsed;
+                return outputParsed;
             });
+
+            vars.GetPropertyOffset = (Func<IntPtr, string, IntPtr>) ((address, name) => {
+                var _class = game.ReadPointer(address + CLASS_OFFSET);
+                for (IntPtr propertyAddr = _class + CHILD_OFFSET;
+                propertyAddr != IntPtr.Zero;
+                propertyAddr += NEXT_OFFSET
+                ){
+                    IntPtr property = game.ReadPointer(propertyAddr);
+                    print(property.ToString("X"));
+                    string propName = vars.GetNameFromFName(game.ReadValue<long>(property + (int)vars.NAME_OFFSET));
+                    if (propName == name){
+                        int offset = game.ReadValue<int>(property + INTERNAL_OFFSET);
+                        print("Found property \""
+                        + name
+                        + "\" at offset 0x"
+                        + offset.ToString("X")
+                        );
+
+                        vars.offsets[name] = offset;
+                        return property;
+                    }
+                }
+                print("Couldn't find property \""+name+"\".");
+                return IntPtr.Zero;
+            });
+
         #endregion
 
         #region Player state related funcs
@@ -854,6 +893,7 @@ init {
         vars.FNamePool = IntPtr.Add(vars.badFNamePool, -8);
         vars.UWorld = vars.GetStaticPointerFromSig("E8 ???????? 48 8B 88 ??0?0000 48 89 0D ??????02", 15);
         vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F80A0000 48 85 C9 74 07 48 8B 01 48 FF 60 40", 3);
+        vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "GameInstance");
 
         if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero){
             throw new Exception("UWorld/GameEngine/FNamePool not initialized - trying again");
@@ -917,6 +957,7 @@ init {
     #region Declare MemoryWatcherList
         vars.watchers = new MemoryWatcherList {
             //These are at the top so they will always be index 0 or 1 in this list. DO NOT CHANGE UNLESS YOU KNOW THE RAMIFICATIONS.
+
             new MemoryWatcher<bool>((IntPtr)null) { Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<bool>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
@@ -924,12 +965,13 @@ init {
             new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Player Info
-            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.CollisionComponent.???[1D0]
+            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Arcade pointers
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Counter pointers
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -955,13 +997,16 @@ init {
             new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
+            //GEngine.TransitionType
             new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Experimental elevator fix that only requires 3 pointers (instead of 12)
-            new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.PlayerInteractComponent.ClosestInteractible.Name
+            new MemoryWatcher<long>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.PlayerInteractComponent.ClosestInteractible
+            new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
         };
     #endregion
 }
