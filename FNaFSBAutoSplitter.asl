@@ -805,7 +805,7 @@ init {
             });
 
             vars.checkGen = (Func<string, bool, double, double, double, double, double, double, bool>)((name, check, x, y, zLB, zUB, oldPositionX, oldPositionY) => {
-                //checks in a circle (radius 200)
+                //checks in a circle (radius 200), upper and lower Z bound used
                 if (!settings[name]) return false;
                 if (!check) return false;
                 if (zLB > vars.watchers["pos"].Current.Z) return false;
@@ -1534,11 +1534,10 @@ split {
                 if (vars.watchers["hourClock"].Current != vars.watchers["hourClock"].Old || vars.watchers["minuteClock"].Current != vars.watchers["minuteClock"].Old){
                     if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
                     if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
-                    if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 23100){
-                        if (vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
-                        if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
-                        if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
-                    }
+                    if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 2310
+                    &&  vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
+                    if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
+                    if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
                     if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", 1, 0)) return true;
                     if (vars.checkTime("Mini Music Man Chase (1:15AM)", 1, 15)) return true;
                     if (vars.checkTime("Pizzabot (1:30AM)", 1, 30)) return true;
