@@ -1128,6 +1128,7 @@ update {
 }
 
 start {
+    vars.resetVariables();
     //Start conditions (time, Freddy power, freddyThing)
     if (vars.watchers["hourClock"].Current == -1 && vars.watchers["minuteClock"].Current == 0){
         if (vars.version < 1.11){
@@ -1143,10 +1144,6 @@ start {
             }
         }
     }
-}
-
-onStart {
-    vars.resetVariables();
 }
 
 reset {
