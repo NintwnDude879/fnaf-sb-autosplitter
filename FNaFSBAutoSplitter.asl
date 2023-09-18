@@ -873,7 +873,7 @@ init {
 
             vars.isLoading = false;
             vars.onMenu = false;
-            if (vars.version >= 1.05) {
+            if (vars.version >= 1.11) {
                 if (vars.watchers["worldCheck"].Current != 0){
                     if (vars.watchers["worldCheck"].Old == 0){
                         vars.loadingConstant = vars.watchers["hasLoaded"].Current;
@@ -911,7 +911,7 @@ init {
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x20, 0x128, 0x3B0);
+            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
         }
         if (vars.version == 1.05){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
@@ -924,7 +924,7 @@ init {
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-            vars.hasLoaded                   = new DeepPointer(0x444C568, 0x184);
+            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
         }
         if (vars.version == 1.07){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
@@ -937,7 +937,7 @@ init {
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
-            vars.hasLoaded                   = new DeepPointer(0x444C6B0, 0x184);
+            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
         }
         if (vars.version == 1.11){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
@@ -1162,7 +1162,7 @@ isLoading {
     if (!settings["In-Game Time Settings"]) return false;
 
     if (vars.watchers["worldCheck"].Current != 0 || vars.isLoading || vars.onMenu){
-        if (vars.version < 1.05){
+        if (vars.version < 1.11){
             if (vars.arcade != "N/A"){
                 vars.arcade = "N/A";
                 print("Arcade: " + vars.arcade);
@@ -1206,7 +1206,7 @@ isLoading {
     if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current) return true;
 
     if (!settings["Stop Timer When Loading"]){
-        if (vars.version < 1.05){
+        if (vars.version < 1.11){
             if (vars.watchers["hasLoaded"].Current == 1){
                 vars.isLoading = false;
             }
