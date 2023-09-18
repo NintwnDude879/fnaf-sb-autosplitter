@@ -995,7 +995,7 @@ init {
             new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
-            //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
+            //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.11+ != 0)
             //GEngine.TransitionType
             new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -1456,7 +1456,7 @@ split {
                                 print("MontyClaws_C");
                                 return true;
                             }
-                            else if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                            else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                                 print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                                 return true;
                             }
