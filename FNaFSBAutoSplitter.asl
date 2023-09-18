@@ -918,46 +918,43 @@ init {
 
         vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "GameInstance");
 
+        vars.leaveButton                 = new DeepPointer(vars.UWorld, 0x128, 0x318, 0x4E0, 0xE8, 0x0);
+        if (vars.version < 1.11){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
+            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
+        }
+        else {
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
+            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
+        }
         //Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
         if (vars.version < 1.05){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-            vars.leaveButton                 = new DeepPointer(vars.UWorld, 0x128, 0x318, 0x4E0, 0xE8, 0x0);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
         }
         if (vars.version == 1.05){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-            vars.leaveButton                 = new DeepPointer(vars.UWorld, 0x128, 0x318, 0x4E0, 0xE8, 0x0);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
         }
         if (vars.version == 1.07){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-            vars.leaveButton                 = new DeepPointer(vars.UWorld, 0x128, 0x318, 0x4E0, 0xE8, 0x0);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
         }
         if (vars.version == 1.11){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
-            vars.leaveButton                 = new DeepPointer(vars.UWorld, 0x128, 0x318, 0x4E0, 0xE8, 0x0);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
             vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
             vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
-            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
         }
     #endregion
 
@@ -974,12 +971,12 @@ init {
 
             //Player Info
             //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.CollisionComponent.???[1D0]
-            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Arcade pointers
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Counter pointers
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
