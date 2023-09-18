@@ -601,7 +601,7 @@ init {
 
     switch (gameSize){
         default: {
-            vars.version = 0; // Unsupported
+            vars.version = 100; // Unsupported
             if (!settings["Unsupported version warning"]) break;
             MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\n"+
             "If this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\n"+
@@ -826,8 +826,10 @@ init {
             });
 
             vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
+                int _hour = vars.getHour();
+                int _minute = vars.getMinute();
                 if (settings[name]
-                && vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute
+                && _hour == hour && _minute == minute
                 && vars.CompletedSplits.Add(name)){
                     print(name);
                     return true;
@@ -836,7 +838,9 @@ init {
             });
 
             vars.checkTimeNoBool = (Func<int, int, bool>)((hour, minute) => {
-                if (vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute){
+                int _hour = vars.getHour();
+                int _minute = vars.getMinute();
+                if (_hour == hour && _minute == minute){
                     return true;
                 }
                 return false;
@@ -844,63 +848,79 @@ init {
         #endregion
 
         #region Miscellaneous functions
-        vars.resetVariables = (Action)(() => {
-            //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
-            //Make sure they are not garbage data when reading.
-            vars.interactibleName = "";
-            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.getHour = (Func<int>)(() => {
+                return (int)vars.watchers["clockTime"].Current/3600;
+            });
 
-            vars.foundLeave = false;
+            vars.getMinute = (Func<int>)(() => {
+                return (int)(vars.watchers["clockTime"].Current%3600)/60;
+            });
 
-            //Used to keep certain splits from repeating (reset)
-            vars.CompletedSplits.Clear();
+            vars.getOldHour = (Func<int>)(() => {
+                return (int)vars.watchers["clockTime"].Old/3600;
+            });
 
-            //Arcade Splits
-            vars.arcade = "N/A";
-            //bb
-            vars.bb_start = true;
-            vars.bb_end = false;
-            //monty golf
-            vars.mg_start = true;
-            vars.nHole = 0;
-            vars.mg_end = false;
-            //pq1
-            vars.pq1_start = true;
-            vars.pq1_end = false;
-            //pq2
-            vars.pq2_start = true;
-            vars.pq2_8 = false;
-            vars.pq2_end = false;
-            //pq3
-            vars.pq3_start = true;
-            vars.pq3_end = true;
+            vars.getOldMinute = (Func<int>)(() => {
+                return (int)(vars.watchers["clockTime"].Old%3600)/60;
+            });
 
-            //Counter Splits
-            vars.cSewerGen1 = true;
-            vars.cSewerGen2 = true;
-            vars.cSewerGen3 = true;
-            vars.cWAGen1 = true;
-            vars.cWAGen2 = true;
-            vars.cWAGen3 = true;
-            vars.cWAGen4 = true;
-            vars.cWAGen5 = true;
+            vars.resetVariables = (Action)(() => {
+                //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
+                //Make sure they are not garbage data when reading.
+                vars.interactibleName = "";
+                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 
-            //Item Splits
-            vars.nLobbyItemsUsed = 0;
+                vars.foundLeave = false;
 
-            vars.isLoading = false;
-            vars.onMenu = false;
-            if (vars.version >= 1.11) {
-                if (vars.watchers["worldCheck"].Current != 0){
-                    if (vars.watchers["worldCheck"].Old == 0){
-                        vars.loadingConstant = vars.watchers["hasLoaded"].Current;
-                        print("Loading Constant: " + vars.loadingConstant.ToString());
+                //Used to keep certain splits from repeating (reset)
+                vars.CompletedSplits.Clear();
+
+                //Arcade Splits
+                vars.arcade = "N/A";
+                //bb
+                vars.bb_start = true;
+                vars.bb_end = false;
+                //monty golf
+                vars.mg_start = true;
+                vars.nHole = 0;
+                vars.mg_end = false;
+                //pq1
+                vars.pq1_start = true;
+                vars.pq1_end = false;
+                //pq2
+                vars.pq2_start = true;
+                vars.pq2_8 = false;
+                vars.pq2_end = false;
+                //pq3
+                vars.pq3_start = true;
+                vars.pq3_end = true;
+
+                //Counter Splits
+                vars.cSewerGen1 = true;
+                vars.cSewerGen2 = true;
+                vars.cSewerGen3 = true;
+                vars.cWAGen1 = true;
+                vars.cWAGen2 = true;
+                vars.cWAGen3 = true;
+                vars.cWAGen4 = true;
+                vars.cWAGen5 = true;
+
+                //Item Splits
+                vars.nLobbyItemsUsed = 0;
+
+                vars.isLoading = false;
+                vars.onMenu = false;
+                if (vars.version >= 1.11) {
+                    if (vars.watchers["worldCheck"].Current != 0){
+                        if (vars.watchers["worldCheck"].Old == 0){
+                            vars.loadingConstant = vars.watchers["hasLoaded"].Current;
+                            print("Loading Constant: " + vars.loadingConstant.ToString());
+                        }
                     }
                 }
-            }
-        });
-    #endregion
+            });
+        #endregion
 
     #endregion
 
@@ -917,44 +937,39 @@ init {
         }
 
         vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "GameInstance");
-
-        vars.leaveButton                 = new DeepPointer(vars.UWorld, 0x128, 0x318, 0x4E0, 0xE8, 0x0);
+        vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "TransitionType");
+        vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.UWorld), "AuthorityGameMode");
+        vars.leaveButton                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xE8, 0x0);
         if (vars.version < 1.11){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
+            vars.hasLoaded                   = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x3B0);
+            vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
         }
         else {
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
             vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
+            vars.gameClock                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xF0, 0x80, 0xC4);
         }
         //Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
         if (vars.version < 1.05){
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
         }
         if (vars.version == 1.05){
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
         }
         if (vars.version == 1.07){
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
         }
         if (vars.version == 1.11){
             vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
             vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
             vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
         }
     #endregion
 
@@ -993,13 +1008,12 @@ init {
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
-            //In-Game Clock
-            new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //In-Game Clock (keeps track of time in seconds, you need to do math to figure out hour & minute)
+            new MemoryWatcher<float>(vars.clockTime) { Name = "clockTime" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
             //GEngine.TransitionType
-            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, vars.offsets["TransitionType"])) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
@@ -1127,12 +1141,15 @@ update {
         }
     }
     #endregion
+    if (vars.watchers["hasLoaded"].Current != vars.watchers["hasLoaded"].Old){
+        print("Current: "+vars.watchers["hasLoaded"].Current+"\nOld: "+vars.watchers["hasLoaded"].Old);
+    }
 }
 
 start {
     vars.resetVariables();
     //Start conditions (time, Freddy power, freddyThing)
-    if (vars.watchers["hourClock"].Current == -1 && vars.watchers["minuteClock"].Current == 0){
+    if (vars.getHour() == -1 && vars.getMinute() == 0){
         if (vars.version < 1.11){
             if (vars.watchers["freddyThing"].Old == 100 && vars.watchers["freddyThing"].Current == 30){
                 print("Start Timer");
@@ -1150,7 +1167,7 @@ start {
 
 reset {
     //Resets timer upon starting new game/loading a game from the starting file
-    if (settings["Reset Settings"] && vars.watchers["hourClock"].Old != -1 && vars.checkTime("Reset On New Game", -1, 0)){
+    if (settings["Reset Settings"] && vars.getOldHour() != -1 && vars.checkTime("Reset On New Game", -1, 0)){
         return true;
     }
     return false;
@@ -1201,34 +1218,12 @@ isLoading {
     }
     #endregion
 
-    if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current) return true;
-
-    if (!settings["Stop Timer When Loading"]){
-        if (vars.version < 1.11){
-            if (vars.watchers["hasLoaded"].Current == 1){
-                vars.isLoading = false;
-            }
-            else if ((vars.watchers["worldCheck"].Current != 0|| (vars.watchers["pause"].Old && vars.watchers["worldCheck"].Old != 0)) && !vars.isLoading){
-                print("Stop Timer When Loading");
-                vars.isLoading = true;
-            }
-
-            if (vars.isLoading){
-                return true;
-            }
-        }
-        else if (vars.watchers["hasLoaded"].Current == vars.loadingConstant) {
-            if (vars.watchers["hasLoaded"].Old != vars.loadingConstant){
-                print("Stop Timer When Loading");
-            }
-            return true;
-        }
+    if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current){
+        print("Elevator Pause");
+        return true;
     }
 
-    if (!settings["Stop Timer On Menu"]){
-        if (vars.onMenu){
-            return true;
-        }
+    if (settings["Stop Timer On Menu"]){
         if (vars.watchers["pos"].Current.Y == 0 && vars.arcade == "N/A"){
             if (!vars.onMenu){
                 print("Stop Timer On Menu");
@@ -1238,11 +1233,44 @@ isLoading {
         else if (vars.watchers["worldCheck"].Current != 0 || vars.arcade != "N/A"){
             vars.onMenu = false;
         }
+        if (vars.onMenu){
+            return true;
+        }
     }
 
-    if (!settings["Stop Timer When Paused"] && !vars.watchers["pause"].Current && vars.watchers["worldCheck"].Current == 0 && !vars.watchers["pause"].Old){
-        print("Stop Timer When Paused");
+    if (settings["Stop Timer When Paused"] && vars.watchers["pause"].Current && vars.watchers["worldCheck"].Current != 0){
+        if (!vars.watchers["pause"].Old){
+            print("Stop Timer When Paused");
+        }
         return true;
+    }
+
+    if (settings["Stop Timer When Loading"]){
+        if (vars.version < 1.11){
+            if (vars.watchers["hasLoaded"].Current == 1){
+                vars.isLoading = false;
+            }
+            else if ((vars.watchers["worldCheck"].Current != 0 || (vars.watchers["pause"].Old && vars.watchers["worldCheck"].Old != 0)) && !vars.isLoading){
+                print("Stop Timer When Loading (1.04-1.07)");
+                vars.isLoading = true;
+            }
+
+            if (vars.isLoading){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (vars.watchers["hasLoaded"].Current == vars.loadingConstant) {
+            if (vars.watchers["hasLoaded"].Old != vars.loadingConstant){
+                print("Stop Timer When Loading (1.11+)");
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     return false;
 }
@@ -1428,7 +1456,7 @@ split {
                         return true;
                     }
                 }
-                if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1925, 22927, 3268), new Vector3f(-1530, 22483, 3529))
+                if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1793, 22701, 3268), new Vector3f(-1591, 22611, 3529))
                     && vars.checkTimeNoBool(6, 0)){
                     if (!vars.foundLeave){
                         while (!vars.offsets.ContainsKey("FinalChoice")
@@ -1508,7 +1536,7 @@ split {
                                 print("MontyClaws_C");
                                 return true;
                             }
-                            else if (vars.interactibleName == "collectible" && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
+                            else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
                                 print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
                                 return true;
                             }
@@ -1579,7 +1607,7 @@ split {
 
             #region Time splits
             if (settings["Time Splits"] && !vars.onMenu){
-                if (vars.watchers["hourClock"].Current != vars.watchers["hourClock"].Old || vars.watchers["minuteClock"].Current != vars.watchers["minuteClock"].Old){
+                if (vars.getHour() != vars.getOldHour() || vars.getMinute() != vars.getOldMinute()){
                     if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
                     if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
                     if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 2310
