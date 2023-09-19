@@ -595,13 +595,13 @@ init {
     #region Set version (and a few variables)
         //Sets the version of the game upon startup
         int gameSize = modules.First().ModuleMemorySize;
-        refreshRate = 60;
+        refreshRate = 30;
 
         print("Size = " + gameSize.ToString());
 
     switch (gameSize){
         default: {
-            vars.version = 0; // Unsupported
+            vars.version = 100; // Unsupported
             if (!settings["Unsupported version warning"]) break;
             MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\n"+
             "If this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\n"+
@@ -618,9 +618,10 @@ init {
 
     const int CLASS_OFFSET = 0x10;
     const int CHILD_OFFSET = 0x50;
-    const int NEXT_OFFSET = 0x28;
-    vars.NAME_OFFSET = (vars.version < 1.11) ? (int)0x28 : (int)0x18;
+    const int NEXT_OFFSET = 0x20;
+    const int NAME_OFFSET = 0x28;
     const int INTERNAL_OFFSET = 0x4C;
+    const int SUPERFIELD_OFFSET = 0x40;
     vars.offsets = new Dictionary<string, int>();
     vars.fnames = new Dictionary<long, string>();
     vars.interactibleName = "";
@@ -656,25 +657,30 @@ init {
 
             vars.GetPropertyOffset = (Func<IntPtr, string, IntPtr>) ((address, name) => {
                 var _class = game.ReadPointer(address + CLASS_OFFSET);
-                for (IntPtr propertyAddr = _class + CHILD_OFFSET;
-                propertyAddr != IntPtr.Zero;
-                propertyAddr += NEXT_OFFSET
+                for (
+                    ;
+                    _class != IntPtr.Zero;
+                    _class = game.ReadPointer(_class + SUPERFIELD_OFFSET)
                 ){
-                    IntPtr property = game.ReadPointer(propertyAddr);
-                    print(property.ToString("X"));
-                    string propName = vars.GetNameFromFName(game.ReadValue<long>(property + (int)vars.NAME_OFFSET));
-                    if (propName == name){
-                        int offset = game.ReadValue<int>(property + INTERNAL_OFFSET);
-                        print("Found property \""
-                        + name
-                        + "\" at offset 0x"
-                        + offset.ToString("X")
-                        );
+                    for (IntPtr property = game.ReadPointer(_class + CHILD_OFFSET);
+                        property != IntPtr.Zero;
+                        property = game.ReadPointer(property + NEXT_OFFSET)
+                    ){
+                        string propName = vars.GetNameFromFName(game.ReadValue<long>(property + NAME_OFFSET));
+                        if (propName == name){
+                            int offset = game.ReadValue<int>(property + INTERNAL_OFFSET);
+                            print("Found property \""
+                            + name
+                            + "\" at offset 0x"
+                            + offset.ToString("X")
+                            );
 
-                        vars.offsets[name] = offset;
-                        return property;
+                            vars.offsets[name] = offset;
+                            return property;
+                        }
                     }
                 }
+
                 print("Couldn't find property \""+name+"\".");
                 return IntPtr.Zero;
             });
@@ -817,10 +823,21 @@ init {
             });
 
             vars.checkTime = (Func<string, int, int, bool>)((name, hour, minute) => {
+                int _hour = vars.getHour();
+                int _minute = vars.getMinute();
                 if (settings[name]
-                && vars.watchers["hourClock"].Current == hour && vars.watchers["minuteClock"].Current == minute
+                && _hour == hour && _minute == minute
                 && vars.CompletedSplits.Add(name)){
                     print(name);
+                    return true;
+                }
+                return false;
+            });
+
+            vars.checkTimeNoBool = (Func<int, int, bool>)((hour, minute) => {
+                int _hour = vars.getHour();
+                int _minute = vars.getMinute();
+                if (_hour == hour && _minute == minute){
                     return true;
                 }
                 return false;
@@ -828,128 +845,160 @@ init {
         #endregion
 
         #region Miscellaneous functions
-        vars.resetVariables = (Action)(() => {
-            //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
-            //Make sure they are not garbage data when reading.
-            vars.interactibleName = "";
-            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.getHour = (Func<int>)(() => {
+                return (int)vars.watchers["clockTime"].Current/3600;
+            });
 
-            //Used to keep certain splits from repeating (reset)
-            vars.CompletedSplits.Clear();
+            vars.getMinute = (Func<int>)(() => {
+                return (int)(vars.watchers["clockTime"].Current%3600)/60;
+            });
 
-            //Arcade Splits
-            vars.arcade = "N/A";
-            //bb
-            vars.bb_start = true;
-            vars.bb_end = false;
-            //monty golf
-            vars.mg_start = true;
-            vars.nHole = 0;
-            vars.mg_end = false;
-            //pq1
-            vars.pq1_start = true;
-            vars.pq1_end = false;
-            //pq2
-            vars.pq2_start = true;
-            vars.pq2_8 = false;
-            vars.pq2_end = false;
-            //pq3
-            vars.pq3_start = true;
-            vars.pq3_end = true;
+            vars.getOldHour = (Func<int>)(() => {
+                return (int)vars.watchers["clockTime"].Old/3600;
+            });
 
-            //Counter Splits
-            vars.cSewerGen1 = true;
-            vars.cSewerGen2 = true;
-            vars.cSewerGen3 = true;
-            vars.cWAGen1 = true;
-            vars.cWAGen2 = true;
-            vars.cWAGen3 = true;
-            vars.cWAGen4 = true;
-            vars.cWAGen5 = true;
+            vars.getOldMinute = (Func<int>)(() => {
+                return (int)(vars.watchers["clockTime"].Old%3600)/60;
+            });
 
-            //Item Splits
-            vars.nLobbyItemsUsed = 0;
+            vars.conditionalFindProperty = (Action<IntPtr, string>)((address, name) => {
+                if (!vars.offsets.ContainsKey(name)) vars.GetPropertyOffset(address, name);
+            });
 
-            vars.isLoading = false;
-            vars.onMenu = false;
-            if (vars.version >= 1.11) {
-                if (vars.watchers["worldCheck"].Current != 0){
-                    if (vars.watchers["worldCheck"].Old == 0){
-                        vars.loadingConstant = vars.watchers["hasLoaded"].Current;
-                        print("Loading Constant: " + vars.loadingConstant.ToString());
+            vars.cacheCurrentPos = (Action)(() => {
+                vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            });
+
+            vars.findLeave = (Action)(() => {
+                if (!vars.foundLeave){
+                    while (!vars.offsets.ContainsKey("FinalChoice")
+                    && vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero) print("Finding 'FinalChoice;'");
+
+                    IntPtr finalChoice = (IntPtr)null;
+
+                    while (!vars.offsets.ContainsKey("Leave")
+                    && vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
+                        print("Finding 'Leave';");
+                        finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
                     }
+                    vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
+                        Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
+                    };
+                    vars.foundLeave = true;
                 }
-            }
-        });
-    #endregion
+            });
+
+            vars.checkLeave = (Func<bool>)(() => {
+                return vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
+                && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
+                && vars.watchers["worldCheck"].Current != 0;
+            });
+
+            vars.resetVariables = (Action)(() => {
+                //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
+                //Make sure they are not garbage data when reading.
+                vars.interactibleName = "";
+                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+
+                vars.foundLeave = false;
+                vars.montyBalls = 0;
+                vars.fbFlags = 0;
+                vars.aftonButtons = 0;
+
+                //Used to keep certain splits from repeating (reset)
+                vars.CompletedSplits.Clear();
+
+                //Arcade Splits
+                vars.arcade = "N/A";
+                //bb
+                vars.bb_start = true;
+                vars.bb_end = false;
+                //monty golf
+                vars.mg_start = true;
+                vars.nHole = 0;
+                vars.mg_end = false;
+                //pq1
+                vars.pq1_start = true;
+                vars.pq1_end = false;
+                //pq2
+                vars.pq2_start = true;
+                vars.pq2_8 = false;
+                vars.pq2_end = false;
+                //pq3
+                vars.pq3_start = true;
+                vars.pq3_end = true;
+
+                //Counter Splits
+                vars.cSewerGen1 = true;
+                vars.cSewerGen2 = true;
+                vars.cSewerGen3 = true;
+                vars.cWAGen1 = true;
+                vars.cWAGen2 = true;
+                vars.cWAGen3 = true;
+                vars.cWAGen4 = true;
+                vars.cWAGen5 = true;
+
+                //Item Splits
+                vars.nLobbyItemsUsed = 0;
+
+                vars.onMenu = false;
+            });
+        #endregion
 
     #endregion
 
     #region Sigscanning
         // FNamePool's base address doesn't get accessed at all (for some reason) but it's base address + 8 does
         // Because of this, you can just sigscan for the base address + 8 and then subtract the 8 to get the real pointer
-        vars.badFNamePool = vars.GetStaticPointerFromSig("8B 05 ??????03 FF C0 C1 E9 10 3B C8 0F 92 C0 C3 CC", 2);
-        vars.FNamePool = IntPtr.Add(vars.badFNamePool, -8);
-        vars.UWorld = vars.GetStaticPointerFromSig("E8 ???????? 48 8B 88 ??0?0000 48 89 0D ??????02", 15);
-        vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F80A0000 48 85 C9 74 07 48 8B 01 48 FF 60 40", 3);
+        vars.badFNamePool   = vars.GetStaticPointerFromSig("8B 05 ??????03"     //mov eax, [badFNamePool]
+                                                          +"FF C0"              //inc eax
+                                                          +"C1 E9 10"           //shr ecx,10
+                                                          +"3B C8"              //cmp ecx,eax
+                                                          +"0F92 C0"            //setb al
+                                                          +"C3 CC"              //ret
+                                                          , 2);
+        vars.FNamePool      = IntPtr.Add(vars.badFNamePool, -8);
 
-        if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero){
+        vars.UWorld         = vars.GetStaticPointerFromSig("E8 ????????"        //call ????????
+                                                          +"48 8B 88 ??0?0000"  //mov rcx,[rax+???]
+                                                          +"48 89 0D ??????02"  //mov [UWorld],rcx
+                                                          , 15);
+
+        vars.GEngine        = vars.GetStaticPointerFromSig("48 8B 05 ????????"  //mov rax,[GEngine]
+                                                          +"48 8B D1"           //mov rdx,rcx
+                                                          +"48 8B 88 F80A0000"  //mov rcx,[rax+AF8]
+                                                          +"48 85 C9"           //test rcx,rcx
+                                                          +"74 07"              //je
+                                                          +"48 8B 01"           //mov rax,[rcx]
+                                                          +"48 FF 60 40"        //jmp qword ptr [rax+40]
+                                                          , 3);
+
+        vars.isLoading      = vars.GetStaticPointerFromSig("48 2B E1"           //sub rsp,rcx
+                                                          +"C7 45 ?? FFFFFFFF"  //mov [rbp+??],FFFFFFFF
+                                                          +"44 8B F7"           //mov r14d,edi
+                                                          +"0FB6 3D ??????0?"   //movzx edi,byte ptr [isLoading]
+                                                          , 16);
+
+        if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero || vars.isLoading == IntPtr.Zero){
             throw new Exception("UWorld/GameEngine/FNamePool not initialized - trying again");
         }
 
-        //Manually declare pointers that can't be sigscanned for (some pointers in this game have offsets that change between versions, but most don't)
-        if (vars.version < 1.05){
+        vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "GameInstance");
+        vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "TransitionType");
+        vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.UWorld), "AuthorityGameMode");
+        vars.leaveButton                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xE8, 0x0);
+        if (vars.version < 1.11){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xF0, 0x228, 0x158);
-            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3D8, 0x268);
-            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3D8, 0x268);
-            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3D8, 0x268);
-            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3D8, 0x268);
-            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
+            vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
         }
-        if (vars.version == 1.05){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x38, 0x3E0, 0x268);
-            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x40, 0x3E0, 0x268);
-            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x258);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x670, 0x230, 0x25C);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
+        else if (vars.version == 1.11){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x310, 0x120, 0x18C);
+            vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
         }
-        if (vars.version == 1.07){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0xE0, 0x228, 0x158);
-            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3D8, 0x418, 0x290);
-            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x48, 0x3E0, 0x268);
-            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x60, 0x3E0, 0x268);
-            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x50, 0x3E0, 0x268);
-            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2D0, 0x128, 0xA8, 0x58, 0x3E0, 0x268);
-            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6E8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA34);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x678, 0x230, 0xA38);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, 0x128, 0x3B0);
-        }
-        if (vars.version == 1.11){
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
-            vars.MGBucket                    = new DeepPointer(vars.UWorld, 0x98, 0x70, 0x128, 0xA8, 0x108, 0x228, 0x158);
-            vars.FBFlags                     = new DeepPointer(vars.UWorld, 0x98, 0xA8, 0x128, 0xA8, 0x8, 0x3E0, 0x418, 0x290);
-            vars.escapeEndLeaveButtonWest    = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x140, 0x3E0, 0x270);
-            vars.escapeEndLeaveButtonEast    = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x128, 0x3E0, 0x270);
-            vars.carEndLeaveButton           = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x130, 0x3E0, 0x270);
-            vars.fireEndLeaveButton          = new DeepPointer(vars.UWorld, 0x98, 0x2C8, 0x128, 0xA8, 0x138, 0x3E0, 0x270);
-            vars.aftonHealth                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x98, 0x160, 0x2B8, 0x6D8, 0x800);
-            vars.hourClock                   = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x10);
-            vars.minuteClock                 = new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x680, 0x230, 0x14);
-            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
+        else {
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x310, 0x120, 0x18C);
+            vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xF0, 0x80, 0xC4);
         }
     #endregion
 
@@ -959,53 +1008,41 @@ init {
 
             new MemoryWatcher<bool>((IntPtr)null) { Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<bool>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<IntPtr>(vars.leaveButton) { Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Freddy's Power OR Freddy Thingie (1.11+)
             new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Player Info
-            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.CollisionComponent.???[1D0]
-            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.CollisionComponent.Position[0x1D0]
+            new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<float>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Arcade pointers
-            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x378, 0x270, 0x230, 0x40)) { Name = "golfStrokeCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x3F9)) { Name = "pq3Attack" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Counter pointers
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x40, 0x128, 0xA8, 0x580, 0x290, 0x14)) { Name = "DGens" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.FBFlags) { Name = "FBFlags" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.MGBucket) { Name = "MGBucket" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-
-            //Buttons that start cutscenes (pressed = 0)
-            new MemoryWatcher<int>(vars.escapeEndLeaveButtonWest) { Name = "escapeEndLeaveButtonWest" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.escapeEndLeaveButtonEast) { Name = "escapeEndLeaveButtonEast" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.carEndLeaveButton) { Name = "carEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.fireEndLeaveButton) { Name = "fireEndLeaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-
-            //Afton's health (starts at 750, -100 per button)
-            new MemoryWatcher<float>(vars.aftonHealth) { Name = "aftonHealth" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Keeps track of items
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xC0)) { Name = "securityBadgeCount" },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0x138)) { Name = "itemCount" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x98, 0x8A0, 0x128, 0xB8, 0x128, 0x328, 0x3C8)) { Name = "splashScreen" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
-            //In-Game Clock
-            new MemoryWatcher<int>(vars.hourClock) { Name = "hourClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.minuteClock) { Name = "minuteClock" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //In-Game Clock (keeps track of time in seconds, you need to do math to figure out hour & minute)
+            new MemoryWatcher<float>(vars.clockTime) { Name = "clockTime" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
-            //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.11+ != 0)
-            //GEngine.TransitionType
-            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, 0x8B8)) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, 0x128, 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //Used to pause the timer
+            new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, vars.offsets["TransitionType"])) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(vars.isLoading) { Name = "isLoading" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Experimental elevator fix that only requires 3 pointers (instead of 12)
-            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.PlayerInteractComponent.ClosestInteractible.Name
-            new MemoryWatcher<long>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.PlayerInteractComponent.ClosestInteractible
-            new MemoryWatcher<IntPtr>(new DeepPointer(vars.GEngine, 0xDE8, 0x38, 0x0, 0x30, 0x268, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //UWorld.AuthorityGameMode.GregoryPawn.PlayerInteractComponent.ClosestInteractible
+            new MemoryWatcher<IntPtr>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //UWorld.AuthorityGameMode.GregoryPawn.PlayerInteractComponent.ClosestInteractible.Name
+            new MemoryWatcher<long>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
         };
     #endregion
 }
@@ -1015,63 +1052,86 @@ update {
     #region Change lastInteractible watcher based on what you last interacted with
     //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
     if (vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old){
+        string currentName = vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current);
+        IntPtr currentAddress = vars.watchers["closestInteractibleAddress"].Current;
         //Any elevator button
-        if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
-            vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        if (currentName.Contains("ElevatorButton")){
+            vars.conditionalFindProperty(currentAddress, "Color");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "elevButton";
         }
         //Vanny Ending button
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("DestroyVannyEndingTrigger")){
-            vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("DestroyVannyEndingTrigger")){
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "vannyButton";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
-        //Any message collectible
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Clue")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Bag")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Complaint")){
-            vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "message";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+        //Monty cannon balls counter (requires an internal variable to keep track of # of balls in bucket)
+        else if (currentName.Contains("BallCannon")){
+            vars.conditionalFindProperty(currentAddress, "NumberTargetsHit");
+            vars.watchers[0] = new MemoryWatcher<int>(currentAddress+vars.offsets["NumberTargetsHit"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "montyCannon";
         }
-        //Daycare pass upgrade machine
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("FazPassUpgradeMachine")){
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x338){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "daycareMachine";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+        //Fazerblast flag watcher (requires an internal variable to keep track of # of flags captured)
+        else if (currentName.Contains("Fazerblast_CaptureFlag")){
+            vars.conditionalFindProperty(currentAddress, "CanStartCapture");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["CanStartCapture"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "fazerblastFlag";
+        }
+        //Burntrap button watcher (requires an internal variable to keep track of # of flags captured)
+        else if (currentName.Contains("BurntrapButton")){
+            vars.conditionalFindProperty(currentAddress, "AllowActivate");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["AllowActivate"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "burntrapButton";
         }
         //Pizzaplex Cameras button (intro sequence)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("BB_UtilityStart")){
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("BB_UtilityStart")){
+            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x2E8){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "cameraButton";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
+        }
+        //Daycare pass upgrade machine
+        else if (currentName.Contains("FazPassUpgradeMachine")){
+            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x338){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "daycareMachine";
+            vars.cacheCurrentPos();
         }
         //Flashlight (daycare)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Flashlight")){
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x298){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("Flashlight")){
+            vars.conditionalFindProperty(currentAddress, "FlashlightAvailable");
+            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+vars.offsets["FlashlightAvailable"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "flashlight";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
-        }
-        //Collectible (equipment, etc.)
-        else if ((vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collect")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("SecurityBadge")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Ticket")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Pass")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MontyMysteryMix")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MazerciseControlKey"))){
-            vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "collectible";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Chica's Voicebox (specific weird edge case, don't worry about it)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ChicaSewer")){
-            vars.watchers[1] = new MemoryWatcher<int>(vars.watchers["closestInteractibleAddress"].Current+0x330){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("ChicaSewer")){
+            vars.conditionalFindProperty(currentAddress, "Shattered Chica");
+            vars.watchers[1] = new MemoryWatcher<int>(currentAddress+vars.offsets["Shattered Chica"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "chicaSewer";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
+        }
+        //Any message collectible
+        else if (currentName.Contains("Message")
+        || currentName.Contains("Clue")
+        || currentName.Contains("Bag")
+        || currentName.Contains("Complaint")){
+            vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "message";
+            vars.cacheCurrentPos();
+        }
+        //Any Collectible (that is not a message) (equipment, etc.)
+        else if (currentName.Contains("Collect")
+        || currentName.Contains("SecurityBadge")
+        || currentName.Contains("Ticket")
+        || currentName.Contains("Pass")
+        || currentName.Contains("MrHippoMagnet")
+        || currentName.Contains("MontyMysteryMix")
+        || currentName.Contains("MazerciseControlKey")){
+            vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "collectible";
+            vars.cacheCurrentPos();
         }
     }
 
@@ -1082,46 +1142,35 @@ update {
         vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "";
     }
+    else if (vars.interactibleName == "montyCannon" && !vars.checkBoxNoBool(new Vector3f(-15577, 46830, 2893), new Vector3f(-22025, 39450, 3507))){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
+    }
+    else if (vars.interactibleName == "fazerblastFlag" && !vars.checkBoxNoBool(new Vector3f(17998, 28715, 984), new Vector3f(13200, 33755, 2888))){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
+    }
+    else if (vars.interactibleName == "burntrapButton" && !vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815))){
+        vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "";
+    }
     else if (!vars.checkSphereNoBool(vars.cachedPos)){
-        switch((string)vars.interactibleName){
-            case "vannyButton": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "message": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        if (vars.interactibleName == "vannyButton"){
+            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "";
+        }
+        else if (vars.interactibleName == "message"
+        ||       vars.interactibleName == "collectible"
+        ||       vars.interactibleName == "chicaSewer"){
+            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "";
+        }
+        else if (vars.interactibleName == "daycareMachine"
+        ||       vars.interactibleName == "cameraButton"
+        ||       vars.interactibleName == "flashlight"){
                 vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
                 vars.interactibleName = "";
-                break;
-            }
-            case "collectible": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "chicaSewer": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "daycareMachine": {
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "cameraButton": {
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "flashlight": {
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
         }
     }
     #endregion
@@ -1130,7 +1179,7 @@ update {
 start {
     vars.resetVariables();
     //Start conditions (time, Freddy power, freddyThing)
-    if (vars.watchers["hourClock"].Current == -1 && vars.watchers["minuteClock"].Current == 0){
+    if (vars.getHour() == -1 && vars.getMinute() == 0){
         if (vars.version < 1.11){
             if (vars.watchers["freddyThing"].Old == 100 && vars.watchers["freddyThing"].Current == 30){
                 print("Start Timer");
@@ -1148,7 +1197,7 @@ start {
 
 reset {
     //Resets timer upon starting new game/loading a game from the starting file
-    if (settings["Reset Settings"] && vars.watchers["hourClock"].Old != -1 && vars.checkTime("Reset On New Game", -1, 0)){
+    if (settings["Reset Settings"] && vars.getOldHour() != -1 && vars.checkTime("Reset On New Game", -1, 0)){
         return true;
     }
     return false;
@@ -1157,18 +1206,10 @@ reset {
 isLoading {
     if (!settings["In-Game Time Settings"]) return false;
 
-    if (vars.watchers["worldCheck"].Current != 0 || vars.isLoading || vars.onMenu){
-        if (vars.version < 1.11){
-            if (vars.arcade != "N/A"){
-                vars.arcade = "N/A";
-                print("Arcade: " + vars.arcade);
-            }
-        }
-        else if (vars.watchers["hasLoaded"].Current == vars.loadingConstant){
-            if (vars.arcade != "N/A"){
-                vars.arcade = "N/A";
-                print("Arcade: " + vars.arcade);
-            }
+    if (vars.watchers["worldCheck"].Current != 0 || vars.onMenu){
+        if (vars.arcade != "N/A"){
+            vars.arcade = "N/A";
+            print("Arcade: " + vars.arcade);
         }
     }
 
@@ -1180,17 +1221,16 @@ isLoading {
         else if (vars.checkOldBoxNoBool(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
             vars.arcade = "Monty Golf";
         }
-        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
-        && vars.checkOldBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
-            vars.arcade = "Princess Quest 1";
-        }
-        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
-        && vars.checkOldBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
-            vars.arcade = "Princess Quest 2";
-        }
-        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
-        && vars.checkOldBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
-            vars.arcade = "Princess Quest 3";
+        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0){
+            if (vars.checkOldBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
+                vars.arcade = "Princess Quest 1";
+            }
+            else if (vars.checkOldBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+                vars.arcade = "Princess Quest 2";
+            }
+            else if (vars.checkOldBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
+                vars.arcade = "Princess Quest 3";
+            }
         }
 
         if (vars.arcade != "N/A"){
@@ -1199,34 +1239,12 @@ isLoading {
     }
     #endregion
 
-    if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current) return true;
-
-    if (!settings["Stop Timer When Loading"]){
-        if (vars.version < 1.11){
-            if (vars.watchers["hasLoaded"].Current == 1){
-                vars.isLoading = false;
-            }
-            else if ((vars.watchers["worldCheck"].Current != 0|| (vars.watchers["pause"].Old && vars.watchers["worldCheck"].Old != 0)) && !vars.isLoading){
-                print("Stop Timer When Loading");
-                vars.isLoading = true;
-            }
-
-            if (vars.isLoading){
-                return true;
-            }
-        }
-        else if (vars.watchers["hasLoaded"].Current == vars.loadingConstant) {
-            if (vars.watchers["hasLoaded"].Old != vars.loadingConstant){
-                print("Stop Timer When Loading");
-            }
-            return true;
-        }
+    if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current){
+        print("Elevator Pause");
+        return true;
     }
 
-    if (!settings["Stop Timer On Menu"]){
-        if (vars.onMenu){
-            return true;
-        }
+    if (settings["Stop Timer On Menu"]){
         if (vars.watchers["pos"].Current.Y == 0 && vars.arcade == "N/A"){
             if (!vars.onMenu){
                 print("Stop Timer On Menu");
@@ -1236,11 +1254,25 @@ isLoading {
         else if (vars.watchers["worldCheck"].Current != 0 || vars.arcade != "N/A"){
             vars.onMenu = false;
         }
+        if (vars.onMenu){
+            return true;
+        }
     }
 
-    if (!settings["Stop Timer When Paused"] && !vars.watchers["pause"].Current && vars.watchers["worldCheck"].Current == 0 && !vars.watchers["pause"].Old){
-        print("Stop Timer When Paused");
+    if (settings["Stop Timer When Paused"] && vars.watchers["pause"].Current && vars.watchers["worldCheck"].Current != 0){
+        if (!vars.watchers["pause"].Old){
+            print("Stop Timer When Paused");
+        }
         return true;
+    }
+
+    if (settings["Stop Timer When Loading"]){
+        if (vars.watchers["isLoading"].Current){
+            if (!vars.watchers["isLoading"].Old){
+                print("Stop Timer When Loading");
+            }
+            return true;
+        }
     }
     return false;
 }
@@ -1283,18 +1315,20 @@ split {
                         }
                     }
                 }
-                if (vars.watchers["FBFlags"].Current > vars.watchers["FBFlags"].Old){
+                if (vars.interactibleName == "fazerblastFlag" && vars.watchers["lastInteractible"].Old  && !vars.watchers["lastInteractible"].Current){
+                    vars.fbFlags += 1;
                     if (settings["Fazerblast Flags"]){
-                        if (settings["Flag " + vars.watchers["FBFlags"].Current]){
-                            print("Flag " + vars.watchers["FBFlags"].Current);
+                        if (settings["Flag " + vars.fbFlags]){
+                            print("Flag " + vars.fbFlags);
                             return true;
                         }
                     }
                 }
-                if (vars.watchers["MGBucket"].Current > vars.watchers["MGBucket"].Old){
+                if (vars.interactibleName == "montyCannon" && vars.watchers["lastInteractible"].Old < vars.watchers["lastInteractible"].Current){
+                    vars.montyBalls += 1;
                     if (settings["Monty Bucket Count"]){
-                        if (settings[vars.watchers["MGBucket"].Current + " Balls"]){
-                            print(vars.watchers["MGBucket"].Current + " Balls");
+                        if (settings[vars.montyBalls + " Balls"]){
+                            print(vars.montyBalls + " Balls");
                             return true;
                         }
                     }
@@ -1370,33 +1404,32 @@ split {
             if (settings["Ending Splits"]){
                 //splits based on ending cutscenes
                 if (settings["Afton Ending"]){
-                    if (vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Old > 0 && vars.watchers["aftonHealth"].Current <= 0){
+                    if (vars.interactibleName == "burntrapButton" && vars.aftonButtons == 8){
                         print("Button 8 / End");
                         return true;
                     }
                 }
-                if (settings["CB_B"] && vars.watchers["carEndLeaveButton"].Current == 0 && vars.watchers["carEndLeaveButton"].Old != 0){
-                    if (vars.watchers["worldCheck"].Current != 0){
-                        print("Car Battery Button");
+                if (settings["CB_B"] && vars.checkBoxNoBool(new Vector3f(-3194, 19196, 0), new Vector3f(-2911, 18959, 312))
+                    && vars.checkTimeNoBool(6, 0)){
+                    vars.findLeave();
+                    if (vars.checkLeave()){
+                        print("Car Escape Button");
                         return true;
                     }
                 }
-                if (settings["E_B"]){
-                    if (vars.watchers["escapeEndLeaveButtonEast"].Current == 0 && vars.watchers["escapeEndLeaveButtonEast"].Old != 0){
-                        if (vars.watchers["worldCheck"].Current != 0){
-                            print("Escape (East) Button");
-                            return true;
-                        }
-                    }
-                    if (vars.watchers["escapeEndLeaveButtonWest"].Current == 0 && vars.watchers["escapeEndLeaveButtonWest"].Old != 0){
-                        if (vars.watchers["worldCheck"].Current != 0){
-                            print("Escape (West) Button");
-                            return true;
-                        }
+                if (settings["E_B"] && vars.checkBoxNoBool(new Vector3f(-2238, 19846, 1442), new Vector3f(-1943, 19521, 1746))
+                    ||                 vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746))
+                    && vars.checkTimeNoBool(6, 0)){
+                    vars.findLeave();
+                    if (vars.checkLeave()){
+                        print("Escape Button");
+                        return true;
                     }
                 }
-                if (settings["F_B"] && vars.watchers["fireEndLeaveButton"].Current == 0 && vars.watchers["fireEndLeaveButton"].Old != 0){
-                    if (vars.watchers["worldCheck"].Current != 0){
+                if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1793, 22701, 3268), new Vector3f(-1591, 22611, 3529))
+                    && vars.checkTimeNoBool(6, 0)){
+                    vars.findLeave();
+                    if (vars.checkLeave()){
                         print("Fire Escape Button");
                         return true;
                     }
@@ -1408,10 +1441,10 @@ split {
                 }
                 if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
                 //other ending splits
-                if (settings["Afton Ending"] && vars.checkBoxNoBool(new Vector3f(24373, 43303, -8034), new Vector3f(29296, 38254, -8815)) && vars.watchers["aftonHealth"].Current < vars.watchers["aftonHealth"].Old){
-                    var currentButton = ((750 - vars.watchers["aftonHealth"].Current) / 100);
-                    if (settings["Button " + currentButton]){
-                        print("Button " + currentButton);
+                if (vars.interactibleName == "burntrapButton" && vars.watchers["lastInteractible"].Old && !vars.watchers["lastInteractible"].Current){
+                    vars.aftonButtons += 1;
+                    if (settings["Button " + vars.aftonButtons]){
+                        print("Button " + vars.aftonButtons);
                         return true;
                     }
                 }
@@ -1429,37 +1462,37 @@ split {
                         }
                     }
                     if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
-                        if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
+                        string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
+                        if (currentName.Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
                             print("ChicaVoiceBox_M");
                             return true;
                         }
-                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
+                        else if (currentName.Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
                             print("RoxyEyes_M");
                             return true;
                         }
-                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
+                        else if (currentName.Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
                             print("MontyClaws_M");
                             return true;
                         }
-                        else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
-                            print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
+                        else if (settings[currentName] && vars.CompletedSplits.Add(currentName)){
+                            print(currentName);
                             return true;
                         }
                     }
-                    if (vars.interactibleName == "collectible"){
-                        if (vars.watchers["canCollect"].Old >= 0.98f){
-                            if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
-                                print("RoxyEyes_C");
-                                return true;
-                            }
-                            else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
-                                print("MontyClaws_C");
-                                return true;
-                            }
-                            else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
-                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
-                                return true;
-                            }
+                    if (vars.interactibleName == "collectible" && vars.watchers["canCollect"].Old >= 0.98f){
+                        string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
+                        if (currentName.Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
+                            print("RoxyEyes_C");
+                            return true;
+                        }
+                        else if (currentName.Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
+                            print("MontyClaws_C");
+                            return true;
+                        }
+                        else if (settings[currentName] && vars.CompletedSplits.Add(currentName)){
+                            print(currentName);
+                            return true;
                         }
                     }
                     if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current && vars.CompletedSplits.Add("Flashlight")){
@@ -1527,7 +1560,7 @@ split {
 
             #region Time splits
             if (settings["Time Splits"] && !vars.onMenu){
-                if (vars.watchers["hourClock"].Current != vars.watchers["hourClock"].Old || vars.watchers["minuteClock"].Current != vars.watchers["minuteClock"].Old){
+                if (vars.getHour() != vars.getOldHour() || vars.getMinute() != vars.getOldMinute()){
                     if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
                     if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
                     if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 2310
