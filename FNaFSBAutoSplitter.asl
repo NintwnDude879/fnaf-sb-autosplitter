@@ -1561,9 +1561,9 @@ split {
             #region Time splits
             if (settings["Time Splits"] && !vars.onMenu){
                 if (vars.getHour() != vars.getOldHour() || vars.getMinute() != vars.getOldMinute()){
-                    if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
-                    if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
-                    if (vars.watchers["pos"].Current.X >= 250 && 10 <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= 2310
+                    if (vars.checkTime("Exit Vents (11:30PM)", -1, -30)) return true;
+                    if (vars.checkTime("Freddy Recharge (11:45PM)", -1, -45)) return true;
+                    if (vars.watchers["worldCheck"] != 0
                     &&  vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
                     if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
                     if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
@@ -1574,7 +1574,7 @@ split {
                     if (vars.checkTime("Dead Fred (2:15AM)", 2, 15)) return true;
                     if (vars.checkTime("Backstage Pass (2:30AM)", 2, 30)) return true;
                     if (vars.checkTime("Use Showtime Disk (2:45AM)", 2, 45)) return true;
-                    if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 1)) return true;
+                    if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 0)) return true;
                     if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", 3, 15)) return true;
                     if (vars.checkTime("Freddy Power Upgrade (3:30AM)", 3, 30)) return true;
                     if (vars.checkTime("Party Pass Recharge (4:00AM)", 4, 0)) return true;
