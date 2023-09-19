@@ -1581,7 +1581,7 @@ split {
                 if (vars.getHour() != vars.getOldHour() || vars.getMinute() != vars.getOldMinute()){
                     if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
                     if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
-                    if (vars.watchers["worldCheck"] != 0
+                    if (vars.watchers["worldCheck"].Current != 0
                     &&  vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
                     if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
                     if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
