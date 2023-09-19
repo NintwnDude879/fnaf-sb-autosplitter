@@ -860,15 +860,21 @@ init {
             });
 
             vars.getMinute = (Func<int>)(() => {
-                if (vars.watchers["clockTime"].Current < 0){
+                if (vars.watchers["clockTime"].Current < 0 && (int)(vars.watchers["clockTime"].Current%3600)/60 != 0){
                     return 60+((int)(vars.watchers["clockTime"].Current%3600)/60);
+                }
+                else if ((int)(vars.watchers["clockTime"].Current%3600)/60 == 0){
+                    return 0;
                 }
                 return (int)(vars.watchers["clockTime"].Current%3600)/60;
             });
 
             vars.getOldMinute = (Func<int>)(() => {
-                if (vars.watchers["clockTime"].Current < 0){
+                if (vars.watchers["clockTime"].Current < 0 && (int)(vars.watchers["clockTime"].Current%3600)/60 != 0){
                     return 60+((int)(vars.watchers["clockTime"].Current%3600)/60);
+                }
+                else if ((int)(vars.watchers["clockTime"].Current%3600)/60 == 0){
+                    return 0;
                 }
                 return (int)(vars.watchers["clockTime"].Old%3600)/60;
             });
