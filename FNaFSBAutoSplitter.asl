@@ -942,16 +942,7 @@ init {
                 //Item Splits
                 vars.nLobbyItemsUsed = 0;
 
-                vars.isLoading = false;
                 vars.onMenu = false;
-                if (vars.version >= 1.11) {
-                    if (vars.watchers["worldCheck"].Current != 0){
-                        if (vars.watchers["worldCheck"].Old == 0){
-                            vars.loadingConstant = vars.watchers["hasLoaded"].Current;
-                            print("Loading Constant: " + vars.loadingConstant.ToString());
-                        }
-                    }
-                }
             });
         #endregion
 
@@ -960,12 +951,36 @@ init {
     #region Sigscanning
         // FNamePool's base address doesn't get accessed at all (for some reason) but it's base address + 8 does
         // Because of this, you can just sigscan for the base address + 8 and then subtract the 8 to get the real pointer
-        vars.badFNamePool = vars.GetStaticPointerFromSig("8B 05 ??????03 FF C0 C1 E9 10 3B C8 0F 92 C0 C3 CC", 2);
-        vars.FNamePool = IntPtr.Add(vars.badFNamePool, -8);
-        vars.UWorld = vars.GetStaticPointerFromSig("E8 ???????? 48 8B 88 ??0?0000 48 89 0D ??????02", 15);
-        vars.GEngine = vars.GetStaticPointerFromSig("48 8B 05 ???????? 48 8B D1 48 8B 88 F80A0000 48 85 C9 74 07 48 8B 01 48 FF 60 40", 3);
+        vars.badFNamePool   = vars.GetStaticPointerFromSig("8B 05 ??????03"     //mov eax, [badFNamePool]
+                                                          +"FF C0"              //inc eax
+                                                          +"C1 E9 10"           //shr ecx,10
+                                                          +"3B C8"              //cmp ecx,eax
+                                                          +"0F92 C0"            //setb al
+                                                          +"C3 CC"              //ret
+                                                          , 2);
+        vars.FNamePool      = IntPtr.Add(vars.badFNamePool, -8);
 
-        if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero){
+        vars.UWorld         = vars.GetStaticPointerFromSig("E8 ????????"        //call ????????
+                                                          +"48 8B 88 ??0?0000"  //mov rcx,[rax+???]
+                                                          +"48 89 0D ??????02"  //mov [UWorld],rcx
+                                                          , 15);
+
+        vars.GEngine        = vars.GetStaticPointerFromSig("48 8B 05 ????????"  //mov rax,[GEngine]
+                                                          +"48 8B D1"           //mov rdx,rcx
+                                                          +"48 8B 88 F80A0000"  //mov rcx,[rax+AF8]
+                                                          +"48 85 C9"           //test rcx,rcx
+                                                          +"74 07"              //je
+                                                          +"48 8B 01"           //mov rax,[rcx]
+                                                          +"48 FF 60 40"        //jmp qword ptr [rax+40]
+                                                          , 3);
+
+        vars.isLoading      = vars.GetStaticPointerFromSig("48 2B E1"           //sub rsp,rcx
+                                                          +"C7 45 ?? FFFFFFFF"  //mov [rbp+??],FFFFFFFF
+                                                          +"44 8B F7"           //mov r14d,edi
+                                                          +"0FB6 3D ??????0?"   //movzx edi,byte ptr [isLoading]
+                                                          , 16);
+
+        if (vars.UWorld == IntPtr.Zero || vars.GEngine == IntPtr.Zero || vars.FNamePool == IntPtr.Zero || vars.isLoading == IntPtr.Zero){
             throw new Exception("UWorld/GameEngine/FNamePool not initialized - trying again");
         }
 
@@ -975,17 +990,14 @@ init {
         vars.leaveButton                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xE8, 0x0);
         if (vars.version < 1.11){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
-            vars.hasLoaded                   = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x3B0);
             vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
         }
         else if (vars.version == 1.11){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x310, 0x120, 0x18C);
-            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
             vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
         }
         else {
             vars.freddyThing                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x310, 0x120, 0x18C);
-            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
             vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xF0, 0x80, 0xC4);
         }
     #endregion
@@ -1002,7 +1014,7 @@ init {
             new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Player Info
-            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.CollisionComponent.???[1D0]
+            //GEngine.GameInstance.LocalPlayers[0].PlayerController.Pawn.CollisionComponent.Position[0x1D0]
             new MemoryWatcher<Vector3f>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x258, 0x298, 0x1D0)) { Name = "pos" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<float>(new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0x38, 0x0, 0x30, 0x268, 0x298, 0x1D4)) { Name = "worldCheck", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
@@ -1021,17 +1033,16 @@ init {
             //In-Game Clock (keeps track of time in seconds, you need to do math to figure out hour & minute)
             new MemoryWatcher<float>(vars.clockTime) { Name = "clockTime" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
-            //Used to pause the timer (pause = 1, menu = 0, hasLoaded in versions 1.05+ != 0)
-            //GEngine.TransitionType
+            //Used to pause the timer
             new MemoryWatcher<bool>(new DeepPointer(vars.GEngine, vars.offsets["TransitionType"])) { Name = "pause" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             new MemoryWatcher<int>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x1A8, 0x20, 0x100, 0xA0, 0x228)) { Name = "menu", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<int>(vars.hasLoaded) { Name = "hasLoaded" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>(vars.isLoading) { Name = "isLoading" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Experimental elevator fix that only requires 3 pointers (instead of 12)
-            //UWorld.AuthorityGameMode.GregoryPawn.PlayerInteractComponent.ClosestInteractible.Name
-            new MemoryWatcher<long>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
             //UWorld.AuthorityGameMode.GregoryPawn.PlayerInteractComponent.ClosestInteractible
             new MemoryWatcher<IntPtr>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xC8)) { Name = "closestInteractibleAddress" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            //UWorld.AuthorityGameMode.GregoryPawn.PlayerInteractComponent.ClosestInteractible.Name
+            new MemoryWatcher<long>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xC8, 0x18)) { Name = "closestInteractibleFName" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
         };
     #endregion
 }
@@ -1195,18 +1206,10 @@ reset {
 isLoading {
     if (!settings["In-Game Time Settings"]) return false;
 
-    if (vars.watchers["worldCheck"].Current != 0 || vars.isLoading || vars.onMenu){
-        if (vars.version < 1.11){
-            if (vars.arcade != "N/A"){
-                vars.arcade = "N/A";
-                print("Arcade: " + vars.arcade);
-            }
-        }
-        else if (vars.watchers["hasLoaded"].Current == vars.loadingConstant){
-            if (vars.arcade != "N/A"){
-                vars.arcade = "N/A";
-                print("Arcade: " + vars.arcade);
-            }
+    if (vars.watchers["worldCheck"].Current != 0 || vars.onMenu){
+        if (vars.arcade != "N/A"){
+            vars.arcade = "N/A";
+            print("Arcade: " + vars.arcade);
         }
     }
 
@@ -1264,30 +1267,11 @@ isLoading {
     }
 
     if (settings["Stop Timer When Loading"]){
-        if (vars.version < 1.11){
-            if (vars.watchers["hasLoaded"].Current == 1){
-                vars.isLoading = false;
-            }
-            else if ((vars.watchers["worldCheck"].Current != 0 || (vars.watchers["pause"].Old && vars.watchers["worldCheck"].Old != 0)) && !vars.isLoading){
-                print("Stop Timer When Loading (1.04-1.07)");
-                vars.isLoading = true;
-            }
-
-            if (vars.isLoading){
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else if (vars.watchers["hasLoaded"].Current == vars.loadingConstant) {
-            if (vars.watchers["hasLoaded"].Old != vars.loadingConstant){
-                print("Stop Timer When Loading (1.11+)");
+        if (vars.watchers["isLoading"].Current){
+            if (!vars.watchers["isLoading"].Old){
+                print("Stop Timer When Loading");
             }
             return true;
-        }
-        else {
-            return false;
         }
     }
     return false;
