@@ -869,6 +869,25 @@ init {
                 vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
             });
 
+            vars.findLeave = (Action)(() => {
+                if (!vars.foundLeave){
+                    while (!vars.offsets.ContainsKey("FinalChoice")
+                    && vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero) print("Finding 'FinalChoice;'");
+
+                    IntPtr finalChoice = (IntPtr)null;
+
+                    while (!vars.offsets.ContainsKey("Leave")
+                    && vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
+                        print("Finding 'Leave';");
+                        finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
+                    }
+                    vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
+                        Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
+                    };
+                    vars.foundLeave = true;
+                }
+            });
+
             vars.resetVariables = (Action)(() => {
                 //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
                 //Make sure they are not garbage data when reading.
@@ -1402,22 +1421,7 @@ split {
                 }
                 if (settings["CB_B"] && vars.checkBoxNoBool(new Vector3f(-3194, 19196, 0), new Vector3f(-2911, 18959, 312))
                     && vars.checkTimeNoBool(6, 0)){
-                    if (!vars.foundLeave){
-                        while (!vars.offsets.ContainsKey("FinalChoice")
-                        && vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero) print("Finding 'FinalChoice;'");
-
-                        IntPtr finalChoice = (IntPtr)null;
-
-                        while (!vars.offsets.ContainsKey("Leave")
-                        && vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
-                            print("Finding 'Leave';");
-                            finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
-                        }
-                        vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
-                            Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
-                        };
-                        vars.foundLeave = true;
-                    }
+                    vars.findLeave();
                     if (vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
                     && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
                     && vars.watchers["worldCheck"].Current != 0){
@@ -1428,22 +1432,7 @@ split {
                 if (settings["E_B"] && vars.checkBoxNoBool(new Vector3f(-2238, 19846, 1442), new Vector3f(-1943, 19521, 1746))
                     ||                 vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746))
                     && vars.checkTimeNoBool(6, 0)){
-                    if (!vars.foundLeave){
-                        while (!vars.offsets.ContainsKey("FinalChoice")
-                        && vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero) print("Finding 'FinalChoice;'");
-
-                        IntPtr finalChoice = (IntPtr)null;
-
-                        while (!vars.offsets.ContainsKey("Leave")
-                        && vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
-                            print("Finding 'Leave';");
-                            finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
-                        }
-                        vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
-                            Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
-                        };
-                        vars.foundLeave = true;
-                    }
+                    vars.findLeave();
                     if (vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
                     && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
                     && vars.watchers["worldCheck"].Current != 0){
@@ -1453,22 +1442,7 @@ split {
                 }
                 if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1793, 22701, 3268), new Vector3f(-1591, 22611, 3529))
                     && vars.checkTimeNoBool(6, 0)){
-                    if (!vars.foundLeave){
-                        while (!vars.offsets.ContainsKey("FinalChoice")
-                        && vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero) print("Finding 'FinalChoice;'");
-
-                        IntPtr finalChoice = (IntPtr)null;
-
-                        while (!vars.offsets.ContainsKey("Leave")
-                        && vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
-                            print("Finding 'Leave';");
-                            finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
-                        }
-                        vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
-                            Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
-                        };
-                        vars.foundLeave = true;
-                    }
+                    vars.findLeave();
                     if (vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
                     && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
                     && vars.watchers["worldCheck"].Current != 0){
@@ -1504,37 +1478,37 @@ split {
                         }
                     }
                     if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
-                        if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
+                        string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
+                        if (currentName.Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
                             print("ChicaVoiceBox_M");
                             return true;
                         }
-                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
+                        else if (currentName.Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
                             print("RoxyEyes_M");
                             return true;
                         }
-                        else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
+                        else if (currentName.Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
                             print("MontyClaws_M");
                             return true;
                         }
-                        else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
-                            print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
+                        else if (settings[currentName] && vars.CompletedSplits.Add(currentName)){
+                            print(currentName);
                             return true;
                         }
                     }
-                    if (vars.interactibleName == "collectible"){
-                        if (vars.watchers["canCollect"].Old >= 0.98f){
-                            if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
-                                print("RoxyEyes_C");
-                                return true;
-                            }
-                            else if (vars.GetNameFromFName(vars.watchers["lastInteractible"].Current).Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
-                                print("MontyClaws_C");
-                                return true;
-                            }
-                            else if (settings[vars.GetNameFromFName(vars.watchers["lastInteractible"].Current)] && vars.CompletedSplits.Add(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current))){
-                                print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
-                                return true;
-                            }
+                    if (vars.interactibleName == "collectible" && vars.watchers["canCollect"].Old >= 0.98f){
+                        string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
+                        if (currentName.Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
+                            print("RoxyEyes_C");
+                            return true;
+                        }
+                        else if (currentName.Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
+                            print("MontyClaws_C");
+                            return true;
+                        }
+                        else if (settings[currentName] && vars.CompletedSplits.Add(currentName)){
+                            print(currentName);
+                            return true;
                         }
                     }
                     if (settings["Flashlight"] && vars.interactibleName == "flashlight" && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current && vars.CompletedSplits.Add("Flashlight")){
