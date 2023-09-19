@@ -846,18 +846,30 @@ init {
 
         #region Miscellaneous functions
             vars.getHour = (Func<int>)(() => {
+                if (vars.watchers["clockTime"].Current < 0){
+                    return -1;
+                }
                 return (int)vars.watchers["clockTime"].Current/3600;
             });
 
-            vars.getMinute = (Func<int>)(() => {
-                return (int)(vars.watchers["clockTime"].Current%3600)/60;
-            });
-
             vars.getOldHour = (Func<int>)(() => {
+                if (vars.watchers["clockTime"].Current < 0){
+                    return -1;
+                }
                 return (int)vars.watchers["clockTime"].Old/3600;
             });
 
+            vars.getMinute = (Func<int>)(() => {
+                if (vars.watchers["clockTime"].Current < 0){
+                    return 60+((int)(vars.watchers["clockTime"].Current%3600)/60);
+                }
+                return (int)(vars.watchers["clockTime"].Current%3600)/60;
+            });
+
             vars.getOldMinute = (Func<int>)(() => {
+                if (vars.watchers["clockTime"].Current < 0){
+                    return 60+((int)(vars.watchers["clockTime"].Current%3600)/60);
+                }
                 return (int)(vars.watchers["clockTime"].Old%3600)/60;
             });
 
@@ -1561,8 +1573,8 @@ split {
             #region Time splits
             if (settings["Time Splits"] && !vars.onMenu){
                 if (vars.getHour() != vars.getOldHour() || vars.getMinute() != vars.getOldMinute()){
-                    if (vars.checkTime("Exit Vents (11:30PM)", -1, -30)) return true;
-                    if (vars.checkTime("Freddy Recharge (11:45PM)", -1, -45)) return true;
+                    if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
+                    if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
                     if (vars.watchers["worldCheck"] != 0
                     &&  vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
                     if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
