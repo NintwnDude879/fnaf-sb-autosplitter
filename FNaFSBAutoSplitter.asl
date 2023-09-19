@@ -888,6 +888,12 @@ init {
                 }
             });
 
+            vars.checkLeave = (Func<bool>)(() => {
+                return vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
+                && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
+                && vars.watchers["worldCheck"].Current != 0;
+            });
+
             vars.resetVariables = (Action)(() => {
                 //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
                 //Make sure they are not garbage data when reading.
@@ -1422,9 +1428,7 @@ split {
                 if (settings["CB_B"] && vars.checkBoxNoBool(new Vector3f(-3194, 19196, 0), new Vector3f(-2911, 18959, 312))
                     && vars.checkTimeNoBool(6, 0)){
                     vars.findLeave();
-                    if (vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
-                    && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
-                    && vars.watchers["worldCheck"].Current != 0){
+                    if (vars.checkLeave()){
                         print("Car Escape Button");
                         return true;
                     }
@@ -1433,9 +1437,7 @@ split {
                     ||                 vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746))
                     && vars.checkTimeNoBool(6, 0)){
                     vars.findLeave();
-                    if (vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
-                    && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
-                    && vars.watchers["worldCheck"].Current != 0){
+                    if (vars.checkLeave()){
                         print("Escape Button");
                         return true;
                     }
@@ -1443,9 +1445,7 @@ split {
                 if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1793, 22701, 3268), new Vector3f(-1591, 22611, 3529))
                     && vars.checkTimeNoBool(6, 0)){
                     vars.findLeave();
-                    if (vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
-                    && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
-                    && vars.watchers["worldCheck"].Current != 0){
+                    if (vars.checkLeave()){
                         print("Fire Escape Button");
                         return true;
                     }
