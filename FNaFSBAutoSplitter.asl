@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach | v1.4.0
+//Five Nights at Freddy's: Security Breach | v2.0.0
 //Autosplitter created by Daltone#2617 and NintenDude#0447
 
 //Original autosplitter created by patrogue#4071
