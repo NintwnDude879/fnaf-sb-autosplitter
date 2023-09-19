@@ -595,7 +595,7 @@ init {
     #region Set version (and a few variables)
         //Sets the version of the game upon startup
         int gameSize = modules.First().ModuleMemorySize;
-        refreshRate = 60;
+        refreshRate = 30;
 
         print("Size = " + gameSize.ToString());
 
@@ -861,6 +861,14 @@ init {
                 return (int)(vars.watchers["clockTime"].Old%3600)/60;
             });
 
+            vars.conditionalFindProperty = (Action<IntPtr, string>)((address, name) => {
+                if (!vars.offsets.ContainsKey(name)) vars.GetPropertyOffset(address, name);
+            });
+
+            vars.cacheCurrentPos = (Action)(() => {
+                vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            });
+
             vars.resetVariables = (Action)(() => {
                 //These 2 watchers are addresses which change while the game is running, and which change depending on what the player is interacting with.
                 //Make sure they are not garbage data when reading.
@@ -945,8 +953,13 @@ init {
             vars.hasLoaded                   = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x3B0);
             vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
         }
+        else if (vars.version == 1.11){
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x310, 0x120, 0x18C);
+            vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
+            vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
+        }
         else {
-            vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x128, 0x310, 0x120, 0x18C);
+            vars.freddyThing                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x310, 0x120, 0x18C);
             vars.hasLoaded                   = new DeepPointer(0x4453ED8, 0x184);
             vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xF0, 0x80, 0xC4);
         }
@@ -1003,96 +1016,86 @@ update {
     #region Change lastInteractible watcher based on what you last interacted with
     //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
     if (vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old){
+        string currentName = vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current);
+        IntPtr currentAddress = vars.watchers["closestInteractibleAddress"].Current;
         //Any elevator button
-        if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ElevatorButton")){
-            if (!vars.offsets.ContainsKey("Color")){
-                vars.GetPropertyOffset((IntPtr)vars.watchers["closestInteractibleAddress"].Current, "Color");
-            }
-            vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        if (currentName.Contains("ElevatorButton")){
+            vars.conditionalFindProperty(currentAddress, "Color");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "elevButton";
         }
         //Vanny Ending button
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("DestroyVannyEndingTrigger")){
-            vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("DestroyVannyEndingTrigger")){
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "vannyButton";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Monty cannon balls counter (requires an internal variable to keep track of # of balls in bucket)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("BallCannon")){
-            if (!vars.offsets.ContainsKey("NumberTargetsHit")){
-                vars.GetPropertyOffset((IntPtr)vars.watchers["closestInteractibleAddress"].Current, "NumberTargetsHit");
-            }
-            vars.watchers[0] = new MemoryWatcher<int>(vars.watchers["closestInteractibleAddress"].Current+vars.offsets["NumberTargetsHit"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("BallCannon")){
+            vars.conditionalFindProperty(currentAddress, "NumberTargetsHit");
+            vars.watchers[0] = new MemoryWatcher<int>(currentAddress+vars.offsets["NumberTargetsHit"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "montyCannon";
         }
         //Fazerblast flag watcher (requires an internal variable to keep track of # of flags captured)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Fazerblast_CaptureFlag")){
-            if (!vars.offsets.ContainsKey("CanStartCapture")){
-                vars.GetPropertyOffset((IntPtr)vars.watchers["closestInteractibleAddress"].Current, "CanStartCapture");
-            }
-            vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+vars.offsets["CanStartCapture"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("Fazerblast_CaptureFlag")){
+            vars.conditionalFindProperty(currentAddress, "CanStartCapture");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["CanStartCapture"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "fazerblastFlag";
         }
         //Burntrap button watcher (requires an internal variable to keep track of # of flags captured)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("BurntrapButton")){
-            if (!vars.offsets.ContainsKey("AllowActivate")){
-                vars.GetPropertyOffset((IntPtr)vars.watchers["closestInteractibleAddress"].Current, "AllowActivate");
-            }
-            vars.watchers[0] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+vars.offsets["AllowActivate"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("BurntrapButton")){
+            vars.conditionalFindProperty(currentAddress, "AllowActivate");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["AllowActivate"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "burntrapButton";
         }
         //Pizzaplex Cameras button (intro sequence)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("BB_UtilityStart")){
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x2E8){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("BB_UtilityStart")){
+            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x2E8){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "cameraButton";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Daycare pass upgrade machine
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("FazPassUpgradeMachine")){
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+0x338){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("FazPassUpgradeMachine")){
+            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x338){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "daycareMachine";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Flashlight (daycare)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Flashlight")){
-            if (!vars.offsets.ContainsKey("FlashlightAvailable")){
-                vars.GetPropertyOffset((IntPtr)vars.watchers["closestInteractibleAddress"].Current, "FlashlightAvailable");
-            }
-            vars.watchers[1] = new MemoryWatcher<bool>(vars.watchers["closestInteractibleAddress"].Current+vars.offsets["FlashlightAvailable"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("Flashlight")){
+            vars.conditionalFindProperty(currentAddress, "FlashlightAvailable");
+            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+vars.offsets["FlashlightAvailable"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "flashlight";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Chica's Voicebox (specific weird edge case, don't worry about it)
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("ChicaSewer")){
-            if (!vars.offsets.ContainsKey("Shattered Chica")){
-                vars.GetPropertyOffset((IntPtr)vars.watchers["closestInteractibleAddress"].Current, "Shattered Chica");
-            }
-            vars.watchers[1] = new MemoryWatcher<int>(vars.watchers["closestInteractibleAddress"].Current+vars.offsets["Shattered Chica"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("ChicaSewer")){
+            vars.conditionalFindProperty(currentAddress, "Shattered Chica");
+            vars.watchers[1] = new MemoryWatcher<int>(currentAddress+vars.offsets["Shattered Chica"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "chicaSewer";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Any message collectible
-        else if (vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Message")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Clue")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Bag")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Complaint")){
-            vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("Message")
+        || currentName.Contains("Clue")
+        || currentName.Contains("Bag")
+        || currentName.Contains("Complaint")){
+            vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "message";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
         //Any Collectible (that is not a message) (equipment, etc.)
-        else if ((vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Collect")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("SecurityBadge")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Ticket")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("Pass")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MrHippoMagnet")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MontyMysteryMix")
-        || vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current).Contains("MazerciseControlKey"))){
-            vars.watchers[0] = new MemoryWatcher<long>(vars.watchers["closestInteractibleAddress"].Current+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(vars.watchers["closestInteractibleAddress"].Current+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        else if (currentName.Contains("Collect")
+        || currentName.Contains("SecurityBadge")
+        || currentName.Contains("Ticket")
+        || currentName.Contains("Pass")
+        || currentName.Contains("MrHippoMagnet")
+        || currentName.Contains("MontyMysteryMix")
+        || currentName.Contains("MazerciseControlKey")){
+            vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "collectible";
-            vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
+            vars.cacheCurrentPos();
         }
     }
 
@@ -1116,45 +1119,22 @@ update {
         vars.interactibleName = "";
     }
     else if (!vars.checkSphereNoBool(vars.cachedPos)){
-        switch((string)vars.interactibleName){
-            case "vannyButton": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "message": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        if (vars.interactibleName == "vannyButton"){
+            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "";
+        }
+        else if (vars.interactibleName == "message"
+        ||       vars.interactibleName == "collectible"
+        ||       vars.interactibleName == "chicaSewer"){
+            vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.interactibleName = "";
+        }
+        else if (vars.interactibleName == "daycareMachine"
+        ||       vars.interactibleName == "cameraButton"
+        ||       vars.interactibleName == "flashlight"){
                 vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
                 vars.interactibleName = "";
-                break;
-            }
-            case "collectible": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "chicaSewer": {
-                vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "daycareMachine": {
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "cameraButton": {
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
-            case "flashlight": {
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-                vars.interactibleName = "";
-                break;
-            }
         }
     }
     #endregion
@@ -1213,17 +1193,16 @@ isLoading {
         else if (vars.checkOldBoxNoBool(new Vector3f(-18200, 44100, 900), new Vector3f(-17900, 44300, 1100))){
             vars.arcade = "Monty Golf";
         }
-        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
-        && vars.checkOldBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
-            vars.arcade = "Princess Quest 1";
-        }
-        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
-        && vars.checkOldBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
-            vars.arcade = "Princess Quest 2";
-        }
-        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0
-        && vars.checkOldBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
-            vars.arcade = "Princess Quest 3";
+        else if (vars.watchers["pos"].Current.X == 0 && vars.watchers["pos"].Current.Y == 0){
+            if (vars.checkOldBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
+                vars.arcade = "Princess Quest 1";
+            }
+            else if (vars.checkOldBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+                vars.arcade = "Princess Quest 2";
+            }
+            else if (vars.checkOldBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
+                vars.arcade = "Princess Quest 3";
+            }
         }
 
         if (vars.arcade != "N/A"){
