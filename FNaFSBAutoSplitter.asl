@@ -1264,7 +1264,9 @@ isLoading {
     #endregion
 
     if (vars.interactibleName == "elevButton" && vars.watchers["lastInteractible"].Current){
-        print("Elevator Pause");
+        if (!vars.watchers["lastInteractible"].Old){
+            print("Elevator Pause");
+        }
         return true;
     }
 
@@ -1434,9 +1436,10 @@ split {
                         return true;
                     }
                 }
-                if (settings["E_B"] && vars.checkBoxNoBool(new Vector3f(-2238, 19846, 1442), new Vector3f(-1943, 19521, 1746))
-                    ||                 vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746))
-                    && vars.checkTimeNoBool(6, 0) && vars.findLeave()){
+                if (settings["E_B"] && vars.checkTimeNoBool(6, 0) &&
+                (vars.checkBoxNoBool(new Vector3f(-2238, 19846, 1442), new Vector3f(-1943, 19521, 1746))
+                ||vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746)))
+                && vars.findLeave()){
                     if (vars.checkLeave()){
                         print("Escape Button");
                         return true;
@@ -1449,8 +1452,8 @@ split {
                         return true;
                     }
                 }
-                if (vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34, 1700)){
-                    if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
+                if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
+                    if (vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34, 1700)){
                         return true;
                     }
                 }
