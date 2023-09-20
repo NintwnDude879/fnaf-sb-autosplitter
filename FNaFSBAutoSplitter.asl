@@ -627,6 +627,7 @@ init {
     vars.interactibleName = "";
     vars.cachedPos = new Vector3f();
     vars.foundLeave = false;
+    vars.aftonButtons = 0;
     #endregion
 
     #region Declare functions
@@ -1103,8 +1104,8 @@ update {
         }
         //Burntrap button watcher (requires an internal variable to keep track of # of flags captured)
         else if (currentName.Contains("BurntrapButton")){
-            vars.conditionalFindProperty(currentAddress, "AllowActivate");
-            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["AllowActivate"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.conditionalFindProperty(currentAddress, "Color");
+            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "burntrapButton";
         }
         //Pizzaplex Cameras button (intro sequence)
@@ -1426,12 +1427,6 @@ split {
             #region Ending splits
             if (settings["Ending Splits"]){
                 //splits based on ending cutscenes
-                if (settings["Afton Ending"]){
-                    if (vars.interactibleName == "burntrapButton" && vars.aftonButtons == 8){
-                        print("Button 8 / End");
-                        return true;
-                    }
-                }
                 if (settings["CB_B"] && vars.checkBoxNoBool(new Vector3f(-3194, 19196, 0), new Vector3f(-2911, 18959, 312))
                     && vars.checkTimeNoBool(6, 0) && vars.findLeave()){
                     if (vars.checkLeave()){
@@ -1454,7 +1449,7 @@ split {
                         return true;
                     }
                 }
-                if (vars.checkPQPosition("pq3_endArcade", 1800, 2200, 1635.34, 1700)){
+                if (vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34, 1700)){
                     if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
                         return true;
                     }
@@ -1462,9 +1457,13 @@ split {
                 if (settings["V_B"] && vars.interactibleName == "vannyButton" && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
                 //other ending splits
                 if (vars.interactibleName == "burntrapButton" && vars.watchers["lastInteractible"].Old && !vars.watchers["lastInteractible"].Current){
-                    vars.aftonButtons += 1;
+                    vars.aftonButtons++;
                     if (settings["Button " + vars.aftonButtons]){
                         print("Button " + vars.aftonButtons);
+                        return true;
+                    }
+                    if (settings["Afton Ending"] && vars.aftonButtons == 8){
+                        print("Button 8 / End");
                         return true;
                     }
                 }
