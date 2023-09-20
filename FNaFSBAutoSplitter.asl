@@ -626,6 +626,7 @@ init {
     vars.fnames = new Dictionary<long, string>();
     vars.interactibleName = "";
     vars.cachedPos = new Vector3f();
+    vars.foundLeave = false;
     #endregion
 
     #region Declare functions
@@ -887,28 +888,33 @@ init {
                 vars.cachedPos = new Vector3f(vars.watchers["pos"].Current.X, vars.watchers["pos"].Current.Y, vars.watchers["pos"].Current.Z);
             });
 
-            vars.findLeave = (Action)(() => {
+            vars.findLeave = (Func<bool>)(() => {
                 if (!vars.foundLeave){
-                    while (!vars.offsets.ContainsKey("FinalChoice")
-                    && vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero) print("Finding 'FinalChoice;'");
+                    if (!vars.offsets.ContainsKey("FinalChoice")){
+                        print("Finding 'FinalChoice;'");
+                        if (vars.GetPropertyOffset(vars.watchers[2].Current, "FinalChoice") == IntPtr.Zero){
+                            return false;
+                        }
+                    }
 
-                    IntPtr finalChoice = (IntPtr)null;
+                    IntPtr finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
 
-                    while (!vars.offsets.ContainsKey("Leave")
-                    && vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
+                    if (!vars.offsets.ContainsKey("Leave")){
                         print("Finding 'Leave';");
-                        finalChoice = game.ReadPointer((IntPtr)vars.watchers[2].Current + (int)vars.offsets["FinalChoice"]);
+                        if (vars.GetPropertyOffset(finalChoice, "Leave") == IntPtr.Zero){
+                            return false;
+                        }
                     }
                     vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
                         Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
                     };
                     vars.foundLeave = true;
                 }
+                return true;
             });
 
             vars.checkLeave = (Func<bool>)(() => {
-                return vars.watchers["leaveButton"].Current.GetType().ToString() != "System.IntPtr"
-                && (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
+                return (int)vars.watchers["leaveButton"].Current == 0 && (int)vars.watchers["leaveButton"].Old != 0
                 && vars.watchers["worldCheck"].Current != 0;
             });
 
@@ -919,7 +925,6 @@ init {
                 vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
                 vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
 
-                vars.foundLeave = false;
                 vars.montyBalls = 0;
                 vars.fbFlags = 0;
                 vars.aftonButtons = 0;
@@ -1428,8 +1433,7 @@ split {
                     }
                 }
                 if (settings["CB_B"] && vars.checkBoxNoBool(new Vector3f(-3194, 19196, 0), new Vector3f(-2911, 18959, 312))
-                    && vars.checkTimeNoBool(6, 0)){
-                    vars.findLeave();
+                    && vars.checkTimeNoBool(6, 0) && vars.findLeave()){
                     if (vars.checkLeave()){
                         print("Car Escape Button");
                         return true;
@@ -1437,16 +1441,14 @@ split {
                 }
                 if (settings["E_B"] && vars.checkBoxNoBool(new Vector3f(-2238, 19846, 1442), new Vector3f(-1943, 19521, 1746))
                     ||                 vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746))
-                    && vars.checkTimeNoBool(6, 0)){
-                    vars.findLeave();
+                    && vars.checkTimeNoBool(6, 0) && vars.findLeave()){
                     if (vars.checkLeave()){
                         print("Escape Button");
                         return true;
                     }
                 }
-                if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1793, 22701, 3268), new Vector3f(-1591, 22611, 3529))
-                    && vars.checkTimeNoBool(6, 0)){
-                    vars.findLeave();
+                if (settings["F_B"] && vars.checkBoxNoBool(new Vector3f(-1789, 22700, 3268), new Vector3f(-1595, 22620, 3529))
+                && vars.checkTimeNoBool(6, 0) && vars.findLeave()){
                     if (vars.checkLeave()){
                         print("Fire Escape Button");
                         return true;
