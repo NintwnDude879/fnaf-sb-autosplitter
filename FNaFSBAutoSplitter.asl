@@ -594,7 +594,7 @@ init {
     #region Set version (and a few variables)
         //Sets the version of the game upon startup
         int gameSize = modules.First().ModuleMemorySize;
-        refreshRate = 30;
+        refreshRate = 60;
 
         switch (gameSize){
             default: {
@@ -1009,88 +1009,86 @@ update {
     vars.watchers.UpdateAll(game);
     #region Change lastInteractible watcher based on what you last interacted with
     //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
-    if (vars.watchers["closestInteractibleFName"].Current != vars.watchers["closestInteractibleFName"].Old){
-        string currentName = vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current);
-        IntPtr currentAddress = vars.watchers["closestInteractibleAddress"].Current;
-        //Any elevator button
-        if (currentName.Contains("ElevatorButton")){
-            vars.conditionalFindProperty(currentAddress, "Color");
-            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "elevButton";
-        }
-        //Vanny Ending button
-        else if (currentName.Contains("DestroyVannyEndingTrigger")){
-            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "vannyButton";
-            vars.cacheCurrentPos();
-        }
-        //Monty cannon balls counter (requires an internal variable to keep track of # of balls in bucket)
-        else if (currentName.Contains("BallCannon")){
-            vars.conditionalFindProperty(currentAddress, "NumberTargetsHit");
-            vars.watchers[0] = new MemoryWatcher<int>(currentAddress+vars.offsets["NumberTargetsHit"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "montyCannon";
-        }
-        //Fazerblast flag watcher (requires an internal variable to keep track of # of flags captured)
-        else if (currentName.Contains("Fazerblast_CaptureFlag")){
-            vars.conditionalFindProperty(currentAddress, "CanStartCapture");
-            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["CanStartCapture"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "fazerblastFlag";
-        }
-        //Burntrap button watcher (requires an internal variable to keep track of # of flags captured)
-        else if (currentName.Contains("BurntrapButton")){
-            vars.conditionalFindProperty(currentAddress, "Color");
-            vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "burntrapButton";
-        }
-        //Pizzaplex Cameras button (intro sequence)
-        else if (currentName.Contains("BB_UtilityStart")){
-            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x2E8){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "cameraButton";
-            vars.cacheCurrentPos();
-        }
-        //Daycare pass upgrade machine
-        else if (currentName.Contains("FazPassUpgradeMachine")){
-            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x338){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "daycareMachine";
-            vars.cacheCurrentPos();
-        }
-        //Flashlight (daycare)
-        else if (currentName.Contains("Flashlight")){
-            vars.conditionalFindProperty(currentAddress, "FlashlightAvailable");
-            vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+vars.offsets["FlashlightAvailable"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "flashlight";
-            vars.cacheCurrentPos();
-        }
-        //Chica's Voicebox (specific weird edge case, don't worry about it)
-        else if (currentName.Contains("ChicaSewer")){
-            vars.conditionalFindProperty(currentAddress, "Shattered Chica");
-            vars.watchers[1] = new MemoryWatcher<int>(currentAddress+vars.offsets["Shattered Chica"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "chicaSewer";
-            vars.cacheCurrentPos();
-        }
-        //Any message collectible
-        else if (currentName.Contains("Message")
-        || currentName.Contains("Clue")
-        || currentName.Contains("Bag")
-        || currentName.Contains("Complaint")){
-            vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "message";
-            vars.cacheCurrentPos();
-        }
-        //Any Collectible (that is not a message) (equipment, etc.)
-        else if (currentName.Contains("Collect")
-        || currentName.Contains("SecurityBadge")
-        || currentName.Contains("Ticket")
-        || currentName.Contains("Pass")
-        || currentName.Contains("MrHippoMagnet")
-        || currentName.Contains("MontyMysteryMix")
-        || currentName.Contains("MazerciseControlKey")){
-            vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.interactibleName = "collectible";
-            vars.cacheCurrentPos();
-        }
+    string currentName = vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current);
+    IntPtr currentAddress = vars.watchers["closestInteractibleAddress"].Current;
+    //Any elevator button
+    if (currentName.Contains("ElevatorButton")){
+        vars.conditionalFindProperty(currentAddress, "Color");
+        vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "elevButton";
+    }
+    //Vanny Ending button
+    else if (currentName.Contains("DestroyVannyEndingTrigger")){
+        vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "vannyButton";
+        vars.cacheCurrentPos();
+    }
+    //Monty cannon balls counter (requires an internal variable to keep track of # of balls in bucket)
+    else if (currentName.Contains("BallCannon")){
+        vars.conditionalFindProperty(currentAddress, "NumberTargetsHit");
+        vars.watchers[0] = new MemoryWatcher<int>(currentAddress+vars.offsets["NumberTargetsHit"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "montyCannon";
+    }
+    //Fazerblast flag watcher (requires an internal variable to keep track of # of flags captured)
+    else if (currentName.Contains("Fazerblast_CaptureFlag")){
+        vars.conditionalFindProperty(currentAddress, "CanStartCapture");
+        vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["CanStartCapture"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "fazerblastFlag";
+    }
+    //Burntrap button watcher (requires an internal variable to keep track of # of flags captured)
+    else if (currentName.Contains("BurntrapButton")){
+        vars.conditionalFindProperty(currentAddress, "Color");
+        vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+vars.offsets["Color"]){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "burntrapButton";
+    }
+    //Pizzaplex Cameras button (intro sequence)
+    else if (currentName.Contains("BB_UtilityStart")){
+        vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x2E8){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "cameraButton";
+        vars.cacheCurrentPos();
+    }
+    //Daycare pass upgrade machine
+    else if (currentName.Contains("FazPassUpgradeMachine")){
+        vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+0x338){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "daycareMachine";
+        vars.cacheCurrentPos();
+    }
+    //Flashlight (daycare)
+    else if (currentName.Contains("Flashlight")){
+        vars.conditionalFindProperty(currentAddress, "FlashlightAvailable");
+        vars.watchers[1] = new MemoryWatcher<bool>(currentAddress+vars.offsets["FlashlightAvailable"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "flashlight";
+        vars.cacheCurrentPos();
+    }
+    //Chica's Voicebox (specific weird edge case, don't worry about it)
+    else if (currentName.Contains("ChicaSewer")){
+        vars.conditionalFindProperty(currentAddress, "Shattered Chica");
+        vars.watchers[1] = new MemoryWatcher<int>(currentAddress+vars.offsets["Shattered Chica"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "chicaSewer";
+        vars.cacheCurrentPos();
+    }
+    //Any message collectible
+    else if (currentName.Contains("Message")
+    || currentName.Contains("Clue")
+    || currentName.Contains("Bag")
+    || currentName.Contains("Complaint")){
+        vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "message";
+        vars.cacheCurrentPos();
+    }
+    //Any Collectible (that is not a message) (equipment, etc.)
+    else if (currentName.Contains("Collect")
+    || currentName.Contains("SecurityBadge")
+    || currentName.Contains("Ticket")
+    || currentName.Contains("Pass")
+    || currentName.Contains("MrHippoMagnet")
+    || currentName.Contains("MontyMysteryMix")
+    || currentName.Contains("MazerciseControlKey")){
+        vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.interactibleName = "collectible";
+        vars.cacheCurrentPos();
     }
 
 
@@ -1331,7 +1329,7 @@ split {
             if (vars.checkBox("Fazerblast Spiral Stairs", new Vector3f(13100, 31830, 350), new Vector3f(14600, 33330, 750))) return true;
             if (vars.checkBox("Rail Outside Fazerblast", new Vector3f(6800, 35586, 1500), new Vector3f(7550, 35637.4f, 2150))) return true;
             if (vars.checkBox("Exit Afton Elevator", new Vector3f(24170, 49932, -6100), new Vector3f(24465, 49499, 5800))) return true;
-            if (vars.checkBox("First Aid Vanessa Cutscene", new Vector3f(4368, 45005, -1308), new Vector3f(4370, 45007, -1306))) return true;
+            if (vars.checkBox("First Aid Vanessa Cutscene", new Vector3f(4505, 44910, -1140), new Vector3f(4254, 45093, -1429))) return true;
             if (vars.checkBox("Freddy Rail Jump", new Vector3f(2250, 46900, 400), new Vector3f(2850, 47500, 900))) return true;
             if (vars.checkBox("Monty Chase", new Vector3f(2900, 29898.825f, 0), new Vector3f(3400, 29500, 300))) return true;
             if (vars.checkBox("STR-ATR-W Stairs", new Vector3f(5400, 37500, -1230), new Vector3f(6000, 38000, -1150))) return true;
