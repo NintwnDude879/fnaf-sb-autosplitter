@@ -869,36 +869,10 @@ init {
 
                 //Arcade Splits
                 vars.arcade = "N/A";
-                //bb
-                vars.bb_start = true;
-                vars.bb_end = false;
                 //monty golf
-                vars.mg_start = true;
                 vars.nHole = 0;
-                vars.mg_end = false;
-                //pq1
-                vars.pq1_start = true;
-                vars.pq1_end = false;
                 //pq2
-                vars.pq2_start = true;
                 vars.pq2_8 = false;
-                vars.pq2_end = false;
-                //pq3
-                vars.pq3_start = true;
-                vars.pq3_end = true;
-
-                //Counter Splits
-                vars.cSewerGen1 = true;
-                vars.cSewerGen2 = true;
-                vars.cSewerGen3 = true;
-                vars.cWAGen1 = true;
-                vars.cWAGen2 = true;
-                vars.cWAGen3 = true;
-                vars.cWAGen4 = true;
-                vars.cWAGen5 = true;
-
-                //Item Splits
-                vars.nLobbyItemsUsed = 0;
 
                 vars.onMenu = false;
             });
@@ -1239,26 +1213,24 @@ split {
     if (!settings["Split Settings"]) return false;
 
     #region Arcade exit splits
-    if (vars.bb_end && vars.arcade == "N/A"){
-        print("bb_end");
-        vars.bb_end = false;
-        return true;
-    }
-    if (vars.mg_end && vars.arcade == "N/A"){
-        print("mg_end");
-        vars.mg_end = false;
-        return true;
-    }
-    if (vars.pq1_end && vars.arcade == "N/A"){
-        print("pq1_end");
-        vars.pq1_end = false;
-        return true;
-    }
-    if (vars.pq2_end && vars.arcade == "N/A"){
-        print("pq2_end");
-        vars.pq2_end = false;
-        return true;
-    }
+        if (vars.arcade == "N/A"){
+            if (vars.CompletedSplits.Contains("bb_start") && settings["bb_end"]
+            && vars.CompletedSplits.Add("bb_end")){
+                return true;
+            }
+            if (vars.CompletedSplits.Contains("mg_start") && settings["mg_end"]
+            && vars.CompletedSplits.Add("mg_end")){
+                return true;
+            }
+            if (vars.CompletedSplits.Contains("pq1_start") && settings["pq1_end"]
+            && vars.CompletedSplits.Add("pq1_end")){
+                return true;
+            }
+            if (vars.CompletedSplits.Contains("pq2_start") && settings["pq2_end"]
+            && vars.CompletedSplits.Add("pq2_end")){
+                return true;
+            }
+        }
     #endregion
 
     string arcade = vars.arcade;
@@ -1371,14 +1343,10 @@ split {
                 return true;
             }
         }
-        if (vars.watchers["pq3Attack"].Current && !vars.watchers["pq3Attack"].Old){
-            if (vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34, 1700)){
-                return true;
-            }
-        }
         if (settings["V_B"] && vars.interactibleName == "vannyButton"
         && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
         //Afton ending splits are up in "Counter splits" because you have to count each button pressed
+        //PQ3 Ending split is handled with other PQ splits, check down there
     #endregion
 
     #region Item splits
@@ -1493,19 +1461,14 @@ split {
     }
 
     #region Arcade splits
-        if (vars.arcade == "BB Arcade" && settings["bb_start"] && vars.bb_start){
-            vars.bb_start = false;
-            vars.bb_end = true;
+        if (vars.arcade == "BB Arcade" && settings["bb_start"] && vars.CompletedSplits.Add("bb_start")){
             print("bb_start");
             return true;
         }
 
         if (vars.arcade == "Monty Golf"){
             if (settings["mg_start"]){
-                if (vars.mg_start){
-                    vars.mg_start = false;
-                    vars.mg_end = true;
-                    print("mg_start");
+                if (vars.CompletedSplits.Add("mg_start")){
                     return true;
                 }
             }
@@ -1524,7 +1487,6 @@ split {
         #region Princess Quest
             if (vars.arcade == "Princess Quest 1"){
                 if (settings["pq1_start"] && vars.CompletedSplits.Add("pq1_start")){
-                    print("pq1_start");
                     return true;
                 }
                 if (vars.checkPQPosition("pq1_1", 785, 1215,    -160,  160)) return true;
@@ -1536,14 +1498,12 @@ split {
                 if (vars.checkPQPosition("pq1_7", 5220, 6515,    2150, 2780)) return true;
                 if (vars.checkPQPosition("pq1_8", 950, 1380,     1865, 2300)) return true;
                 if (vars.checkPQPosition("pq1_9", 2020, 2210,    3425, 5125)){
-                    vars.pq1_end = true;
                     return true;
                 }
             }
 
             if (vars.arcade == "Princess Quest 2"){
                 if (settings["pq2_start"] && vars.CompletedSplits.Add("pq2_start")){
-                    print("pq2_start");
                     return true;
                 }
                 if (vars.checkPQPosition("pq2_1", 2800, 3250,   -1040, -735)) return true;
@@ -1551,7 +1511,10 @@ split {
                 if (vars.checkPQPosition("pq2_3", 2805, 3155,   -1340, -1110)) return true;
                 if (vars.checkPQPosition("pq2_4", 2415, 3290,   -3375, -2745)) return true;
                 if (vars.checkPQPosition("pq2_5", 2955, 3365,    745,   1125)) return true;
-                if (vars.checkPQPosition("pq2_6", 1070, 2205,    830,   1470)) return true;
+                if (vars.checkPQPosition("pq2_6", 1070, 2205,    830,   1470)){
+                    vars.pq2_8 = true;
+                    return true;
+                }
                 if (vars.checkPQPosition("pq2_7", 5,    1975,   -185,   190)) return true;
                 if (vars.checkPQPosition("pq2_8", 2725, 3340,   -315,   320) && vars.pq2_8) return true;
                 if (vars.checkPQPosition("pq2_9", 3920, 4345,    350,   655)) return true;
@@ -1560,7 +1523,6 @@ split {
 
             if (vars.arcade == "Princess Quest 3"){
                 if (settings["pq3_start"] && vars.CompletedSplits.Add("pq3_start")){
-                    print("pq3_start");
                     return true;
                 }
                 if (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)) return true;
@@ -1571,7 +1533,8 @@ split {
                 if (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)) return true;
                 if (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)) return true;
                 if (!vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current
-                && vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200,      1635.34f, 1700)) return true;
+                && (vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200, 1635.34f, 1700)
+                || vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34f, 1700))) return true;
             }
         #endregion
 
