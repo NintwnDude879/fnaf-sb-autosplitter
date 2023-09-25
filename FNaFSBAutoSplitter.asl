@@ -1,8 +1,9 @@
-//Five Nights at Freddy's: Security Breach | v2.0.0
-//Autosplitter created by Daltone#2617 and NintenDude#0447
+//Five Nights at Freddy's: Security Breach | v2.1.3
+//Autosplitter created by (Discord usernames) daltone_21 and nintendude_sr
 
-//Original autosplitter created by patrogue#4071
+//Original autosplitter created by patrogue
 //Special thanks to CheatingMuppet, Cheat The Game, and the "Speedrun Tool Development" Discord server
+    /*(especially apple1417 and just_ero, you two are the fucking GOAT)*/
 //for making tutorials, helping us understand how to use Cheat Engine, and assisting in development of this ASL
 
 state("fnaf9-Win64-Shipping"){}
