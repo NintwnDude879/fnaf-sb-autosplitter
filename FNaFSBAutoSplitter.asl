@@ -883,14 +883,14 @@ init {
     #region Sigscanning
         // FNamePool's base address doesn't get accessed at all (for some reason) but it's base address + 8 does
         // Because of this, you can just sigscan for the base address + 8 and then subtract the 8 to get the real pointer
-        vars.badFNamePool   = vars.GetStaticPointerFromSig("8B 05 ??????03"     //mov eax, [badFNamePool]
+        vars.FNamePool      = vars.GetStaticPointerFromSig("8B 05 ??????03"     //mov eax, [badFNamePool]
                                                           +"FF C0"              //inc eax
                                                           +"C1 E9 10"           //shr ecx,10
                                                           +"3B C8"              //cmp ecx,eax
                                                           +"0F92 C0"            //setb al
                                                           +"C3 CC"              //ret
-                                                          , 2);
-        vars.FNamePool      = IntPtr.Add(vars.badFNamePool, -8);
+                                                          , 2)
+                                                          -8;
 
         vars.UWorld         = vars.GetStaticPointerFromSig("E8 ????????"        //call ????????
                                                           +"48 8B 88 ??0?0000"  //mov rcx,[rax+???]
