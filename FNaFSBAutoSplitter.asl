@@ -397,7 +397,7 @@ startup {
     settings.CurrentDefaultParent = "E_Monty Golf";
     settings.Add("FlashBeacon", false, "Fazcam");
     settings.Add("FlashlightUpgrade_1", false, "Flashlight Upgrade");
-    settings.Add("MazercizeTicket", false, "Mazercise Pass");
+    settings.Add("MazerciseTicket", false, "Mazercise Pass");
     settings.Add("MontyClaws_C", false, "Monty's Claws");
 
     settings.CurrentDefaultParent = "E_Rockstar Row";
@@ -1037,8 +1037,8 @@ update {
     }
     //Chica's Voicebox (specific weird edge case, don't worry about it)
     else if (currentName.Contains("ChicaSewer")){
-        vars.conditionalFindProperty(currentAddress, "Shattered Chica");
-        vars.watchers[1] = new MemoryWatcher<int>(currentAddress+vars.offsets["Shattered Chica"]){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.conditionalFindProperty(currentAddress, "PlayerInteractHoldComponent");
+        vars.watchers[1] = new MemoryWatcher<int>(game.ReadPointer(currentAddress+(int)vars.offsets["PlayerInteractHoldComponent"])+0xD0){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "chicaSewer";
         vars.cacheCurrentPos();
     }
@@ -1048,7 +1048,7 @@ update {
     || currentName.Contains("Bag")
     || currentName.Contains("Complaint")){
         vars.watchers[0] = new MemoryWatcher<long>(currentAddress+0x25C){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-        vars.watchers[1] = new MemoryWatcher<float>(new DeepPointer(currentAddress+0x248, 0xD0)){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<float>(game.ReadPointer(currentAddress+0x248)+0xD0){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "message";
         vars.cacheCurrentPos();
     }
@@ -1353,22 +1353,26 @@ split {
     #region Item splits
         //Chica's voicebox is weird. Investigate yourself if you want to know more.
         if (vars.interactibleName == "chicaSewer"){
-            if (vars.watchers["canCollect"].Old == -1 && vars.watchers["canCollect"].Current != -1 && settings["Chica's Voicebox"]){
+            if (vars.watchers["canCollect"].Current >= 0.98f && settings["Chica's Voicebox"]
+            && vars.CompletedSplits.Add("ChicaVoiceBox_C")){
                 print("Chica's Voicebox");
                 return true;
             }
         }
         if (vars.interactibleName == "message" && vars.watchers["canCollect"].Old >= 0.98f){
             string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
-            if (currentName.Contains("ChicaVoiceBox") && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
+            if (settings["ChicaVoiceBox_M"] && currentName.Contains("ChicaVoiceBox")
+            && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
                 print("ChicaVoiceBox_M");
                 return true;
             }
-            else if (currentName.Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_M")){
+            else if (settings["RoxyEyes_M"] && currentName.Contains("RoxyEyes")
+            && vars.CompletedSplits.Add("RoxyEyes_M")){
                 print("RoxyEyes_M");
                 return true;
             }
-            else if (currentName.Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_M")){
+            else if (settings["MontyClaws_M"] && currentName.Contains("MontyClaws")
+            && vars.CompletedSplits.Add("MontyClaws_M")){
                 print("MontyClaws_M");
                 return true;
             }
@@ -1379,11 +1383,13 @@ split {
         }
         if (vars.interactibleName == "collectible" && vars.watchers["canCollect"].Old >= 0.98f){
             string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
-            if (currentName.Contains("RoxyEyes") && vars.CompletedSplits.Add("RoxyEyes_C")){
+            if (settings["RoxyEyes_C"] && currentName.Contains("RoxyEyes")
+            && vars.CompletedSplits.Add("RoxyEyes_C")){
                 print("RoxyEyes_C");
                 return true;
             }
-            else if (currentName.Contains("MontyClaws") && vars.CompletedSplits.Add("MontyClaws_C")){
+            else if (settings["MontyClaws_C"] && currentName.Contains("MontyClaws")
+            && vars.CompletedSplits.Add("MontyClaws_C")){
                 print("MontyClaws_C");
                 return true;
             }
@@ -1498,9 +1504,7 @@ split {
                 if (vars.checkPQPosition("pq1_6", 2860, 4695,    1780, 2810)) return true;
                 if (vars.checkPQPosition("pq1_7", 5220, 6515,    2150, 2780)) return true;
                 if (vars.checkPQPosition("pq1_8", 950, 1380,     1865, 2300)) return true;
-                if (vars.checkPQPosition("pq1_9", 2020, 2210,    3425, 5125)){
-                    return true;
-                }
+                if (vars.checkPQPosition("pq1_9", 2020, 2210,    3425, 5125)) return true;
             }
 
             if (vars.arcade == "Princess Quest 2"){
