@@ -985,6 +985,7 @@ update {
     #region Change lastInteractible watcher based on what you last interacted with
     //If the player is interacting with a desired interactible, cache it into lastInteractable (raw IntPtr, be careful)
     string currentName = vars.GetNameFromFName(vars.watchers["closestInteractibleFName"].Current);
+    string currInteract = (string)vars.interactibleName;
     IntPtr currentAddress = vars.watchers["closestInteractibleAddress"].Current;
     //Any elevator button
     if (currentName.Contains("ElevatorButton")){
@@ -993,7 +994,8 @@ update {
         vars.interactibleName = "elevButton";
     }
     //Vanny Ending button
-    else if (currentName.Contains("DestroyVannyEndingTrigger")){
+    else if (currentName.Contains("DestroyVannyEndingTrigger")
+    && currInteract != "vannyButton"){
         vars.watchers[0] = new MemoryWatcher<bool>(currentAddress+0x240){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "vannyButton";
         vars.cacheCurrentPos();
@@ -1105,6 +1107,12 @@ update {
         }
     }
     #endregion
+    //if (vars.watchers["closestInteractibleAddress"].Current != vars.watchers["closestInteractibleAddress"].Old)
+    //    print(vars.watchers["closestInteractibleAddress"].Current.ToString("X"));
+    //
+    //if (vars.watchers["closestInteractibleAddress"].Current != vars.watchers["closestInteractibleAddress"].Old
+    //&& vars.interactibleName == "collectible" && vars.watchers["lastInteractible"].Current != 0)
+    //    print(vars.GetNameFromFName(vars.watchers["lastInteractible"].Current));
 }
 
 start {
@@ -1113,13 +1121,13 @@ start {
     if (vars.getHour() == -1 && vars.getMinute() == 0){
         if (vars.version < 1.11){
             if (vars.watchers["freddyThing"].Old == 100 && vars.watchers["freddyThing"].Current == 30){
-                print("Start Timer");
+                print("Start Timer (pre 1.11)");
                 return true;
             }
         }
         else {
             if (vars.watchers["freddyThing"].Old == 0 && vars.watchers["freddyThing"].Current == 1){
-                print("Start Timer");
+                print("Start Timer (1.11+)");
                 return true;
             }
         }
@@ -1129,6 +1137,7 @@ start {
 reset {
     //Resets timer upon starting new game/loading a game from the starting file
     if (settings["Reset Settings"] && vars.getOldHour() != -1 && vars.checkTime("Reset On New Game", -1, 0)){
+        print("Reset on New Game");
         return true;
     }
     return false;
@@ -1217,18 +1226,22 @@ split {
         if (vars.arcade == "N/A"){
             if (vars.CompletedSplits.Contains("bb_start") && settings["bb_end"]
             && vars.CompletedSplits.Add("bb_end")){
+                print("Exit BB Arcade");
                 return true;
             }
             if (vars.CompletedSplits.Contains("mg_start") && settings["mg_end"]
             && vars.CompletedSplits.Add("mg_end")){
+                print("Exit MG Arcade");
                 return true;
             }
             if (vars.CompletedSplits.Contains("pq1_start") && settings["pq1_end"]
             && vars.CompletedSplits.Add("pq1_end")){
+                print("Exit PQ1 Arcade");
                 return true;
             }
             if (vars.CompletedSplits.Contains("pq2_start") && settings["pq2_end"]
             && vars.CompletedSplits.Add("pq2_end")){
+                print("Exit PQ2 Arcade");
                 return true;
             }
         }
@@ -1297,7 +1310,10 @@ split {
             if (vars.checkBox("Plant Deload", new Vector3f(9000, 41800, 2708), new Vector3f(10500, 42000, 3000))) return true;
             //Positions
             if (vars.checkBox("Enter Bonnie Bowl", new Vector3f(5970, 37000, 3200), new Vector3f(6280, 37300, 3700))) return true;
-            if (vars.checkTime("Enter Daycare", 0, 30)) return true;
+            if (vars.checkTime("Enter Daycare", 0, 30)){
+                print("12:30AM");
+                return true;
+            }
             if (vars.checkBox("Enter El Chips", new Vector3f(-8700, 34600, 3200), new Vector3f(-8445, 35700, 3700))) return true;
             if (vars.checkBox("Fazerblast Spiral Stairs", new Vector3f(13100, 31830, 350), new Vector3f(14600, 33330, 750))) return true;
             if (vars.checkBox("Rail Outside Fazerblast", new Vector3f(6800, 35586, 1500), new Vector3f(7550, 35637.4f, 2150))) return true;
@@ -1345,7 +1361,10 @@ split {
             }
         }
         if (settings["V_B"] && vars.interactibleName == "vannyButton"
-        && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old) return true;
+        && !vars.watchers["lastInteractible"].Current && vars.watchers["lastInteractible"].Old){
+            print("Vanny Button");
+            return true;
+        }
         //Afton ending splits are up in "Counter splits" because you have to count each button pressed
         //PQ3 Ending split is handled with other PQ splits, check down there
     #endregion
@@ -1418,7 +1437,10 @@ split {
         }
         if (settings["Daycare Pass"] && vars.interactibleName == "daycareMachine"
         && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
-        if (settings["E_West Arcade"] && vars.checkTime("Repaired Head", 5, 30)) return true;
+        if (settings["E_West Arcade"] && vars.checkTime("Repaired Head", 5, 30)){
+            print("Repaired Head");
+            return true;
+        }
         if (settings["Pizzaplex Cameras"] && vars.interactibleName == "cameraButton"
         && !vars.watchers["canCollect"].Old && vars.watchers["canCollect"].Current) return true;
         if (vars.watchers["securityBadgeCount"].Current > vars.watchers["securityBadgeCount"].Old){
@@ -1431,40 +1453,114 @@ split {
 
     #region Time splits
         if (!vars.onMenu && (vars.getHour() != vars.getOldHour() || vars.getMinute() != vars.getOldMinute())){
-            if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)) return true;
-            if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)) return true;
+            if (vars.checkTime("Exit Vents (11:30PM)", -1, 30)){
+                print("11:30PM");
+                return true;
+            }
+            if (vars.checkTime("Freddy Recharge (11:45PM)", -1, 45)){
+                print("11:45PM");
+                return true;
+            }
             if (vars.watchers["worldCheck"].Current != 0
-            &&  vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)) return true;
-            if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)) return true;
-            if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)) return true;
-            if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", 1, 0)) return true;
-            if (vars.checkTime("Mini Music Man Chase (1:15AM)", 1, 15)) return true;
-            if (vars.checkTime("Pizzabot (1:30AM)", 1, 30)) return true;
-            if (vars.checkTime("White Woman Abduction (2:00AM)", 2, 0)) return true;
-            if (vars.checkTime("Dead Fred (2:15AM)", 2, 15)) return true;
-            if (vars.checkTime("Backstage Pass (2:30AM)", 2, 30)) return true;
-            if (vars.checkTime("Use Showtime Disk (2:45AM)", 2, 45)) return true;
-            if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 0)) return true;
-            if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", 3, 15)) return true;
-            if (vars.checkTime("Freddy Power Upgrade (3:30AM)", 3, 30)) return true;
-            if (vars.checkTime("Party Pass Recharge (4:00AM)", 4, 0)) return true;
-            if (vars.checkTime("Golden Fazerblaster (4:15AM)", 4, 15)) return true;
+            &&  vars.checkTime("Front Entrance Closure (12:00AM)", 0, 0)){
+                print("12:00AM");
+                return true;
+            }
+            if (vars.checkTime("Enter Daycare (12:30AM)", 0, 30)){
+                print("12:30AM");
+                return true;
+            }
+            if (vars.checkTime("Daycare Nighttime (12:55AM)", 0, 55)){
+                print("12:55AM");
+                return true;
+            }
+            if (vars.checkTime("Daycare Vanny Cutscene (1:00AM)", 1, 0)){
+                print("1:00AM");
+                return true;
+            }
+            if (vars.checkTime("Mini Music Man Chase (1:15AM)", 1, 15)){
+                print("1:15AM");
+                return true;
+            }
+            if (vars.checkTime("Pizzabot (1:30AM)", 1, 30)){
+                print("1:30AM");
+                return true;
+            }
+            if (vars.checkTime("White Woman Abduction (2:00AM)", 2, 0)){
+                print("2:00AM");
+                return true;
+            }
+            if (vars.checkTime("Dead Fred (2:15AM)", 2, 15)){
+                print("2:15AM");
+                return true;
+            }
+            if (vars.checkTime("Backstage Pass (2:30AM)", 2, 30)){
+                print("2:30AM");
+                return true;
+            }
+            if (vars.checkTime("Use Showtime Disk (2:45AM)", 2, 45)){
+                print("2:45AM");
+                return true;
+            }
+            if (vars.checkTime("Freddy Abduction Recharge (3:00AM)", 3, 0)){
+                print("3:00AM");
+                return true;
+            }
+            if (vars.checkTime("Vanessa Repair Cutscene (3:15AM)", 3, 15)){
+                print("3:15AM");
+                return true;
+            }
+            if (vars.checkTime("Freddy Power Upgrade (3:30AM)", 3, 30)){
+                print("3:30AM");
+                return true;
+            }
+            if (vars.checkTime("Party Pass Recharge (4:00AM)", 4, 0)){
+                print("4:00AM");
+                return true;
+            }
+            if (vars.checkTime("Golden Fazerblaster (4:15AM)", 4, 15)){
+                print("4:15AM");
+                return true;
+            }
             if (settings["Monty Mix / Mazercise Key (4:30AM)"]){
                 if (vars.watchers["splashScreen"].Current > vars.watchers["splashScreen"].Old){
-                    if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(15060, 30205, 3425))) return true;
-                    if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(-17450, 31605, 70))) return true;
+                    if (vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(15060, 30205, 3425))
+                    || vars.checkItem("Monty Mix / Mazercise Key (4:30AM)", new Vector3f(-17450, 31605, 70))){
+                        print("Monty Mix");
+                        return true;
+                    }
                 }
             }
-            if (vars.checkTime("Leave Sewers (4:40AM)", 4, 40)) return true;
-            if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", 5, 0)) return true;
-            if (vars.checkTime("Damaged Head (5:15AM)", 5, 15)) return true;
-            if (vars.checkTime("Repaired Head (5:30AM)", 5, 30)) return true;
-            if (vars.checkTime("Finish Roxy Sequence (5:40AM)", 5, 40)) return true;
-            if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", 5, 50))return true;
-            if (vars.checkTime("Reach Exit Door (6:00AM)", 6, 0)) return true;
+            if (vars.checkTime("Leave Sewers (4:40AM)", 4, 40)){
+                print("4:40AM");
+                return true;
+            }
+            if (vars.checkTime("Freddy Upgrade Recharge (5:00AM)", 5, 0)){
+                print("5:00AM");
+                return true;
+            }
+            if (vars.checkTime("Damaged Head (5:15AM)", 5, 15)){
+                print("5:15AM");
+                return true;
+            }
+            if (vars.checkTime("Repaired Head (5:30AM)", 5, 30)){
+                print("5:30AM");
+                return true;
+            }
+            if (vars.checkTime("Finish Roxy Sequence (5:40AM)", 5, 40)){
+                print("5:40AM");
+                return true;
+            }
+            if (vars.checkTime("Freddy Eye Upgrade Nighttime (5:50AM)", 5, 50)){
+                print("5:50AM");
+                return true;
+            }
+            if (vars.checkTime("Reach Exit Door (6:00AM)", 6, 0)){
+                print("6:00AM");
+                return true;
+            }
         }
     #endregion
-
     }
 
     #region Arcade splits
@@ -1474,10 +1570,9 @@ split {
         }
 
         if (vars.arcade == "Monty Golf"){
-            if (settings["mg_start"]){
-                if (vars.CompletedSplits.Add("mg_start")){
-                    return true;
-                }
+            if (settings["mg_start"] && vars.CompletedSplits.Add("mg_start")){
+                print("mg_start");
+                return true;
             }
             if (vars.watchers["golfStrokeCount"].Current == 0){
                 vars.nHole = 0;
@@ -1496,50 +1591,130 @@ split {
                 if (settings["pq1_start"] && vars.CompletedSplits.Add("pq1_start")){
                     return true;
                 }
-                if (vars.checkPQPosition("pq1_1", 785, 1215,    -160,  160)) return true;
-                if (vars.checkPQPosition("pq1_2", 1715, 2530,   -160,  160)) return true;
-                if (vars.checkPQPosition("pq1_3", 3055, 3800,   -160,  160)) return true;
-                if (vars.checkPQPosition("pq1_4", 1715, 2530,    600,  1425)) return true;
-                if (vars.checkPQPosition("pq1_5", 1900, 2340,    1860, 2180)) return true;
-                if (vars.checkPQPosition("pq1_6", 2860, 4695,    1780, 2810)) return true;
-                if (vars.checkPQPosition("pq1_7", 5220, 6515,    2150, 2780)) return true;
-                if (vars.checkPQPosition("pq1_8", 950, 1380,     1865, 2300)) return true;
-                if (vars.checkPQPosition("pq1_9", 2020, 2210,    3425, 5125)) return true;
-            }
-
-            if (vars.arcade == "Princess Quest 2"){
-                if (settings["pq2_start"] && vars.CompletedSplits.Add("pq2_start")){
+                if (vars.checkPQPosition("pq1_1", 785, 1215,    -160,  160)){
+                    print("pq1_1");
                     return true;
                 }
-                if (vars.checkPQPosition("pq2_1", 2800, 3250,   -1040, -735)) return true;
-                if (vars.checkPQPosition("pq2_2", 4300, 4840,   -2800, -2420)) return true;
-                if (vars.checkPQPosition("pq2_3", 2805, 3155,   -1340, -1110)) return true;
-                if (vars.checkPQPosition("pq2_4", 2415, 3290,   -3375, -2745)) return true;
-                if (vars.checkPQPosition("pq2_5", 2955, 3365,    745,   1125)) return true;
+                if (vars.checkPQPosition("pq1_2", 1715, 2530,   -160,  160)){
+                    print("pq1_2");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_3", 3055, 3800,   -160,  160)){
+                    print("pq1_3");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_4", 1715, 2530,    600,  1425)){
+                    print("pq1_4");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_5", 1900, 2340,    1860, 2180)){
+                    print("pq1_5");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_6", 2860, 4695,    1780, 2810)){
+                    print("pq1_6");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_7", 5220, 6515,    2150, 2780)){
+                    print("pq1_7");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_8", 950, 1380,     1865, 2300)){
+                    print("pq1_8");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq1_9", 2020, 2210,    3425, 5125)){
+                    print("pq1_9");
+                    return true;
+                }
+            }
+            if (vars.arcade == "Princess Quest 2"){
+                if (settings["pq2_start"] && vars.CompletedSplits.Add("pq2_start")){
+                    print("pq2_start");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_1", 2800, 3250,   -1040, -735)){
+                    print("pq2_1");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_2", 4300, 4840,   -2800, -2420)){
+                    print("pq2_2");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_3", 2805, 3155,   -1340, -1110)){
+                    print("pq2_3");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_4", 2415, 3290,   -3375, -2745)){
+                    print("pq2_4");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_5", 2955, 3365,    745,   1125)){
+                    print("pq2_5");
+                    return true;
+                }
                 if (vars.checkPQPosition("pq2_6", 1070, 2205,    830,   1470)){
+                    print("pq2_6");
                     vars.pq2_8 = true;
                     return true;
                 }
-                if (vars.checkPQPosition("pq2_7", 5,    1975,   -185,   190)) return true;
-                if (vars.checkPQPosition("pq2_8", 2725, 3340,   -315,   320) && vars.pq2_8) return true;
-                if (vars.checkPQPosition("pq2_9", 3920, 4345,    350,   655)) return true;
-                if (vars.checkPQPosition("pq2_10",4845, 5045,    725,   925)) return true;
+                if (vars.checkPQPosition("pq2_7", 5,    1975,   -185,   190)){
+                    print("pq2_7");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_8", 2725, 3340,   -315,   320) && vars.pq2_8){
+                    print("pq2_8");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_9", 3920, 4345,    350,   655)){
+                    print("pq2_9");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq2_10",4845, 5045,    725,   925)){
+                    print("pq2_10");
+                    return true;
+                }
             }
 
             if (vars.arcade == "Princess Quest 3"){
                 if (settings["pq3_start"] && vars.CompletedSplits.Add("pq3_start")){
+                    print("pq3_start");
                     return true;
                 }
-                if (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)) return true;
-                if (vars.checkPQPosition("pq3_2",         1705, 2135,     -1340,    -895)) return true;
-                if (vars.checkPQPosition("pq3_3",         2445, 5210,     -1360,    -990)) return true;
-                if (vars.checkPQPosition("pq3_4",         4865, 5490,     -210,      365)) return true;
-                if (vars.checkPQPosition("pq3_5",         500,  1325,     -400,      1045)) return true;
-                if (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)) return true;
-                if (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)) return true;
+                if (vars.checkPQPosition("pq3_1",         2195, 2315,     -3625,    -1965)){
+                    print("pq3_1");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq3_2",         1705, 2135,     -1340,    -895)){
+                    print("pq3_2");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq3_3",         2445, 5210,     -1360,    -990)){
+                    print("pq3_3");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq3_4",         4865, 5490,     -210,      365)){
+                    print("pq3_4");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq3_5",         500,  1325,     -400,      1045)){
+                    print("pq3_5");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq3_6",         1865, 1980,     -1505,    -1380)){
+                    print("pq3_6");
+                    return true;
+                }
+                if (vars.checkPQPosition("pq3_7",         1940, 2055,     -260,      0)){
+                    print("pq3_7");
+                    return true;
+                }
                 if (!vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current
                 && (vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200, 1635.34f, 1700)
-                || vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34f, 1700))) return true;
+                || vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34f, 1700))){
+                    print("pq3_end");
+                    return true;
+                }
             }
         #endregion
 
