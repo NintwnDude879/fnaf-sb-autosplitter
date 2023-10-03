@@ -1128,11 +1128,11 @@ start {
 
 reset {
     //Resets timer upon starting new game/loading a game from the starting file
-    if (settings["Reset Settings"] && vars.getOldHour() != -1 && vars.checkTime("Reset On New Game", -1, 0)){
+    if (settings["Reset Settings"] && vars.getHour() == -1 && vars.getMinute() == 0
+    && vars.watchers["worldCheck"].Old == 0 && vars.watchers["worldCheck"].Current != 0){
         print("Reset on New Game");
         return true;
     }
-    return false;
 }
 
 isLoading {
