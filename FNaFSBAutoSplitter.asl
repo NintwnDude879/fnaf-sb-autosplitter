@@ -1364,7 +1364,8 @@ split {
 
     #region Item splits
         //Chica's voicebox is weird. Investigate yourself if you want to know more.
-        if (vars.watchers["canCollect"].Old >= 0.98f){
+        if (vars.watchers["canCollect"].Old.GetType() == typeof(float)
+        && vars.watchers["canCollect"].Old >= 0.98f){
             string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
             if (vars.interactibleName == "chicaSewer" && settings["Chica's Voicebox"]
             && vars.CompletedSplits.Add("ChicaVoiceBox_C")){
