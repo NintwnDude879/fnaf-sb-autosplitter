@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach Autosplitter | v2.2.1
+//Five Nights at Freddy's: Security Breach Autosplitter | v2.3.0
 //Created by (Discord usernames) daltone_21 and nintendude_sr
 
 //Original autosplitter created by patrogue
@@ -836,10 +836,12 @@ init {
                             return false;
                         }
                     }
-                    vars.watchers[2] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
+                    vars.foundLeave = true;
+                }
+                if (vars.watchers[3].Current.GetType() != typeof(int)){
+                    vars.watchers[3] = new MemoryWatcher<int>(new DeepPointer(vars.watchers[2].Current + vars.offsets["FinalChoice"], vars.offsets["Leave"])){
                         Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull
                     };
-                    vars.foundLeave = true;
                 }
                 return true;
             });
@@ -870,6 +872,12 @@ init {
                 vars.pq2_8 = false;
 
                 vars.onMenu = false;
+            });
+
+            vars.printCompletedSplits = (Action)(() => {
+                foreach (string str in vars.CompletedSplits){
+                    print(str);
+                }
             });
         #endregion
 
@@ -914,7 +922,6 @@ init {
         vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "GameInstance");
         vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.GEngine), "TransitionType");
         vars.GetPropertyOffset(game.ReadPointer((IntPtr)vars.UWorld), "AuthorityGameMode");
-        vars.leaveButton                 = new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xE8, 0x0);
         if (vars.version < 1.11){
             vars.freddyThing                 = new DeepPointer(vars.UWorld, 0x188, 0xE0, 0x38, 0xB8);
             vars.clockTime                   = new DeepPointer(vars.GEngine, vars.offsets["GameInstance"], 0xE0, 0x80, 0xC4);
@@ -934,8 +941,9 @@ init {
             //These are at the top so they will always be index 0 or 1 in this list. DO NOT CHANGE UNLESS YOU KNOW THE RAMIFICATIONS.
 
             new MemoryWatcher<bool>((IntPtr)null) { Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<bool>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
-            new MemoryWatcher<IntPtr>(vars.leaveButton) { Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<int>((IntPtr)null) { Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<IntPtr>(new DeepPointer(vars.UWorld, vars.offsets["AuthorityGameMode"], 0x318, 0x4E0, 0xE8, 0x0)) { Name = "leaveThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+            new MemoryWatcher<bool>((IntPtr)null) { Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
 
             //Freddy's Power OR Freddy Thingie (1.11+)
             new MemoryWatcher<int>(vars.freddyThing) { Name = "freddyThing" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
@@ -1088,17 +1096,29 @@ update {
         ||       vars.interactibleName == "collectible"
         ||       vars.interactibleName == "chicaSewer"){
             vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
-            vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+            vars.watchers[1] = new MemoryWatcher<int>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "";
         }
         else if (vars.interactibleName == "daycareMachine"
         ||       vars.interactibleName == "cameraButton"
         ||       vars.interactibleName == "flashlight"){
-                vars.watchers[1] = new MemoryWatcher<bool>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+                vars.watchers[1] = new MemoryWatcher<int>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
                 vars.interactibleName = "";
         }
     }
+    if (!vars.checkBoxNoBool(new Vector3f(-2238, 19846, 1442), new Vector3f(-1943, 19521, 1746))     //Lobby 1
+        &&!vars.checkBoxNoBool(new Vector3f(-1437, 19846, 1442), new Vector3f(-1144, 19521, 1746))   //Lobby 2
+        &&!vars.checkBoxNoBool(new Vector3f(-1789, 22700, 3268), new Vector3f(-1595, 22620, 3529))   //Fire ending
+        &&!vars.checkBoxNoBool(new Vector3f(-3194, 19196, 0), new Vector3f(-2911, 18959, 312))       //Car battery ending
+    ){
+        vars.watchers[3] = new MemoryWatcher<bool>((IntPtr)null) { Name = "leaveButton" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+    }
     #endregion
+
+    //Reset variables on starting a new game (even if you don't reset for new game)
+    if (vars.getHour() == -1 && vars.getMinute() == 0 && vars.getOldHour() != -1 && vars.getOldMinute() != 0){
+        vars.resetVariables();
+    }
     //if (vars.watchers["closestInteractibleAddress"].Current != vars.watchers["closestInteractibleAddress"].Old)
     //    print(vars.watchers["closestInteractibleAddress"].Current.ToString("X"));
     //
@@ -1369,52 +1389,45 @@ split {
             string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
             if (vars.interactibleName == "chicaSewer" && settings["Chica's Voicebox"]
             && vars.CompletedSplits.Add("ChicaVoiceBox_C")){
-               print("Chica's Voicebox");
-               return true;
+                return true;
             }
             if (vars.interactibleName == "message"){
                 if (settings["ChicaVoiceBox_M"] && currentName.Contains("ChicaVoiceBox")
                 && vars.CompletedSplits.Add("ChicaVoiceBox_M")){
-                    print("ChicaVoiceBox_M");
                     return true;
                 }
                 else if (settings["RoxyEyes_M"] && currentName.Contains("RoxyEyes")
                 && vars.CompletedSplits.Add("RoxyEyes_M")){
-                    print("RoxyEyes_M");
                     return true;
                 }
                 else if (settings["MontyClaws_M"] && currentName.Contains("MontyClaws")
                 && vars.CompletedSplits.Add("MontyClaws_M")){
-                    print("MontyClaws_M");
                     return true;
                 }
                 else if (settings[currentName] && vars.CompletedSplits.Add(currentName)){
-                    print(currentName);
                     return true;
                 }
             }
             if (vars.interactibleName == "collectible"){
                 if (settings["RoxyEyes_C"] && currentName.Contains("RoxyEyes")
                 && vars.CompletedSplits.Add("RoxyEyes_C")){
-                    print("RoxyEyes_C");
                     return true;
                 }
                 else if (settings["MontyClaws_C"] && currentName.Contains("MontyClaws")
                 && vars.CompletedSplits.Add("MontyClaws_C")){
-                    print("MontyClaws_C");
                     return true;
                 }
-                else if (settings[currentName] && vars.CompletedSplits.Add(currentName)){
-                    print(currentName);
+                else if (settings[currentName]
+                && vars.CompletedSplits.Add(currentName)){
                     return true;
                 }
             }
-            if (vars.interactibleName == "flashlight" && settings["Flashlight"]
-            && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current
-            && vars.CompletedSplits.Add("Flashlight")){
-                print("Flashlight");
-                return true;
-            }
+        }
+        else if (vars.watchers["canCollect"].Old.GetType() == typeof(bool)
+        && vars.interactibleName == "flashlight" && settings["Flashlight"]
+        && vars.watchers["canCollect"].Old && !vars.watchers["canCollect"].Current){
+            print("Flashlight");
+            return true;
         }
         //extraneous items:
         //Fazerblasters
