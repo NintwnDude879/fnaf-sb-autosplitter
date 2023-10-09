@@ -477,7 +477,6 @@ startup {
     settings.Add("BonnieMissing1", false, "Understudy");
 
     settings.CurrentDefaultParent = "Special Collectibles";
-    settings.Add("MontyClaws", false, "MONTY UPGRADE (message)/Monty's Claws (collectible)");
     settings.Add("c_magnet_chica", false, "Chica Magnet (West Arcade/Chica's Cakes)");
 
 
@@ -1036,9 +1035,10 @@ update {
         vars.cacheCurrentPos();
     }
     //Chica's Voicebox (specific weird edge case, don't worry about it)
-    else if (currentName.Contains("ChicaSewer")){
+    else if (vars.watchers[1].Current.GetType() != typeof(float) && currentName.Contains("ChicaSewer")){
         vars.conditionalFindProperty(currentAddress, "PlayerInteractHoldComponent");
-        vars.watchers[1] = new MemoryWatcher<int>(game.ReadPointer(currentAddress+(int)vars.offsets["PlayerInteractHoldComponent"])+0xD0){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[0] = new MemoryWatcher<long>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
+        vars.watchers[1] = new MemoryWatcher<float>(game.ReadPointer(currentAddress+(int)vars.offsets["PlayerInteractHoldComponent"])+0xD0){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
         vars.interactibleName = "chicaSewer";
         vars.cacheCurrentPos();
     }
@@ -1091,15 +1091,15 @@ update {
             vars.interactibleName = "";
         }
         else if (vars.interactibleName == "message"
-        ||       vars.interactibleName == "collectible"
-        ||       vars.interactibleName == "chicaSewer"){
+        ||       vars.interactibleName == "collectible"){
             vars.watchers[0] = new MemoryWatcher<bool>((IntPtr)null){ Name = "lastInteractible" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.watchers[1] = new MemoryWatcher<int>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
             vars.interactibleName = "";
         }
         else if (vars.interactibleName == "daycareMachine"
         ||       vars.interactibleName == "cameraButton"
-        ||       vars.interactibleName == "flashlight"){
+        ||       vars.interactibleName == "flashlight"
+        ||       vars.interactibleName == "chicaSewer"){
                 vars.watchers[1] = new MemoryWatcher<int>((IntPtr)null){ Name = "canCollect" , FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull };
                 vars.interactibleName = "";
         }
@@ -1383,7 +1383,7 @@ split {
     #region Item splits
         //Chica's voicebox is weird. Investigate yourself if you want to know more.
         if (vars.watchers["canCollect"].Old.GetType() == typeof(float)
-        && vars.watchers["canCollect"].Old >= 0.98f){
+        && vars.watchers["canCollect"].Old >= 0.97f){
             string currentName = vars.GetNameFromFName(vars.watchers["lastInteractible"].Current);
             if (vars.interactibleName == "chicaSewer" && settings["Chica's Voicebox"]
             && vars.CompletedSplits.Add("ChicaVoiceBox_C")){
