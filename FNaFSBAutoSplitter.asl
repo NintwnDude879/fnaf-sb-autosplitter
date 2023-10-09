@@ -768,9 +768,7 @@ init {
                 || zLower > vars.watchers["pos"].Current.Z || vars.watchers["pos"].Current.Z > zUpper) return false;
 
                 Vector3f oPos = vars.watchers["pos"].Old, cPos = vars.watchers["pos"].Current, target = new Vector3f(x, y, 0);
-                return oPos.DistanceXY(target) <= 200f
-                    && cPos.DistanceXY(target) > 200f
-                    && vars.CompletedSplits(name);
+                return ((oPos.DistanceXY(target) <= 200f && cPos.DistanceXY(target) > 200f) && vars.CompletedSplits.Add(name));
             });
 
             vars.checkTimeNoBool = (Func<int, int, bool>)((hour, minute)
