@@ -750,16 +750,14 @@ init {
                 || vars.checkBoxNoBool(new Vector3f(2348,   52554,  1870),new Vector3f(2073,   52156,-1179))    //Freddy Room
             );
 
+            vars.checkPQPositionNoBool = (Func<double, double, double, double, bool>)((xLB, xUB, yLB, yUB)
+                =>  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
+                &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB);
+
             vars.checkPQPosition = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB)
                 => settings[name]
-                &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
-                &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB
+                && vars.checkPQPositionNoBool(xLB, xUB, yLB, yUB)
                 && vars.CompletedSplits.Add(name));
-
-            vars.checkPQPositionNoBool = (Func<string, double, double, double, double, bool>)((name, xLB, xUB, yLB, yUB)
-                => settings[name]
-                &&  xLB <= vars.watchers["pos"].Current.Y && vars.watchers["pos"].Current.Y <= xUB
-                &&  yLB <= vars.watchers["pos"].Current.X && vars.watchers["pos"].Current.X <= yUB);
 
             //checks in a circle (radius 200), upper and lower Z bound used
             vars.checkGen = (Func<string, float, float, float, float, bool>)((name, x, y, zLower, zUpper) => {
@@ -1175,7 +1173,7 @@ isLoading {
             if (vars.checkOldBoxNoBool(new Vector3f(7000, 46500, 2100), new Vector3f(8500, 48000, 2300))){
                 vars.arcade = "Princess Quest 1";
             }
-            else if (vars.checkOldBoxNoBool(new Vector3f(7500, 20500, 3200), new Vector3f(9000, 21000, 3400))){
+            else if (vars.checkOldBoxNoBool(new Vector3f(7500, 20300, 3200), new Vector3f(9000, 21000, 3400))){
                 vars.arcade = "Princess Quest 2";
             }
             else if (vars.checkOldBoxNoBool(new Vector3f(17750, 28775, 2500), new Vector3f(18000, 29000, 2700))){
@@ -1654,19 +1652,24 @@ split {
                     return true;
                 }
                 if (vars.checkPQPosition("pq2_5", 2955, 3365,    745,   1125)){
+                    vars.pq2_8 = true;
+                    if (settings["pq2_5"] && vars.CompletedSplits.Add("pq2_5")){
+                        print("pq2_5");
+                        return true;
+                    }
                     print("pq2_5");
                     return true;
                 }
                 if (vars.checkPQPosition("pq2_6", 1070, 2205,    830,   1470)){
                     print("pq2_6");
-                    vars.pq2_8 = true;
                     return true;
                 }
                 if (vars.checkPQPosition("pq2_7", 5,    1975,   -185,   190)){
                     print("pq2_7");
                     return true;
                 }
-                if (vars.checkPQPosition("pq2_8", 2725, 3340,   -315,   320) && vars.pq2_8){
+                if (vars.pq2_8 && vars.checkPQPosition("pq2_8", 2725, 3340, -315, 320)){
+                    vars.pq2_8 = false;
                     print("pq2_8");
                     return true;
                 }
@@ -1713,9 +1716,10 @@ split {
                     print("pq3_7");
                     return true;
                 }
-                if (!vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current
-                && (vars.checkPQPositionNoBool("pq3_endArcade", 1800, 2200, 1635.34f, 1700)
-                || vars.checkPQPositionNoBool("pq3_endEndings", 1800, 2200, 1635.34f, 1700))){
+                if ((settings["pq3_endArcade"] || settings["pq3_endEndings"])
+                && !vars.watchers["pq3Attack"].Old && vars.watchers["pq3Attack"].Current
+                && vars.checkPQPositionNoBool(1800, 2200, 1635.34f, 1700)
+                && vars.CompletedSplits.Add("pq3_end")){
                     print("pq3_end");
                     return true;
                 }
