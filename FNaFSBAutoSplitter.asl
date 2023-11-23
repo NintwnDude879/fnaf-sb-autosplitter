@@ -1,4 +1,4 @@
-//Five Nights at Freddy's: Security Breach Autosplitter | v2.3.0
+//Five Nights at Freddy's: Security Breach Autosplitter | v2.4.0
 //Created by (Discord usernames) daltone_21 and nintendude_sr
 
 //Original autosplitter created by patrogue
