@@ -1112,7 +1112,7 @@ update {
     #endregion
 
     //Reset variables on starting a new game (even if you don't reset for new game)
-    if (vars.getHour() == -1 && vars.getMinute() == 0 && vars.getOldHour() != -1 && vars.getOldMinute() != 0){
+    if ((vars.getHour() == -1 && vars.getMinute() == 0) && (vars.getOldHour() != -1 || vars.getOldMinute() != 0)){
         vars.resetVariables();
     }
     //if (vars.watchers["closestInteractibleAddress"].Current != vars.watchers["closestInteractibleAddress"].Old)
@@ -1145,6 +1145,7 @@ start {
 reset {
     //Resets timer upon starting new game/loading a game from the starting file
     if (settings["Reset Settings"] && vars.getOldHour() != -1 && vars.checkTime("Reset On New Game", -1, 0)){
+        vars.resetVariables();
         print("Reset on New Game");
         return true;
     }
