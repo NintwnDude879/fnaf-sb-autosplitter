@@ -9,6 +9,7 @@
 state("fnaf9-Win64-Shipping"){}
 
 startup {
+    vars.stopwatch = new Stopwatch();
     vars.CompletedSplits = new HashSet<string>();
 
     settings.CurrentDefaultParent = null;
@@ -600,9 +601,9 @@ init {
             default: {
                 vars.version = 100; // Unsupported
                 if (!settings["Unsupported version warning"]) break;
-                MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently supported!\n\n"+
-                "If this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either Daltone#2617 or Nintendude#0447 on Discord.\n\n"+
-                "Sorry for the inconvenience.", "Warning: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Error).ToString();
+                MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently fully supported! Splits may not work with this version of Security Breach currently.\n\n"+
+                "If this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either daltone_21 or nintendude_sr on Discord.\n\n"+
+                "Sorry for the inconvenience.", "Warning: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Warning).ToString();
                 break;
             }
             case 0x48AE000: vars.version = 1.04; break;
