@@ -604,6 +604,7 @@ init {
                 MessageBox.Show("Sorry, it seems like the version of Security Breach that you're using isn't currently fully supported! Splits may not work with this version of Security Breach currently.\n\n"+
                 "If this seems like a mistake, or you would like to suggest an additional version to support, please go to https://forms.gle/jxidK6RFToEXzUDe7 or contact either daltone_21 or nintendude_sr on Discord.\n\n"+
                 "Sorry for the inconvenience.", "Warning: Version Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Warning).ToString();
+                print(gameSize);
                 break;
             }
             case 0x48AE000: vars.version = 1.04; break;
