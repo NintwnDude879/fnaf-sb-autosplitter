@@ -635,6 +635,7 @@ init {
     #region Declare functions
 
         #region Sigscan adjacent/Unreal Engine introspection related funcs
+            //Credit to Micrologist and Meta for this func, found in the Stray autosplitter
             vars.GetStaticPointerFromSig = (Func<string, int, IntPtr>) ( (signature, instructionOffset) => {
                 var scanner = new SignatureScanner(game, modules.First().BaseAddress, (int)modules.First().ModuleMemorySize);
                 var pattern = new SigScanTarget(signature);
@@ -644,6 +645,7 @@ init {
                 return (IntPtr)location + offset + instructionOffset + 0x4;
             });
 
+            //Credit to Micrologist and Meta for this func, found in the Stray autosplitter
             vars.GetNameFromFName = (Func<long, string>) ( longKey => {
                 if (vars.fnames.ContainsKey(longKey)) return vars.fnames[longKey];
                 int key = (int)(longKey & uint.MaxValue);
@@ -659,6 +661,7 @@ init {
                 return outputParsed;
             });
 
+            //Credit to apple1417 for this function, not sure where else it was used but I found it in their Borderlands 3 ASL
             vars.GetPropertyOffset = (Func<IntPtr, string, IntPtr>) ((address, name) => {
                 var _class = game.ReadPointer(address + CLASS_OFFSET);
                 for (
@@ -878,6 +881,23 @@ init {
                 foreach (string str in vars.CompletedSplits){
                     print(str);
                 }
+            });
+            
+            //Credit to KunoDemetries for this func, originated from the Poppy Playtime: Chapter 2 ASL
+            vars.SetTextComponent = (Action<string, string>)((id, text) => {
+                var textSettings = timer.Layout.Components.Where(x => x.GetType().Name == "TextComponent").Select(x => x.GetType().GetProperty("Settings").GetValue(x, null));
+                var textSetting = textSettings.FirstOrDefault(x => (x.GetType().GetProperty("Text1").GetValue(x, null) as string) == id);
+                if (textSetting == null) {
+                    var textComponentAssembly = Assembly.LoadFrom("Components\\LiveSplit.Text.dll");
+                    var textComponent = Activator.CreateInstance(textComponentAssembly.GetType("LiveSplit.UI.Components.TextComponent"), timer);
+                    timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("LiveSplit.Text.dll", textComponent as LiveSplit.UI.Components.IComponent));
+
+                    textSetting = textComponent.GetType().GetProperty("Settings", BindingFlags.Instance | BindingFlags.Public).GetValue(textComponent, null);
+                    textSetting.GetType().GetProperty("Text1").SetValue(textSetting, id);
+                }
+
+                if (textSetting != null)
+                    textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
             });
         #endregion
 
